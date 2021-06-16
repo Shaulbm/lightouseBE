@@ -3,6 +3,7 @@ import stocks
 import time
 
 main.startup()
+'''
 stocks.register_stock("MSFT")
 
 index = 5
@@ -17,3 +18,5 @@ while index > 0:
     print (result)
     time.sleep(5)
     index -= 1
+'''
+stocks.register_user('testUser')

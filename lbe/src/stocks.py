@@ -2,9 +2,11 @@ from fastapi import Header, APIRouter
 from qrs_data import QrsLogic
 from qrs_data import Quote
 from fastapi import HTTPException
+from users import UsersLogic
 
 stocks = APIRouter()
 quotes_data = QrsLogic()
+users = UsersLogic()
 
 @stocks.post("/register")
 def register_stock(stock):
@@ -24,3 +26,7 @@ def read_default():
     if len(current_stocks) == 0:
         raise HTTPException (status_code = 404, detail="the stocks list is empy")
     return current_stocks
+
+@stocks.post("/registerUser")
+def register_user(user):
+    users.registerUser(userName=user)
