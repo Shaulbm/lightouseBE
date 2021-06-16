@@ -75,4 +75,6 @@ class UsersLogic(metaclass=Singleton):
 
     def registerUser (self, userName):
         userDetails = self.usersDB.verify_user_exists(userName=userName, userMail='abc@gmail.com')
-        pass
+        return userDetails
+
+    

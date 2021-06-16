@@ -29,4 +29,5 @@ def read_default():
 
 @stocks.post("/registerUser")
 def register_user(user):
-    users.registerUser(userName=user)
+    userDetails = users.registerUser(userName=user)
+    return userDetails
