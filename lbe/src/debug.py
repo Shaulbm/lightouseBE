@@ -19,4 +19,4 @@ while index > 0:
     time.sleep(5)
     index -= 1
 '''
-stocks.register_user('testUser')
+stocks.register_user('Test4')

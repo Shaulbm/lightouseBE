@@ -2,10 +2,11 @@ from threading import current_thread
 from tinydb import TinyDB, Query
 import uuid
 from singleton import Singleton
+import json
 
 class UserData:
-    def __init__(self, id = None, name  = None, mail = None, status = None, currentTraining = None, trainingStage = None, existingUserDetails = None):
-        if (existingUserDetails is None):
+    def __init__(self, id = None, name  = None, mail = None, status = None, currentTraining = None, trainingStage = None, userDetails = None):
+        if (userDetails is None):
             self.id = id
             self.name = name
             self.mail = mail
@@ -13,10 +14,11 @@ class UserData:
             self.currentTraining = currentTraining
             self.trainingStage = trainingStage
         else:
-            # parse_from_dictionary
+            # parse from json
+
             # mandatory fields
-            self.id = existingUserDetails['id']
-            self.name = existingUserDetails['name']
+            self.id = userDetails[0]['id']
+            self.name = userDetails[0]['name']
 
             # non mandatory fields - set default values:
             self.mail = ''
@@ -25,17 +27,17 @@ class UserData:
             self.trainingStage = ''
 
             # non mandatory values - set only if existing
-            if ('mail' in existingUserDetails):
-                self.mail = existingUserDetails['mail']
+            if ('mail' in userDetails[0]):
+                self.mail = userDetails[0]['mail']
 
-            if ('status' in existingUserDetails):
-                self.status = existingUserDetails['status']
+            if ('status' in userDetails[0]):
+                self.status = userDetails[0]['status']
 
-            if ('currentTraining' in existingUserDetails):    
-                self.currentTraining = existingUserDetails['currentTraining']
+            if ('currentTraining' in userDetails[0]):    
+                self.currentTraining = userDetails[0]['currentTraining']
             
-            if ('trainingStage' in existingUserDetails): 
-                self.trainingStage = existingUserDetails['trainingStage']
+            if ('trainingStage' in userDetails[0]): 
+                self.trainingStage = userDetails[0]['trainingStage']
 
 class usersDB:
     db_file:str
@@ -60,7 +62,7 @@ class usersDB:
             self.insert_new_user(userDetails)
         else:
             # user found 
-            userDetails = UserData (existingUserDetails = foundUser)
+            userDetails = UserData (userDetails = foundUser)
 
         return userDetails
 
