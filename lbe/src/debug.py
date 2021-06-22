@@ -19,4 +19,6 @@ while index > 0:
     time.sleep(5)
     index -= 1
 '''
-stocks.register_user('Test4')
+#stocks.register_user('Test4')
+#stocks.create_training_data()
+stocks.get_training_stage('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '1')

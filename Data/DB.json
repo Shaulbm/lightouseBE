@@ -1,1 +1,87 @@
-{"_default": {"1": {"id": "74bfe2d0-98f9-437c-bded-4c35b2f477f4", "name": "Test1", "mail": "abc@gmail.com", "status": "new", "currentTraining": "", "trainingStage": ""}, "2": {"id": "bb08eba4-519e-48de-94e3-b3c55c52b3ed", "name": "Test2", "mail": "abc@gmail.com", "status": "new", "currentTraining": "", "trainingStage": ""}, "3": {"id": "00a31809-08ed-497a-baa6-66f96fe531d7", "name": "Test4", "mail": "abc@gmail.com", "status": "new", "currentTraining": "", "trainingStage": ""}}}
+{
+	"_default": {
+		"1": {
+			"id": "74bfe2d0-98f9-437c-bded-4c35b2f477f4",
+			"name": "Test1",
+			"mail": "abc@gmail.com",
+			"status": "new",
+			"currentTraining": "",
+			"trainingStage": ""
+		},
+		"2": {
+			"id": "bb08eba4-519e-48de-94e3-b3c55c52b3ed",
+			"name": "Test2",
+			"mail": "abc@gmail.com",
+			"status": "new",
+			"currentTraining": "",
+			"trainingStage": ""
+		},
+		"3": {
+			"id": "00a31809-08ed-497a-baa6-66f96fe531d7",
+			"name": "shaul.ben.maor@gmail.com",
+			"mail": "",
+			"status": "new",
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "1",
+            "courseLesson" : "2"
+
+		}
+	},
+	"issuesTable": {
+		"1": {
+			"Id": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"name": "Feedback",
+			"description": "The user have issues providing feedback to his subprdonates, his peers or to his managers"
+		}
+	},
+	"trainingMetaData": {
+		"1": {
+			"id": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"name": "This is the training Name",
+			"description": "This is the training description",
+			"challengesNumber": "10"
+		}
+	},
+	"trainingDetailsTable": {
+		"1": {
+			"id": "c334a93b-f558-4830-9f31-0d4b446fb887",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "1",
+			"ShortDescription": "This is a short description of the first challenge",
+			"DescriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"2": {
+			"id": "55fa5d35-5604-4b74-8a11-d31004e3395f",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "2",
+			"challengeShortDescription": "This is a short description of the second challenge",
+			"challengeDescriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		}
+	},
+	"courseMetaDataTable": {
+		"1": {
+			"id": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"name": "course name",
+			"description": "This is the course description",
+			"partsNumber": "12"
+		}
+	},
+	"courseClassesTable": {
+		"1": {
+			"id": "ee036d7c-7f8b-474a-b194-07c7752ba0f3",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "1",
+			"lessonShortDescription": "This is a short descritption for the first lesson",
+			"lessonVidoeURL": "https://www.youtube.com//watch?v=DuWAyhxCqQ4"
+		},
+		"2": {
+			"id": "6d78c6b4-ba92-4fe8-8aa7-46a1f62eecae",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"lessonShortDescription": "This is a short descritption for the first lesson",
+			"lessonVidoeURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		}
+	}
+}

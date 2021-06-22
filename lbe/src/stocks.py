@@ -31,3 +31,13 @@ def read_default():
 def register_user(user):
     userDetails = users.registerUser(userName=user)
     return userDetails
+
+@stocks.get("/createTrainingData")
+def create_training_data():
+    users.createTrainingData()
+    pass
+
+@stocks.post("/getTrainingStage")
+def get_training_stage(issueId, stage):
+    trainingDetails = users.getTrainingStage(issueId, stage)
+    return trainingDetails

@@ -5,14 +5,15 @@ from singleton import Singleton
 import json
 
 class UserData:
-    def __init__(self, id = None, name  = None, mail = None, status = None, currentTraining = None, trainingStage = None, userDetails = None):
+    def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userDetails = None):
         if (userDetails is None):
             self.id = id
             self.name = name
             self.mail = mail
             self.status = status
-            self.currentTraining = currentTraining
+            self.currentIssue = currentIssue
             self.trainingStage = trainingStage
+            self.courseLesson = courseLesson
         else:
             # parse from json
 
@@ -23,8 +24,9 @@ class UserData:
             # non mandatory fields - set default values:
             self.mail = ''
             self.status = ''
-            self.currentTraining = ''
+            self.currentIssue = ''
             self.trainingStage = ''
+
 
             # non mandatory values - set only if existing
             if ('mail' in userDetails[0]):
@@ -33,11 +35,71 @@ class UserData:
             if ('status' in userDetails[0]):
                 self.status = userDetails[0]['status']
 
-            if ('currentTraining' in userDetails[0]):    
-                self.currentTraining = userDetails[0]['currentTraining']
+            if ('currentIssue' in userDetails[0]):    
+                self.currentIssue = userDetails[0]['currentIssue']
             
             if ('trainingStage' in userDetails[0]): 
                 self.trainingStage = userDetails[0]['trainingStage']
+
+            if ('courseLesson' in userDetails[0]):
+                self.courseLesson = userDetails[0]['courseLesson']
+
+class trainingStageData:
+    def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, descriptionInDetails = None, trainingStageDetails = None):
+        if (trainingStageDetails is None):
+            self.id = id
+            self.trainingId = trainingId
+            self.challengeNumber = challengeNumber
+            self.shortDescription = shortDescription
+            self.descriptionInDetails = descriptionInDetails
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = trainingStageDetails[0]['id']
+            self.trainingId = trainingStageDetails[0]['trainingId']
+            self.challengeNumber = trainingStageDetails[0]['challengeNumber']
+
+            # non mandatory fields - set default values:
+            self.shortDescription = ''
+            self.descriptionInDetails = ''
+
+            # non mandatory values - set only if existing
+            if ('shortDescription' in trainingStageDetails[0]):
+                self.shortDescription = trainingStageDetails[0]['shortDescription']
+
+            if ('descriptionInDetails' in trainingStageDetails[0]):    
+                self.descriptionInDetails = trainingStageDetails[0]['descriptionInDetails']
+
+
+class trainingData:
+    def __init__(self, id = None, name  = None, description = None, issueId = None, challengesNo = None, trainingDetails = None):
+        if (trainingDetails is None):
+            self.id = id
+            self.name = name
+            self.description = description,
+            self.issueId = issueId
+            self.callengesNo = challengesNo
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = trainingDetails[0]['id']
+            self.name = trainingDetails[0]['name']
+            self.issueId = trainingDetails[0]['issueId']
+
+            # non mandatory fields - set default values:
+            self.description = ''
+            self.challengesNo = ''
+
+            # non mandatory values - set only if existing
+            if ('description' in trainingDetails[0]):
+                self.description = trainingDetails[0]['description']
+
+            if ('challengesNo' in trainingDetails[0]):
+                self.challengesNo = trainingDetails[0]['challengesNo']
 
 class usersDB:
     db_file:str
@@ -57,7 +119,7 @@ class usersDB:
             userDetails = UserData (id = userId, 
                                     name = userName, 
                                     mail = userMail, 
-                                    status = 'new', currentTraining = '', 
+                                    status = 'new', currentIssue = '', 
                                     trainingStage = '')
             self.insert_new_user(userDetails)
         else:
@@ -69,8 +131,108 @@ class usersDB:
     def insert_new_user (self, userDetails):
         self.db.insert ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentTraining': userDetails.currentTraining, 'trainingStage' : userDetails.trainingStage})
 
+    def createTrainingData (self):
+        issuesTable = self.db.table ('issuesTable')
+        issueId = str(uuid.uuid4())
+        issuesTable.insert({
+            'Id' : issueId,
+            'name' : 'Feedback',
+            'description' : 'The user have issues providing feedback to his subprdonates, his peers or to his managers'
+        })
 
-class UsersLogic(metaclass=Singleton):
+
+        trainingMetaDataTable = self.db.table('trainingMetaData')
+        trainingDetailsTable = self.db.table('trainingDetailsTable')
+
+        #add first Traingin
+        trainingId = str(uuid.uuid4())
+        trainingMetaDataTable.insert({
+            'id' : trainingId,
+            'issueId' : issueId,
+            'name' : 'This is the training Name',
+            'description' : 'This is the training description',
+            'challengesNumber' : '10',
+        })
+
+        #add first Challenge
+        trainingChallengeId = str(uuid.uuid4())
+        trainingDetailsTable.insert({
+            'id' : trainingChallengeId,
+            'trainingId' : trainingId,
+            'challengeNumber' : '1',
+            'ShortDescription' : 'This is a short description of the first challenge',
+            'DescriptionInDetails' : 'This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
+
+        #add second challenge
+        trainingChallengeId = str(uuid.uuid4())
+        trainingDetailsTable.insert({
+            'id' : trainingChallengeId,
+            'trainingId' : trainingId,
+            'challengeNumber' : '2',
+            'challengeShortDescription' : 'This is a short description of the second challenge',
+            'challengeDescriptionInDetails' : 'This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
+
+        courseMetaDataTable = self.db.table ('courseMetaDataTable')
+        courseLerssonsTable = self.db.table ('courseClassesTable')
+
+        #add first course
+        courseId = str(uuid.uuid4())
+        courseMetaDataTable.insert({
+            'id' : courseId,
+            'issueId' : issueId,
+            'name' : 'course name',
+            'description' : 'This is the course description',
+            'partsNumber' : '12'     
+        })
+
+        lessonId = str(uuid.uuid4())
+        courseLerssonsTable.insert ({
+            'id' : lessonId,
+            'courseId' : courseId,
+            'lessonNumber' : '1',
+            'lessonShortDescription' : 'This is a short descritption for the first lesson',
+            'lessonVidoeURL' : 'https://www.youtube.com//watch?v=DuWAyhxCqQ4'
+        })
+
+        lessonId = str(uuid.uuid4())
+        courseLerssonsTable.insert ({
+            'id' : lessonId,
+            'courseId' : courseId,
+            'lessonNumber' : '2',
+            'lessonShortDescription' : 'This is a short descritption for the first lesson',
+            'lessonVidoeURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
+        })
+
+    def getTrainingStage (self, issueId, stage):
+        trainingDetails = self.getTrainingData(issueId)
+        
+        if (trainingDetails is None):
+            return None
+
+        stageQuery = Query()
+        trainingStages = self.db.table('trainingDetailsTable')
+        foundTraingStageDetails = trainingStages.search ((stageQuery.trainingId == trainingDetails.issueId) & (stageQuery.challengeNumber == stage))
+
+        trainingStageDetails = None
+
+        if (len (foundTraingStageDetails) > 0):
+            trainingStageDetails = trainingStageData (trainingStageDetails = foundTraingStageDetails)
+
+        return trainingStageDetails
+
+    def getTrainingData (self, issueId):
+        trainingQuery = Query()
+        trainingTable = self.db.table('trainingMetaData')
+        foundTrainingDetails = trainingTable.search(trainingQuery.issueId == issueId)
+
+        trainingDetails = None
+
+        if (len(foundTrainingDetails) > 0):
+            trainingDetails = trainingData (trainingDetails = foundTrainingDetails)
+
+        return trainingDetails
+
+class   UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
         self.usersDB = usersDB('c:\\dev\\lighthouseBE\\Data\\DB.json')
         pass
@@ -79,4 +241,14 @@ class UsersLogic(metaclass=Singleton):
         userDetails = self.usersDB.verify_user_exists(userName=userName, userMail='abc@gmail.com')
         return userDetails
 
+    def createTrainingData(self):
+        self.usersDB.createTrainingData()
+
+    def getTrainingData(self, issueId):
+        trainingDetails = self.usersDB.createTrainingData(issueId)
+        pass
+
+    def getTrainingStage (self, issueId, stage):
+        trainingStageDetails = self.usersDB.getTrainingStage(issueId, stage)
+        return trainingStageDetails
     
