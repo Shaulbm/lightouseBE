@@ -48,15 +48,15 @@
 			"id": "c334a93b-f558-4830-9f31-0d4b446fb887",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "1",
-			"ShortDescription": "This is a short description of the first challenge",
-			"DescriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "This is a short description of the first challenge",
+			"descriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"2": {
 			"id": "55fa5d35-5604-4b74-8a11-d31004e3395f",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "2",
-			"challengeShortDescription": "This is a short description of the second challenge",
-			"challengeDescriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "This is a short description of the second challenge",
+			"descriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		}
 	},
 	"courseMetaDataTable": {

@@ -98,8 +98,8 @@ class trainingData:
             if ('description' in trainingDetails[0]):
                 self.description = trainingDetails[0]['description']
 
-            if ('challengesNo' in trainingDetails[0]):
-                self.challengesNo = trainingDetails[0]['challengesNo']
+            if ('challengesNumber' in trainingDetails[0]):
+                self.challengesNo = trainingDetails[0]['challengesNumber']
 
 class usersDB:
     db_file:str
@@ -160,8 +160,8 @@ class usersDB:
             'id' : trainingChallengeId,
             'trainingId' : trainingId,
             'challengeNumber' : '1',
-            'ShortDescription' : 'This is a short description of the first challenge',
-            'DescriptionInDetails' : 'This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
+            'shortDescription' : 'This is a short description of the first challenge',
+            'descriptionInDetails' : 'This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
 
         #add second challenge
         trainingChallengeId = str(uuid.uuid4())
@@ -169,8 +169,8 @@ class usersDB:
             'id' : trainingChallengeId,
             'trainingId' : trainingId,
             'challengeNumber' : '2',
-            'challengeShortDescription' : 'This is a short description of the second challenge',
-            'challengeDescriptionInDetails' : 'This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
+            'shortDescription' : 'This is a short description of the second challenge',
+            'descriptionInDetails' : 'This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus'})
 
         courseMetaDataTable = self.db.table ('courseMetaDataTable')
         courseLerssonsTable = self.db.table ('courseClassesTable')
@@ -211,7 +211,7 @@ class usersDB:
 
         stageQuery = Query()
         trainingStages = self.db.table('trainingDetailsTable')
-        foundTraingStageDetails = trainingStages.search ((stageQuery.trainingId == trainingDetails.issueId) & (stageQuery.challengeNumber == stage))
+        foundTraingStageDetails = trainingStages.search ((stageQuery.trainingId == trainingDetails.id) & (stageQuery.challengeNumber == stage))
 
         trainingStageDetails = None
 
