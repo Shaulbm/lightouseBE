@@ -72,7 +72,6 @@ class trainingStageData:
             if ('descriptionInDetails' in trainingStageDetails[0]):    
                 self.descriptionInDetails = trainingStageDetails[0]['descriptionInDetails']
 
-
 class trainingData:
     def __init__(self, id = None, name  = None, description = None, issueId = None, challengesNo = None, trainingDetails = None):
         if (trainingDetails is None):
@@ -100,6 +99,65 @@ class trainingData:
 
             if ('challengesNumber' in trainingDetails[0]):
                 self.challengesNo = trainingDetails[0]['challengesNumber']
+
+class courseLessonData:
+    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, videoURL = None, courseLessonDetails = None):
+        if (courseLessonDetails is None):
+            self.id = id
+            self.courseId = courseId
+            self.lessonNumber = lessonNumber
+            self.shortDescription = shortDescription
+            self.videoURL = videoURL
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = courseLessonDetails[0]['id']
+            self.courseId = courseLessonDetails[0]['courseId']
+            self.lessonNumber = courseLessonDetails[0]['lessonNumber']
+
+            # non mandatory fields - set default values:
+            self.shortDescription = ''
+            self.videoURL = ''
+
+            # non mandatory values - set only if existing
+            if ('shortDescription' in courseLessonDetails[0]):
+                self.shortDescription = courseLessonDetails[0]['shortDescription']
+
+            if ('videoURL' in courseLessonDetails[0]):    
+                self.videoURL = courseLessonDetails[0]['videoURL']
+
+
+class courseData:
+    def __init__(self, id = None, name  = None, description = None, issueId = None, partsNumber = None, courseDetails = None):
+        if (courseDetails is None):
+            self.id = id
+            self.name = name
+            self.description = description,
+            self.issueId = issueId
+            self.partsNumber = partsNumber
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = courseDetails[0]['id']
+            self.name = courseDetails[0]['name']
+            self.issueId = courseDetails[0]['issueId']
+
+            # non mandatory fields - set default values:
+            self.description = ''
+            self.partsNumber = ''
+
+            # non mandatory values - set only if existing
+            if ('description' in courseDetails[0]):
+                self.description = courseDetails[0]['description']
+
+            if ('partsNumber' in courseDetails[0]):
+                self.partsNumber = courseDetails[0]['partsNumber']
+
+
 
 class usersDB:
     db_file:str
@@ -190,8 +248,8 @@ class usersDB:
             'id' : lessonId,
             'courseId' : courseId,
             'lessonNumber' : '1',
-            'lessonShortDescription' : 'This is a short descritption for the first lesson',
-            'lessonVidoeURL' : 'https://www.youtube.com//watch?v=DuWAyhxCqQ4'
+            'shortDescription' : 'This is a short descritption for the first lesson',
+            'vidoeURL' : 'https://www.youtube.com//watch?v=DuWAyhxCqQ4'
         })
 
         lessonId = str(uuid.uuid4())
@@ -199,11 +257,11 @@ class usersDB:
             'id' : lessonId,
             'courseId' : courseId,
             'lessonNumber' : '2',
-            'lessonShortDescription' : 'This is a short descritption for the first lesson',
-            'lessonVidoeURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
+            'shortDescription' : 'This is a short descritption for the first lesson',
+            'vidoeURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
         })
 
-    def getTrainingStage (self, issueId, stage):
+    def getCourseLesson (self, issueId, stage):
         trainingDetails = self.getTrainingData(issueId)
         
         if (trainingDetails is None):
@@ -232,6 +290,37 @@ class usersDB:
 
         return trainingDetails
 
+    def getCourseLesson (self, issueId, lesson):
+        courseDetails = self.getCourseData(issueId)
+        
+        if (courseDetails is None):
+            return None
+
+        lessonQuery = Query()
+        coursesLessons = self.db.table('trainingDetailsTable')
+        foundCourseLessonDetails = coursesLessons.search ((lessonQuery.courseId == courseDetails.id) & (lessonQuery.lessonNumber == lesson))
+
+        courseLessonDetails = None
+
+        if (len (foundCourseLessonDetails) > 0):
+            courseLessonDetails = courseLessonData (courseLessonDetails = foundCourseLessonDetails)
+
+        return courseLessonDetails
+
+
+    def getCourseData (self, issueId):
+        courseQuery = Query()
+        coursesTable = self.db.table('courseClassesTable')
+        foundCourseDetails = coursesTable.search(courseQuery.issueId == issueId)
+
+        courseDetails = None
+
+        if (len(foundCourseDetails) > 0):
+            courseDetails = courseData (courseDetails = foundCourseDetails)
+
+        return courseDetails
+
+
 class   UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
         self.usersDB = usersDB('c:\\dev\\lighthouseBE\\Data\\DB.json')
@@ -245,10 +334,19 @@ class   UsersLogic(metaclass=Singleton):
         self.usersDB.createTrainingData()
 
     def getTrainingData(self, issueId):
-        trainingDetails = self.usersDB.createTrainingData(issueId)
+        trainingDetails = self.usersDB.getTrainingData(issueId)
         pass
 
     def getTrainingStage (self, issueId, stage):
-        trainingStageDetails = self.usersDB.getTrainingStage(issueId, stage)
+        trainingStageDetails = self.usersDB.getCourseLesson(issueId, stage)
         return trainingStageDetails
+
+    def getCourseData(self, issueId):
+        trainingDetails = self.usersDB.(issueId)
+        pass
+
+    def getCourseLesson (self, issueId, lesson):
+        trainingStageDetails = self.usersDB.(issueId, stage)
+        return trainingStageDetails
+
     
