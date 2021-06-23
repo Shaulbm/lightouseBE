@@ -249,7 +249,7 @@ class usersDB:
             'courseId' : courseId,
             'lessonNumber' : '1',
             'shortDescription' : 'This is a short descritption for the first lesson',
-            'vidoeURL' : 'https://www.youtube.com//watch?v=DuWAyhxCqQ4'
+            'videoURL' : 'https://www.youtube.com//watch?v=DuWAyhxCqQ4'
         })
 
         lessonId = str(uuid.uuid4())
@@ -258,10 +258,10 @@ class usersDB:
             'courseId' : courseId,
             'lessonNumber' : '2',
             'shortDescription' : 'This is a short descritption for the first lesson',
-            'vidoeURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
+            'videoURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
         })
 
-    def getCourseLesson (self, issueId, stage):
+    def getTrainingStageData (self, issueId, stage):
         trainingDetails = self.getTrainingData(issueId)
         
         if (trainingDetails is None):
@@ -290,14 +290,14 @@ class usersDB:
 
         return trainingDetails
 
-    def getCourseLesson (self, issueId, lesson):
+    def getCourseLessonData (self, issueId, lesson):
         courseDetails = self.getCourseData(issueId)
         
         if (courseDetails is None):
             return None
 
         lessonQuery = Query()
-        coursesLessons = self.db.table('trainingDetailsTable')
+        coursesLessons = self.db.table('courseClassesTable')
         foundCourseLessonDetails = coursesLessons.search ((lessonQuery.courseId == courseDetails.id) & (lessonQuery.lessonNumber == lesson))
 
         courseLessonDetails = None
@@ -310,7 +310,7 @@ class usersDB:
 
     def getCourseData (self, issueId):
         courseQuery = Query()
-        coursesTable = self.db.table('courseClassesTable')
+        coursesTable = self.db.table('courseMetaDataTable')
         foundCourseDetails = coursesTable.search(courseQuery.issueId == issueId)
 
         courseDetails = None
@@ -338,15 +338,15 @@ class   UsersLogic(metaclass=Singleton):
         pass
 
     def getTrainingStage (self, issueId, stage):
-        trainingStageDetails = self.usersDB.getCourseLesson(issueId, stage)
+        trainingStageDetails = self.usersDB.getTrainingStageData(issueId, stage)
         return trainingStageDetails
 
     def getCourseData(self, issueId):
-        trainingDetails = self.usersDB.(issueId)
-        pass
+        courseDetails = self.usersDB.getCourseData(issueId)
+        return courseDetails
 
-    def getCourseLesson (self, issueId, lesson):
-        trainingStageDetails = self.usersDB.(issueId, stage)
-        return trainingStageDetails
+    def getCourseLessonData (self, issueId, lesson):
+        courseLessonDetails = self.usersDB.getCourseLessonData(issueId, lesson)
+        return courseLessonDetails
 
     

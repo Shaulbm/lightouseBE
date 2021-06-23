@@ -39,5 +39,10 @@ def create_training_data():
 
 @stocks.post("/getTrainingStage")
 def get_training_stage(issueId, stage):
-    trainingDetails = users.getTrainingStage(issueId, stage)
-    return trainingDetails
+    trainingStageDetails = users.getTrainingStage(issueId, stage)
+    return trainingStageDetails
+
+@stocks.post("/getCourseLesson")
+def get_course_lesson(issueId, lesson):
+    courselessonDetails = users.getCourseLessonData(issueId, lesson)
+    return courselessonDetails
