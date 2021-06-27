@@ -323,9 +323,9 @@ class usersDB:
         return courseDetails
 
     def getTrainingMap (self, issueId, stage):
+        pass
 
-
-class   UsersLogic(metaclass=Singleton):
+class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
         self.usersDB = usersDB('c:\\dev\\lighthouseBE\\Data\\DB.json')
         pass
