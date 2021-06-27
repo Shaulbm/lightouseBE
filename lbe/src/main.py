@@ -23,14 +23,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-quotes_data = QrsLogic()
+#quotes_data = QrsLogic()
 
 app.include_router(stocks)
 
 @app.on_event("startup")
 def startup():
-    quotes_data.run_periodic(1000)
+   # quotes_data.run_periodic(1000)
+    pass
 
 @app.on_event("shutdown")
 def shutdown():
-    quotes_data.end_periodic_check()
+    #quotes_data.end_periodic_check()
+    pass

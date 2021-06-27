@@ -157,7 +157,9 @@ class courseData:
             if ('partsNumber' in courseDetails[0]):
                 self.partsNumber = courseDetails[0]['partsNumber']
 
-
+class trainingMapData:
+    def __init__(self,  ):
+        pass
 
 class usersDB:
     db_file:str
@@ -257,7 +259,7 @@ class usersDB:
             'id' : lessonId,
             'courseId' : courseId,
             'lessonNumber' : '2',
-            'shortDescription' : 'This is a short descritption for the first lesson',
+            'shortDescription' : 'This is a short descritption for the second lesson',
             'videoURL' : 'https://www.youtube.com/watch?v=suIAo0EYwOE'
         })
 
@@ -320,6 +322,8 @@ class usersDB:
 
         return courseDetails
 
+    def getTrainingMap (self, issueId, stage):
+
 
 class   UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -348,5 +352,9 @@ class   UsersLogic(metaclass=Singleton):
     def getCourseLessonData (self, issueId, lesson):
         courseLessonDetails = self.usersDB.getCourseLessonData(issueId, lesson)
         return courseLessonDetails
+
+    def getTrainingMap (self, issueId, currentStage):
+        trainingMapDetails = self.usersDB.getTrainingMap(self, issueId, currentStage)
+        return trainingMapDetails
 
     
