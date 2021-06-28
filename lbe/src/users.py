@@ -4,6 +4,8 @@ import uuid
 from singleton import Singleton
 import json
 
+STEPS_FOR_STAGE_MAP = 2
+
 class UserData:
     def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userDetails = None):
         if (userDetails is None):
@@ -158,7 +160,10 @@ class courseData:
                 self.partsNumber = courseDetails[0]['partsNumber']
 
 class trainingMapData:
-    def __init__(self,  ):
+    def __init__(self, stageData):
+        self.currentStage = stageData
+        self.pastStages = []
+        self.futureStages = []
         pass
 
 class usersDB:
@@ -322,8 +327,30 @@ class usersDB:
 
         return courseDetails
 
-    def getTrainingMap (self, issueId, stage):
-        pass
+    def getTrainingMap (self, issueId, stageStr):
+        currentTrainingData = self.getTrainingData (issueId)
+        currentTrainingStageData = self.getTrainingStageData(issueId, stageStr)
+
+        currentTrainingMapData = trainingMapData (currentTrainingStageData)
+
+        currentStageNumber = int (stageStr)
+
+        if (currentStageNumber > 1):
+            #not the first Stage
+            for currentStageOffset in range (STEPS_FOR_STAGE_MAP):
+                if (currentStageNumber - currentStageOffset) > 0:
+                    #Stage exists
+                    currentTrainingMapData.pastStages.append(self.getTrainingStageData(issueId, str(currentStageNumber - currentStageOffset - 1)))
+
+        if (currentStageNumber < int (currentTrainingData.challengesNo)):
+            #not the last stage
+            for currentStageOffset in range (STEPS_FOR_STAGE_MAP):
+                if (currentStageNumber + currentStageOffset + 1) <= int (currentTrainingData.challengesNo):
+                    #stage exists
+                    currentTrainingMapData.futureStages.append(self.getTrainingStageData(issueId, str(currentStageNumber + currentStageOffset + 1)))
+
+        return currentTrainingMapData
+
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -354,7 +381,7 @@ class UsersLogic(metaclass=Singleton):
         return courseLessonDetails
 
     def getTrainingMap (self, issueId, currentStage):
-        trainingMapDetails = self.usersDB.getTrainingMap(self, issueId, currentStage)
+        trainingMapDetails = self.usersDB.getTrainingMap(issueId, currentStage)
         return trainingMapDetails
 
     

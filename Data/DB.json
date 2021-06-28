@@ -52,11 +52,67 @@
 			"descriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"2": {
-			"id": "55fa5d35-5604-4b74-8a11-d31004e3395f",
+			"id": "f99dd89e-558c-48f3-b7b5-929016de2afd",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "2",
 			"shortDescription": "This is a short description of the second challenge",
 			"descriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"3": {
+			"id": "843dd1f4-45ed-4f8b-834c-ee0eed4b94de",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "3",
+			"shortDescription": "This is a short description of the third challenge",
+			"descriptionInDetails": "This is a long description of the third challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"4": {
+			"id": "e937805d-4403-4d0b-90f6-64aa1f951832",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "4",
+			"shortDescription": "This is a short description of the fourth challenge",
+			"descriptionInDetails": "This is a long description of the fourth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"5": {
+			"id": "c9d235aa-e30b-4306-b660-339fb26b3198",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "5",
+			"shortDescription": "This is a short description of the fifth challenge",
+			"descriptionInDetails": "This is a long description of the fifth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"6": {
+			"id": "7cd5ab6d-99ed-4af4-9a11-66a8d2a39138",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "6",
+			"shortDescription": "This is a short description of the sixth challenge",
+			"descriptionInDetails": "This is a long description of the sixth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"7": {
+			"id": "210d8c94-0863-4e26-b2a3-4c1974e979ae",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "7",
+			"shortDescription": "This is a short description of the seventh challenge",
+			"descriptionInDetails": "This is a long description of the seventh challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"8": {
+			"id": "d31d9255-af1d-44c9-ac04-25cbf6639b7e",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "8",
+			"shortDescription": "This is a short description of the eigth challenge",
+			"descriptionInDetails": "This is a long description of the eigth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"9": {
+			"id": "3e97c684-0bec-4e54-8c1a-5f2e779adc1c",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "9",
+			"shortDescription": "This is a short description of the ninth challenge",
+			"descriptionInDetails": "This is a long description of the ninth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+		},
+		"10": {
+			"id": "8101eb45-38a8-45eb-b43a-dc61d14f9f5f",
+			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
+			"challengeNumber": "10",
+			"shortDescription": "This is a short description of the tenth challenge",
+			"descriptionInDetails": "This is a long description of the tenth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		}
 	},
 	"courseMetaDataTable": {
@@ -81,6 +137,76 @@
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "2",
 			"shortDescription": "This is a short descritption for the second lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"3": {
+			"id": "6ced4bc9-5497-4536-9ba1-4ed09f46e7c0",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "3",
+			"shortDescription": "This is a short descritption for the third lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"4": {
+			"id": "64c93bc6-9867-4e53-ba7a-7bd616ef0cf9",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "4",
+			"shortDescription": "This is a short descritption for the fourth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"5": {
+			"id": "a5c5b51a-9e90-4ee0-a84e-324d42ffa26c",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "5",
+			"shortDescription": "This is a short descritption for the fifth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"6": {
+			"id": "dbb8d073-399d-4970-86d7-275bdb6109d6",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "6l",
+			"shortDescription": "This is a short descritption for the sixth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"7": {
+			"id": "33313797-31b7-48d7-ac17-e37089c55b0a",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the seventh lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"8": {
+			"id": "7f2f5e05-265a-451c-8f08-7c1ee9fcd020",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the eignth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"9": {
+			"id": "c9910299-9441-462d-be96-ff9901e0e84d",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the ninth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"10": {
+			"id": "6dffba87-0782-43cf-8f08-4ac011d4c70c",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the tenth lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"11": {
+			"id": "163e940e-a0aa-46b0-8aab-0a8106dc58e2",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the eleven lesson",
+			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+		},
+		"12": {
+			"id": "f6ceea3f-0cff-4004-9a41-b6dfb34e4ee3",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "2",
+			"shortDescription": "This is a short descritption for the twelve lesson",
 			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
 		}
 	}

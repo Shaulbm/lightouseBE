@@ -46,3 +46,8 @@ def get_training_stage(issueId, stage):
 def get_course_lesson(issueId, lesson):
     courselessonDetails = users.getCourseLessonData(issueId, lesson)
     return courselessonDetails
+
+@stocks.post("/trainingMap")
+def get_training_map(issueId, stage):
+    trainingMapDetails = users.getTrainingMap(issueId, stage)
+    return trainingMapDetails
