@@ -48,70 +48,70 @@
 			"id": "c334a93b-f558-4830-9f31-0d4b446fb887",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "1",
-			"shortDescription": "This is a short description of the first challenge",
+			"shortDescription": "First challenge",
 			"descriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"2": {
 			"id": "f99dd89e-558c-48f3-b7b5-929016de2afd",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "2",
-			"shortDescription": "This is a short description of the second challenge",
+			"shortDescription": "Second challenge",
 			"descriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"3": {
 			"id": "843dd1f4-45ed-4f8b-834c-ee0eed4b94de",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "3",
-			"shortDescription": "This is a short description of the third challenge",
+			"shortDescription": "Third challenge",
 			"descriptionInDetails": "This is a long description of the third challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"4": {
 			"id": "e937805d-4403-4d0b-90f6-64aa1f951832",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "4",
-			"shortDescription": "This is a short description of the fourth challenge",
+			"shortDescription": "Fourth challenge",
 			"descriptionInDetails": "This is a long description of the fourth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"5": {
 			"id": "c9d235aa-e30b-4306-b660-339fb26b3198",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "5",
-			"shortDescription": "This is a short description of the fifth challenge",
+			"shortDescription": "Fifth challenge",
 			"descriptionInDetails": "This is a long description of the fifth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"6": {
 			"id": "7cd5ab6d-99ed-4af4-9a11-66a8d2a39138",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "6",
-			"shortDescription": "This is a short description of the sixth challenge",
+			"shortDescription": "Sixth challenge",
 			"descriptionInDetails": "This is a long description of the sixth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"7": {
 			"id": "210d8c94-0863-4e26-b2a3-4c1974e979ae",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "7",
-			"shortDescription": "This is a short description of the seventh challenge",
+			"shortDescription": "Seventh challenge",
 			"descriptionInDetails": "This is a long description of the seventh challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"8": {
 			"id": "d31d9255-af1d-44c9-ac04-25cbf6639b7e",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "8",
-			"shortDescription": "This is a short description of the eigth challenge",
+			"shortDescription": "Eigth challenge",
 			"descriptionInDetails": "This is a long description of the eigth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"9": {
 			"id": "3e97c684-0bec-4e54-8c1a-5f2e779adc1c",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "9",
-			"shortDescription": "This is a short description of the ninth challenge",
+			"shortDescription": "Ninth challenge",
 			"descriptionInDetails": "This is a long description of the ninth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		},
 		"10": {
 			"id": "8101eb45-38a8-45eb-b43a-dc61d14f9f5f",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "10",
-			"shortDescription": "This is a short description of the tenth challenge",
+			"shortDescription": "Tenth challenge",
 			"descriptionInDetails": "This is a long description of the tenth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
 		}
 	},
