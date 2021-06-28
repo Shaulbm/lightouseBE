@@ -2,7 +2,6 @@ from threading import current_thread
 from tinydb import TinyDB, Query
 import uuid
 from singleton import Singleton
-import json
 
 STEPS_FOR_STAGE_MAP = 2
 
