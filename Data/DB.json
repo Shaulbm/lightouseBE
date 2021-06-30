@@ -5,16 +5,18 @@
 			"name": "Test1",
 			"mail": "abc@gmail.com",
 			"status": "new",
-			"currentTraining": "",
-			"trainingStage": ""
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "",
+			"courseLesson": ""
 		},
 		"2": {
 			"id": "bb08eba4-519e-48de-94e3-b3c55c52b3ed",
 			"name": "Test2",
 			"mail": "abc@gmail.com",
 			"status": "new",
-			"currentTraining": "",
-			"trainingStage": ""
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "",
+			"courseLesson": ""
 		},
 		"3": {
 			"id": "00a31809-08ed-497a-baa6-66f96fe531d7",

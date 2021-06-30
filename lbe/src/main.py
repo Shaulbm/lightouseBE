@@ -21,8 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#quotes_data = QrsLogic()
-
 app.include_router(router)
 
 @app.on_event("startup")
