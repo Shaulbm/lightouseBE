@@ -4,7 +4,13 @@ import {fetch} from 'wix-fetch';
 import wixUsers from 'wix-users';
 import {session} from 'wix-storage'
 
-$w.onReady(async function () {
+$w.onReady (async function ()
+{
+	await updateUserData();
+});
+
+export async function updateUserData()
+{
    const userData = await fetchUserData();
     if (userData){
 		$w('#userNameText').text = userData.name;
@@ -31,13 +37,29 @@ $w.onReady(async function () {
 	const trainingMapData = await fetchTrainingMapData(userData.currentIssue, userData.trainingStage);
 	if (trainingMapData)
 	{
-		$w('#activityHistory1StepsAgo').text = trainingMapData.pastStages[0].challengeNumber;
-		$w('#activityHistory2StepsAgo').text = trainingMapData.pastStages[1].challengeNumber;
-		$w('#activityFuture1StepsAhead').text = trainingMapData.futureStages[0].challengeNumber;
-		$w('#activityFuture2StepsAhead').text = trainingMapData.futureStages[1].challengeNumber;
-		$w('#activityCurrentStep').text = trainingMapData.currentStage.challengeNumber;		
+		if (trainingMapData.pastStages.length > 0)
+		{
+			$w('#activityHistory1StepsAgo').text = trainingMapData.pastStages[0].shortDescription;
+		}
+
+		if (trainingMapData.pastStages.length > 1)
+		{
+			$w('#activityHistory2StepsAgo').text = trainingMapData.pastStages[1].shortDescription;
+		}
+
+		if (trainingMapData.futureStages.length > 0)
+		{
+			$w('#activityFuture1StepsAhead').text = trainingMapData.futureStages[0].shortDescription;
+		}
+
+		if (trainingMapData.futureStages.length > 1)
+		{
+			$w('#activityFuture2StepsAhead').text = trainingMapData.futureStages[1].shortDescription;
+		}
+		
+		$w('#activityCurrentStep').text = trainingMapData.currentStage.shortDescription;		
 	}
-});
+}
 
 /**
  *	Adds an event handler that runs when the element is clicked.
