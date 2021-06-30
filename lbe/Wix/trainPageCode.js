@@ -17,6 +17,14 @@ export async function updateUserData()
 	 	$w('#userStatusText').text = "USER STATUS: " + userData.status;
     }
 
+	const issueData = await fetchIssueData(userData.currentIssue);
+
+	if (issueData)
+	{
+		$w('#issueName').text = issueData.name;
+		$w('#issueDescription').text = issueData.description;
+	} 
+
 	const trainingStageData = await fetchTrainingData(userData.currentIssue, userData.trainingStage);
 
 	if (trainingStageData)
@@ -121,5 +129,13 @@ export async function fetchTrainingMapData(issueId, currentStage)
     return {};
 }
 
-export async function button5_click(event) {
- }
+export async function fetchIssueData(issueId)
+{
+	const url = "https://52.30.104.65:8000/issue?id=" + issueId;
+	const httpResponse = await fetch(url,{'method':'POST'});
+    if (httpResponse.ok){
+        const result = await httpResponse.json();
+        return result;
+    }
+    return {};
+}
