@@ -31,7 +31,7 @@
 	},
 	"issuesTable": {
 		"1": {
-			"Id": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"id": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
 			"name": "Feedback",
 			"description": "The user have issues providing feedback to his subprdonates, his peers or to his managers"
 		}

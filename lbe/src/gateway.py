@@ -25,6 +25,11 @@ def get_course_lesson(issueId, lesson):
     courselessonDetails = users.getCourseLessonData(issueId, lesson)
     return courselessonDetails
 
+@router.post("/issue")
+def get_issue(id):
+    issueDetails = users.getIssueData(id)
+    return issueDetails
+
 @router.post("/trainingMap")
 def get_training_map(issueId, stage):
     trainingMapDetails = users.getTrainingMap(issueId, stage)

@@ -158,6 +158,21 @@ class courseData:
             if ('partsNumber' in courseDetails[0]):
                 self.partsNumber = courseDetails[0]['partsNumber']
 
+class issueData:
+    def __init__(self,  id = None, name  = None, description = None, issuseDetails = None):
+        if (issuseDetails is None):
+            self.id = id
+            self.name = name
+            self.description = description
+
+        else:
+            #parse from json
+
+            #mandatory fields
+            self.id = issuseDetails[0]['id']
+            self.name = issuseDetails[0]['name']
+            self.description = issuseDetails[0]['description']
+
 class trainingMapData:
     def __init__(self, stageData):
         self.currentStage = stageData
@@ -350,6 +365,17 @@ class usersDB:
 
         return currentTrainingMapData
 
+    def getIssueData (self, id):
+        issueQuery = Query()
+        issuesTable = self.db.table('issuesTable')
+        foundIssueDetails = issuesTable.search(issueQuery.id == id)
+
+        issueDetails = None
+
+        if (len(foundIssueDetails) > 0):
+            issueDetails = issueData (issuseDetails = foundIssueDetails)
+
+        return issueDetails
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -383,4 +409,6 @@ class UsersLogic(metaclass=Singleton):
         trainingMapDetails = self.usersDB.getTrainingMap(issueId, currentStage)
         return trainingMapDetails
 
-    
+    def getIssueData (self, issueId):
+        issueDetails = self.usersDB.getIssueData (issueId)
+        return issueDetails
