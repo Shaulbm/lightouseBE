@@ -4,76 +4,13 @@
     <list default="true" id="ce67fa56-ed3a-4c45-a002-4cd81250ae04" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/QRS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/QRS.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QRS_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/qrs/qrs_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QRS_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/qrs/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/qrs/debug.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/finance_interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/qrs/finance_interface.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/requirements.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/qrs/qrs_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12">
-              <caret line="51" column="34" lean-forward="true" selection-start-line="51" selection-start-column="34" selection-end-line="51" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#30#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/qrs/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="128">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
-              <folding>
-                <element signature="e#0#27#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/qrs/finance_interface.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/qrs/debug.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" selection-start-line="11" selection-end-line="11" />
-              <folding>
-                <element signature="e#0#24#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -89,22 +26,7 @@
     </findStrings>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/QRS_main.py" />
-        <option value="$PROJECT_DIR$/debug.py" />
-        <option value="$PROJECT_DIR$/QRS_data.py" />
-        <option value="$PROJECT_DIR$/finance_interface.py" />
-        <option value="$PROJECT_DIR$/requirements.txt" />
-        <option value="$PROJECT_DIR$/qrs/qrs_main.py" />
-        <option value="$PROJECT_DIR$/qrs/main.py" />
-        <option value="$PROJECT_DIR$/qrs/debug.py" />
-        <option value="$PROJECT_DIR$/qrs/qrs_data.py" />
-      </list>
-    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectConfigurationFiles">
     <option name="files">
@@ -113,62 +35,31 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="81" />
-    <option name="y" value="-12" />
-    <option name="width" value="2811" />
-    <option name="height" value="1644" />
-  </component>
+  <component name="ProjectId" id="1v4gbT5UTKVepQ150Q9ye4X9CGZ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="QRS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="QRS" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="QRS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="QRS" type="462c0819:PsiDirectoryNode" />
-              <item name="qrs" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
-    </panes>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Sheets_handler" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\code\lighthouseGit\lightouseBE\Sheets_handler" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Dev\Quotes\QRS\qrs" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.tester">
     <configuration name="debug" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="QRS" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -190,11 +81,45 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="tester" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="QRS" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Sheets_handler" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Sheets_handler/tester.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.tester" />
         <item itemvalue="Python.debug" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -218,27 +143,43 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="55" y="-7" width="1233" height="735" extended-state="6" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24979115" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3294702" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4995823" weight="0.37086093" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3294702" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3294702" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" sideWeight="0.49874687" visible="true" weight="0.29139072" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5004177" side_tool="true" weight="0.39900663" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32781458" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-    </layout>
+  <component name="WindowStateProjectService">
+    <state width="1257" height="454" key="GridCell.Tab.0.bottom" timestamp="1625828647438">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.0.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1625828647438" />
+    <state width="1257" height="454" key="GridCell.Tab.0.center" timestamp="1625828647438">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.0.center/0.0.2560.1400@0.0.2560.1400" timestamp="1625828647438" />
+    <state width="1257" height="454" key="GridCell.Tab.0.left" timestamp="1625828647438">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.0.left/0.0.2560.1400@0.0.2560.1400" timestamp="1625828647438" />
+    <state width="1257" height="454" key="GridCell.Tab.0.right" timestamp="1625828647438">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.0.right/0.0.2560.1400@0.0.2560.1400" timestamp="1625828647438" />
+    <state width="1257" height="454" key="GridCell.Tab.1.bottom" timestamp="1625828649150">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.1.bottom/0.0.2560.1400@0.0.2560.1400" timestamp="1625828649150" />
+    <state width="1257" height="454" key="GridCell.Tab.1.center" timestamp="1625828649150">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.1.center/0.0.2560.1400@0.0.2560.1400" timestamp="1625828649150" />
+    <state width="1257" height="454" key="GridCell.Tab.1.left" timestamp="1625828649150">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.1.left/0.0.2560.1400@0.0.2560.1400" timestamp="1625828649150" />
+    <state width="1257" height="454" key="GridCell.Tab.1.right" timestamp="1625828649150">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1257" height="454" key="GridCell.Tab.1.right/0.0.2560.1400@0.0.2560.1400" timestamp="1625828649150" />
+    <state x="363" y="342" key="SettingsEditor" timestamp="1625827305382">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="363" y="342" key="SettingsEditor/0.0.2560.1400@0.0.2560.1400" timestamp="1625827305382" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -247,6 +188,11 @@
           <url>file://$PROJECT_DIR$/qrs/qrs_data.py</url>
           <line>61</line>
           <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Sheets_handler/tester.py</url>
+          <line>4</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -274,65 +220,5 @@
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
     </expressions>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/qrs/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python38/Lib/concurrent/futures/thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="157" column="8" selection-start-line="157" selection-start-column="8" selection-end-line="157" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/qrs/debug.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/qrs/finance_interface.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/qrs/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/qrs/qrs_data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12">
-          <caret line="51" column="34" lean-forward="true" selection-start-line="51" selection-start-column="34" selection-end-line="51" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#30#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>
