@@ -14,7 +14,7 @@
 			"name": "Test2",
 			"mail": "abc@gmail.com",
 			"status": "new",
-			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"currentIssue": "",
 			"trainingStage": "",
 			"courseLesson": ""
 		},
@@ -23,10 +23,9 @@
 			"name": "shaul.ben.maor@gmail.com",
 			"mail": "",
 			"status": "new",
-			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"currentIssue": "",
 			"trainingStage": "1",
-            "courseLesson" : "2"
-
+			"courseLesson": "2"
 		}
 	},
 	"issuesTable": {
@@ -34,6 +33,11 @@
 			"id": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
 			"name": "Feedback",
 			"description": "The user have issues providing feedback to his subprdonates, his peers or to his managers"
+		},
+		"2": {
+			"id": "deb4eba7-48e5-4816-ae98-f3ac24dfc1c0",
+			"name": "Time Management",
+			"description": "The user have issues managing his time, his tasks and his team"
 		}
 	},
 	"trainingMetaData": {

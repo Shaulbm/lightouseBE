@@ -23,4 +23,5 @@ while index > 0:
 #stocks.create_training_data()
 #stocks.get_course_lesson('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '1')
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
-gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
+#gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
+gateway.set_user_issue_id ('74bfe2d0-98f9-437c-bded-4c35b2f477f4', 'ee728c15-c04a-4ecf-9c19-2a07ed37b65a')

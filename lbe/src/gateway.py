@@ -34,3 +34,8 @@ def get_issue(id):
 def get_training_map(issueId, stage):
     trainingMapDetails = users.getTrainingMap(issueId, stage)
     return trainingMapDetails
+
+@router.post("/setUserIssueId")
+def set_user_issue_id(userId, issueId):
+    userDetails = users.setUserCurrIssueId(userId, issueId)
+    return userDetails

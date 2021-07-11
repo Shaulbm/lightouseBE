@@ -1,5 +1,5 @@
 from threading import current_thread
-from tinydb import TinyDB, Query
+from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
 
@@ -200,15 +200,20 @@ class usersDB:
                                     mail = userMail, 
                                     status = 'new', currentIssue = '', 
                                     trainingStage = '')
-            self.insert_new_user(userDetails)
+            self.insert_user(userDetails)
         else:
             # user found 
             userDetails = UserData (userDetails = foundUser)
 
         return userDetails
 
-    def insert_new_user (self, userDetails):
-        self.db.insert ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentTraining': userDetails.currentTraining, 'trainingStage' : userDetails.trainingStage})
+    def insert_user (self, userDetails):
+        self.db.insert ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson})
+
+    def update_user (self, userDetails):
+        user = Query()
+        self.db.update ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson},
+                        where ('id') == userDetails.id)
 
     def createTrainingData (self):
         issuesTable = self.db.table ('issuesTable')
@@ -376,6 +381,26 @@ class usersDB:
             issueDetails = issueData (issuseDetails = foundIssueDetails)
 
         return issueDetails
+    def setUserCurrIssueId (self, userId, issueId):
+        userDetails = self.getUserDetails(userId)
+
+        if (userDetails):
+            userDetails.currentIssue = issueId
+            self.update_user (userDetails)
+        
+        return userDetails
+
+    def getUserDetails (self, id):
+        user = Query()
+
+        foundUser = self.db.search (user.id == id)
+        userDetails = None
+
+        if (len(foundUser) > 0):
+            # user found 
+            userDetails = UserData (userDetails = foundUser)
+        
+        return userDetails
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -412,3 +437,7 @@ class UsersLogic(metaclass=Singleton):
     def getIssueData (self, issueId):
         issueDetails = self.usersDB.getIssueData (issueId)
         return issueDetails
+
+    def setUserCurrIssueId (self, userId, issueId):
+        userDetails = self.usersDB.setUserCurrIssueId(userId, issueId)
+        return userDetails
