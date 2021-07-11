@@ -381,8 +381,8 @@ class usersDB:
             issueDetails = issueData (issuseDetails = foundIssueDetails)
 
         return issueDetails
-    def setUserCurrIssueId (self, userId, issueId):
-        userDetails = self.getUserDetails(userId)
+    def setUserCurrIssueId (self, userName, issueId):
+        userDetails = self.getUserDetails(userName)
 
         if (userDetails):
             userDetails.currentIssue = issueId
@@ -390,10 +390,10 @@ class usersDB:
         
         return userDetails
 
-    def getUserDetails (self, id):
+    def getUserDetails (self, Name):
         user = Query()
 
-        foundUser = self.db.search (user.id == id)
+        foundUser = self.db.search (user.name == Name)
         userDetails = None
 
         if (len(foundUser) > 0):
@@ -438,6 +438,6 @@ class UsersLogic(metaclass=Singleton):
         issueDetails = self.usersDB.getIssueData (issueId)
         return issueDetails
 
-    def setUserCurrIssueId (self, userId, issueId):
-        userDetails = self.usersDB.setUserCurrIssueId(userId, issueId)
+    def setUserCurrIssueId (self, userName, issueId):
+        userDetails = self.usersDB.setUserCurrIssueId(userName, issueId)
         return userDetails
