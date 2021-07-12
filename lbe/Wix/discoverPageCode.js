@@ -35,7 +35,7 @@ export function changeSeletionText (selectionText)
 
 		timeline1.add(myText, {
 				"easing": "easeOutQuad",
-				"scale": .75,
+				"scale": .95,
 				"duration": 250
 		});
 
@@ -76,7 +76,7 @@ export async function feedback_click_1(event) {
 	// Add your code for this event here: 
 
 	setUserIssueSelection(feedbackIssue);
-	changeSeletionText ("You chose feedback. Now let's train!")
+	changeSeletionText ("Want to improve your feedback? let's train!")
 }
 
 /**
@@ -87,7 +87,7 @@ export function timeManagement_click(event) {
 	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
 	// Add your code for this event here: 
 	setUserIssueSelection(timeManagementIssue);
-	changeSeletionText ("You chose time management. Now let's train!")
+	changeSeletionText ("Want to ace your time management? let's train!")
 }
 
 /**
@@ -98,7 +98,7 @@ export function technicalManagerialBalance_click(event) {
 	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
 	// Add your code for this event here: 
 	setUserIssueSelection(technicalManagerialBalanceIssue);
-	changeSeletionText ("You chose to balance your technical and managerial focus. Now let's train!")
+	changeSeletionText ("Want to balance your focus? let's train!")
 }
 
 /**
@@ -109,5 +109,5 @@ export function leading_click(event) {
 	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
 	// Add your code for this event here: 
 	setUserIssueSelection(leadingIssue);
-	changeSeletionText ("You chose leading. Now let's train!")
+	changeSeletionText ("Want to improve in leading? let's train!")
 }
