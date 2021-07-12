@@ -35,9 +35,19 @@
 			"description": "The user have issues providing feedback to his subprdonates, his peers or to his managers"
 		},
 		"2": {
-			"id": "deb4eba7-48e5-4816-ae98-f3ac24dfc1c0",
+			"id": "427e1335-5a0f-45a2-8c3f-3139f98452df",
 			"name": "Time Management",
 			"description": "The user have issues managing his time, his tasks and his team"
+		},
+		"3": {
+			"id": "5631dfbc-65a7-431a-b08f-456058bbddf7",
+			"name": "Technical Vs Managerial Balance",
+			"description": "The user have issues balancing his focus between the technical and managerial aspects of the role"
+		},
+		"4": {
+			"id": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
+			"name": "Leading",
+			"description": "The user wants to get better at leading his team"
 		}
 	},
 	"trainingMetaData": {
