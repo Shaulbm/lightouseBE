@@ -350,6 +350,9 @@ class usersDB:
         currentTrainingData = self.getTrainingData (issueId)
         currentTrainingStageData = self.getTrainingStageData(issueId, stageStr)
 
+        if (currentTrainingData is None or currentTrainingStageData is None):
+            return None
+
         currentTrainingMapData = trainingMapData (currentTrainingStageData)
 
         currentStageNumber = int (stageStr)
