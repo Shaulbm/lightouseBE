@@ -1,3 +1,4 @@
+from Sheets_handler import sheets_handler_script
 from threading import current_thread
 from tinydb import TinyDB, Query, where
 import uuid
@@ -46,13 +47,14 @@ class UserData:
                 self.courseLesson = userDetails[0]['courseLesson']
 
 class trainingStageData:
-    def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, descriptionInDetails = None, trainingStageDetails = None):
+    def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, timespan = None, descriptionInDetails = None, trainingStageDetails = None):
         if (trainingStageDetails is None):
             self.id = id
             self.trainingId = trainingId
             self.challengeNumber = challengeNumber
             self.shortDescription = shortDescription
             self.descriptionInDetails = descriptionInDetails
+            self.timeSpan = timespan
 
         else:
             # parse from json
@@ -65,6 +67,7 @@ class trainingStageData:
             # non mandatory fields - set default values:
             self.shortDescription = ''
             self.descriptionInDetails = ''
+            self.timeSpan = ''
 
             # non mandatory values - set only if existing
             if ('shortDescription' in trainingStageDetails[0]):
@@ -72,6 +75,9 @@ class trainingStageData:
 
             if ('descriptionInDetails' in trainingStageDetails[0]):    
                 self.descriptionInDetails = trainingStageDetails[0]['descriptionInDetails']
+
+            if ('timespan' in trainingStageDetails[0]):    
+                self.timeSpan = trainingStageDetails[0]['timeSpan']            
 
 class trainingData:
     def __init__(self, id = None, name  = None, description = None, issueId = None, challengesNo = None, trainingDetails = None):
@@ -102,12 +108,13 @@ class trainingData:
                 self.challengesNo = trainingDetails[0]['challengesNumber']
 
 class courseLessonData:
-    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, videoURL = None, courseLessonDetails = None):
+    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, timeSpan = None, videoURL = None, courseLessonDetails = None):
         if (courseLessonDetails is None):
             self.id = id
             self.courseId = courseId
             self.lessonNumber = lessonNumber
             self.shortDescription = shortDescription
+            self.timeSpan = timeSpan
             self.videoURL = videoURL
 
         else:
@@ -121,10 +128,14 @@ class courseLessonData:
             # non mandatory fields - set default values:
             self.shortDescription = ''
             self.videoURL = ''
+            self.timeSpan = ''
 
             # non mandatory values - set only if existing
             if ('shortDescription' in courseLessonDetails[0]):
                 self.shortDescription = courseLessonDetails[0]['shortDescription']
+
+            if ('timeSpan' in courseLessonDetails[0]):
+                self.timeSpan = courseLessonDetails[0]['timeSpan']
 
             if ('videoURL' in courseLessonDetails[0]):    
                 self.videoURL = courseLessonDetails[0]['videoURL']
@@ -157,6 +168,63 @@ class courseData:
 
             if ('partsNumber' in courseDetails[0]):
                 self.partsNumber = courseDetails[0]['partsNumber']
+
+class courseLessonData:
+    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, videoURL = None, courseLessonDetails = None):
+        if (courseLessonDetails is None):
+            self.id = id
+            self.courseId = courseId
+            self.lessonNumber = lessonNumber
+            self.shortDescription = shortDescription
+            self.videoURL = videoURL
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = courseLessonDetails[0]['id']
+            self.courseId = courseLessonDetails[0]['courseId']
+            self.lessonNumber = courseLessonDetails[0]['lessonNumber']
+
+            # non mandatory fields - set default values:
+            self.shortDescription = ''
+            self.videoURL = ''
+
+            # non mandatory values - set only if existing
+            if ('shortDescription' in courseLessonDetails[0]):
+                self.shortDescription = courseLessonDetails[0]['shortDescription']
+
+            if ('videoURL' in courseLessonDetails[0]):    
+                self.videoURL = courseLessonDetails[0]['videoURL']
+
+
+class additionalInfoData:
+    def __init__(self, id = None, name  = None, description = None, issueId = None, url = None, additionalInfoDetails = None):
+        if (additionalInfoDetails is None):
+            self.id = id
+            self.name = name
+            self.description = description,
+            self.issueId = issueId
+            self.url = url
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.id = additionalInfoDetails[0]['id']
+            self.name = additionalInfoDetails[0]['name']
+            self.issueId = additionalInfoDetails[0]['issueId']
+
+            # non mandatory fields - set default values:
+            self.description = ''
+            self.partsNumber = ''
+
+            # non mandatory values - set only if existing
+            if ('description' in additionalInfoDetails[0]):
+                self.description = additionalInfoDetails[0]['description']
+
+            if ('url' in additionalInfoDetails[0]):
+                self.url = additionalInfoDetails[0]['url']
 
 class issueData:
     def __init__(self,  id = None, name  = None, description = None, issuseDetails = None):
@@ -440,6 +508,9 @@ class UsersLogic(metaclass=Singleton):
     def getIssueData (self, issueId):
         issueDetails = self.usersDB.getIssueData (issueId)
         return issueDetails
+
+    def getIssueAdditionalData (self, issueId):
+        pass
 
     def setUserCurrIssueId (self, userName, issueId):
         userDetails = self.usersDB.setUserCurrIssueId(userName, issueId)
