@@ -471,7 +471,8 @@ class usersDB:
 
             if (currentTrainingData):
                 currentUserStage = int (userDetails.trainingStage)
-                if (currentUserStage < currentTrainingData.callengesNo):
+                trainingStagesNumber = int (currentTrainingData.callengesNo)
+                if (currentUserStage < trainingStagesNumber):
                     #current training stage is not the last one
                     userDetails.trainingStage = str (currentUserStage + 1)
                     self.update_user (userDetails)
@@ -486,7 +487,8 @@ class usersDB:
 
             if currentCourseData:
                 currentUserLesson = int (userDetails.courseLesson)
-                if (currentUserLesson < currentCourseData.partsNumber):
+                coursePartsNumber = int (currentCourseData.partsNumber)
+                if (currentUserLesson < coursePartsNumber):
                     #current course lesson is not the last one
                     userDetails.courseLesson = str (currentUserLesson + 1)
                     self.update_user (userDetails)
