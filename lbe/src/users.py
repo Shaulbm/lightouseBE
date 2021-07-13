@@ -463,6 +463,36 @@ class usersDB:
         
         return userDetails
 
+    def setUserNextTrainingStage (self, userName):
+        userDetails = self.getUserDetails(userName)
+
+        if (userDetails):
+            currentTrainingData = self.getTrainingData (userDetails.currentIssue)
+
+            if (currentTrainingData):
+                currentUserStage = int (userDetails.trainingStage)
+                if (currentUserStage < currentTrainingData.callengesNo):
+                    #current training stage is not the last one
+                    userDetails.trainingStage = str (currentUserStage + 1)
+                    self.update_user (userDetails)
+        
+        return userDetails
+
+    def setUserNextCourseLesson (self, userName):
+        userDetails = self.getUserDetails(userName)
+
+        if (userDetails):
+            currentCourseData = self.getCourseData (userDetails.currentIssue)
+
+            if currentCourseData:
+                currentUserLesson = int (userDetails.courseLesson)
+                if (currentUserLesson < currentCourseData.partsNumber):
+                    #current course lesson is not the last one
+                    userDetails.courseLesson = str (currentUserLesson + 1)
+                    self.update_user (userDetails)
+        
+        return userDetails
+
     def getUserDetails (self, Name):
         user = Query()
 
@@ -517,3 +547,11 @@ class UsersLogic(metaclass=Singleton):
     def setUserCurrIssueId (self, userName, issueId):
         userDetails = self.usersDB.setUserCurrIssueId(userName, issueId)
         return userDetails
+
+    def setUserNextTrainingStage(self, userName):
+        userDetails = self.usersDB.setUserNextTrainingStage(userName)
+        return userDetails
+
+    def setUserNextCourseLesson(self, userName):
+        userDetalis = self.usersDB.setUserNextCourseLesson(userName)
+        return userDetalis
