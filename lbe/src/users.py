@@ -1,4 +1,4 @@
-from Sheets_handler import sheets_handler_script
+#from Sheets_handler import sheets_handler_script
 from threading import current_thread
 from tinydb import TinyDB, Query, where
 import uuid
