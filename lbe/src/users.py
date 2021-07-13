@@ -471,7 +471,7 @@ class usersDB:
 
             if (currentTrainingData):
                 currentUserStage = int (userDetails.trainingStage)
-                trainingStagesNumber = int (currentTrainingData.callengesNo)
+                trainingStagesNumber = int (currentTrainingData.challengesNo)
                 if (currentUserStage < trainingStagesNumber):
                     #current training stage is not the last one
                     userDetails.trainingStage = str (currentUserStage + 1)
