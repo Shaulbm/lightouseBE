@@ -428,7 +428,7 @@ class usersDB:
         if (currentStageNumber > 1):
             #not the first Stage
             for currentStageOffset in range (STEPS_FOR_STAGE_MAP):
-                if (currentStageNumber - currentStageOffset) > 0:
+                if (currentStageNumber - currentStageOffset - 1) > 0:
                     #Stage exists
                     currentTrainingMapData.pastStages.append(self.getTrainingStageData(issueId, str(currentStageNumber - currentStageOffset - 1)))
 
