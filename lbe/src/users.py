@@ -458,7 +458,7 @@ class usersDB:
         if (userDetails):
             userDetails.currentIssue = issueId
             userDetails.courseLesson = "1"
-            userDetails.currentIssue = "1"
+            userDetails.trainingStage = "1"
             self.update_user (userDetails)
         
         return userDetails
