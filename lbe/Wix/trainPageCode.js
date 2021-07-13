@@ -32,6 +32,11 @@ export async function updateUserData()
 		$w('#currentChallengeShortDesc').text = trainingStageData.shortDescription;
 		$w('#currentChallengeFullDesc').text = trainingStageData.descriptionInDetails;
 	}
+	else
+	{
+		$w('#currentChallengeShortDesc').text = "No active training";
+		$w('#currentChallengeFullDesc').text = "can't find any training data on this issue";
+	}
 
 	const courseLessonData = await fetchCourseData(userData.currentIssue, userData.courseLesson);
 
@@ -40,6 +45,11 @@ export async function updateUserData()
 		$w('#currentLessonShortDesc').text = courseLessonData.shortDescription;
 		$w('#lessonVideoURL').text = courseLessonData.videoURL;
 		session.setItem('currentLessonVideoURL', courseLessonData.videoURL);
+	}
+	else
+	{
+		$w('#currentLessonShortDesc').text = "No course data";
+		$w('#lessonVideoURL').text = "can't find any course data on this issue";
 	}
 
 	const trainingMapData = await fetchTrainingMapData(userData.currentIssue, userData.trainingStage);
@@ -75,8 +85,6 @@ export async function updateUserData()
  */
 export async function fetchUserData()
 {
-    //const url = "https://52.30.104.65:8000/registerUser?user=" + $w('#input4').value;
-
 	let user = wixUsers.currentUser;
 	let userMail = "Undefined";
 
@@ -135,6 +143,58 @@ export async function fetchIssueData(issueId)
 	const httpResponse = await fetch(url,{'method':'POST'});
     if (httpResponse.ok){
         const result = await httpResponse.json();
+        return result;
+    }
+    return {};
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export async function nextChallenge_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	let user = wixUsers.currentUser;
+	let userMail = "Undefined";
+
+	if (user.loggedIn)
+	{
+		userMail = await user.getEmail();
+		console.log("user id is: " + user.id + " user email is: " + userMail)
+	}
+	const url = "https://52.30.104.65:8000/setUserNextTrainingStage?userName=" + userMail;
+	const httpResponse = await fetch(url,{'method':'POST'});
+    if (httpResponse.ok){
+        const result = await httpResponse.json();
+
+		await updateUserData();
+        return result;
+    }
+    return {};
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export async function nextLesson_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	let user = wixUsers.currentUser;
+	let userMail = "Undefined";
+
+	if (user.loggedIn)
+	{
+		userMail = await user.getEmail();
+		console.log("user id is: " + user.id + " user email is: " + userMail)
+	}
+	const url = "https://52.30.104.65:8000/setUserNextCourseLesson?userName=" + userMail;
+	const httpResponse = await fetch(url,{'method':'POST'});
+    if (httpResponse.ok){
+        const result = await httpResponse.json();
+
+		await updateUserData();
         return result;
     }
     return {};
