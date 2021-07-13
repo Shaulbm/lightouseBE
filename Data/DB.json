@@ -48,15 +48,48 @@
 			"id": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
 			"name": "Leading",
 			"description": "The user wants to get better at leading his team"
+		},
+		"5": {
+			"id": "a21ffbbe-97e6-418d-96a7-8625ed85f796",
+			"name": "Micromanagement",
+			"description": "The user wants to allow the right space to his team members"
 		}
 	},
 	"trainingMetaData": {
 		"1": {
 			"id": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
-			"name": "This is the training Name",
-			"description": "This is the training description",
-			"challengesNumber": "10"
+			"name": "Providing feedback",
+			"description": "Learn how to provide feedback, Negative or Positive.",
+			"challengesNumber": "9"
+		},
+		"2": {
+			"id": "488434d6-1db9-4323-8856-a89716425524",
+			"issueId": "427e1335-5a0f-45a2-8c3f-3139f98452df",
+			"name": "Time management",
+			"description": "Learn how to manage your day with less frustration",
+			"challengesNumber": "7"
+		},
+		"3": {
+			"id": "01f02afc-43f6-4405-afc7-dd82dddc5aa2",
+			"issueId": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
+			"name": "Leading",
+			"description": "How to lead, what is leading?.",
+			"challengesNumber": "8"
+		},
+		"4": {
+			"id": "c05035e4-12e5-41c5-9af9-df8b22294a17",
+			"issueId": "5631dfbc-65a7-431a-b08f-456058bbddf7",
+			"name": "Technical Vs Managerial ",
+			"description": "Have the right balance between these two aspects in your role.",
+			"challengesNumber": "7"
+		},
+		"5": {
+			"id": "8c11e3a9-7684-48f3-9623-b88429b2d23b",
+			"issueId": "a21ffbbe-97e6-418d-96a7-8625ed85f796",
+			"name": "Micromanagement",
+			"description": "Give the right space to your team.",
+			"challengesNumber": "8"
 		}
 	},
 	"trainingDetailsTable": {
@@ -64,166 +97,391 @@
 			"id": "c334a93b-f558-4830-9f31-0d4b446fb887",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "1",
-			"shortDescription": "First challenge",
-			"descriptionInDetails": "This is a long description of the first challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Your world in order (1 of 2)",
+			"timeSpan": "30-45",
+			"descriptionInDetails": "List all of your team members. For each write down 2-3 things you should accommodate them for, and 2-3 things that needs to get better."
 		},
 		"2": {
-			"id": "f99dd89e-558c-48f3-b7b5-929016de2afd",
+			"id": "cbf6b827-5365-4508-ae40-4a7e93d58a6e",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "2",
-			"shortDescription": "Second challenge",
-			"descriptionInDetails": "This is a long description of the second challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Your world in order (2 of 2)",
+			"timeSpan": "15-30",
+			"descriptionInDetails": "Prioritize each issue (good or bad) with a 1-5 approach. Don’t be scientific. This is mainly to understand - what of these is more meaningful (good or bad)"
 		},
 		"3": {
-			"id": "843dd1f4-45ed-4f8b-834c-ee0eed4b94de",
+			"id": "d3ef1ad6-98e7-46f1-8db9-47b7e4f84986",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "3",
-			"shortDescription": "Third challenge",
-			"descriptionInDetails": "This is a long description of the third challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Informal talks",
+			"timeSpan": "15",
+			"descriptionInDetails": "Talk informally with the person you talked less of your team. This is a 5 min coffee/ what’s up - etc. Verify to state a good thing he/she has done in the last month."
 		},
 		"4": {
-			"id": "e937805d-4403-4d0b-90f6-64aa1f951832",
+			"id": "da4514ae-e258-42d6-a2c3-2f8bcfeba342",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "4",
-			"shortDescription": "Fourth challenge",
-			"descriptionInDetails": "This is a long description of the fourth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Gather information",
+			"timeSpan": "15-30",
+			"descriptionInDetails": "Talk with a team member on one of the major issues that you have. \n  This is not a feedback - ask him about his view of events / standards / how she sees the directive. \n Just hear them out."
 		},
 		"5": {
-			"id": "c9d235aa-e30b-4306-b660-339fb26b3198",
+			"id": "e383b585-75f1-46ae-a968-165924302cf5",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "5",
-			"shortDescription": "Fifth challenge",
-			"descriptionInDetails": "This is a long description of the fifth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Positive Feedback - Prepare",
+			"timeSpan": "30",
+			"descriptionInDetails": "It's time to define what is it you apreciate and want to commendate \n Select one of the top issues you see. \n Prepare - why is this important? Where is the contributaion? what's in it to the team? To the team member himself? How do you want this to continue?"
 		},
 		"6": {
-			"id": "7cd5ab6d-99ed-4af4-9a11-66a8d2a39138",
+			"id": "e9efd58d-ea15-4f77-ab48-076952b17312",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "6",
-			"shortDescription": "Sixth challenge",
-			"descriptionInDetails": "This is a long description of the sixth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Positive Feedback Time",
+			"timeSpan": "15",
+			"descriptionInDetails": "Positive feedback conversation"
 		},
 		"7": {
-			"id": "210d8c94-0863-4e26-b2a3-4c1974e979ae",
+			"id": "0836c4e6-ce3a-4b5e-a1d4-543f9d4f147f",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "7",
-			"shortDescription": "Seventh challenge",
-			"descriptionInDetails": "This is a long description of the seventh challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Negative Feedback Time - preperation",
+			"timeSpan": "30",
+			"descriptionInDetails": "It's time to define what is bothering you. \n Select one of the top 3 issues you have with one of your guys. Prepare - why is this an issue? Where is it harmful to you? To the team? To the team member himself? Would you do it if your were him - why not? What can the teammember respond?"
 		},
 		"8": {
-			"id": "d31d9255-af1d-44c9-ac04-25cbf6639b7e",
+			"id": "4840bf6b-f396-40d9-9932-63c8bc15f9ad",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "8",
-			"shortDescription": "Eigth challenge",
-			"descriptionInDetails": "This is a long description of the eigth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Negative Feedback Time ",
+			"timeSpan": "15",
+			"descriptionInDetails": "Negative feedback conversation"
 		},
 		"9": {
-			"id": "3e97c684-0bec-4e54-8c1a-5f2e779adc1c",
+			"id": "a991b6ab-e588-4221-b351-59f2f4f0f344",
 			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
 			"challengeNumber": "9",
-			"shortDescription": "Ninth challenge",
-			"descriptionInDetails": "This is a long description of the ninth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"shortDescription": "Repeat",
+			"timeSpan": "30",
+			"descriptionInDetails": "Reapeat for each team member"
 		},
 		"10": {
-			"id": "8101eb45-38a8-45eb-b43a-dc61d14f9f5f",
-			"trainingId": "cad28c45-6273-4174-b2a9-10fb363700fb",
-			"challengeNumber": "10",
-			"shortDescription": "Tenth challenge",
-			"descriptionInDetails": "This is a long description of the tenth challenge. Lorem ipsum dolor sit amet. Aut sint eius ea quibusdam doloribus est aspernatur nostrum est eaque obcaecati et iste error. Vel unde delectus sed adipisci quidem non asperiores alias et totam laborum vel consequatur natus! Et architecto omnis id numquam sapiente sit perferendis ducimus"
+			"id": "abf61610-58b7-423a-8e06-f2ade4b0585f",
+			"trainingId": "488434d6-1db9-4323-8856-a89716425524",
+			"challengeNumber": "1",
+			"shortDescription": "Understand your world",
+			"timeSpan": "15",
+			"descriptionInDetails": "This is the first challenege, you should understand your world"
+		},
+		"11": {
+			"id": "74687316-3ade-4af4-9008-c9d7d0f00db1",
+			"trainingId": "488434d6-1db9-4323-8856-a89716425524",
+			"challengeNumber": "2",
+			"shortDescription": "Second Challenge",
+			"timeSpan": "20",
+			"descriptionInDetails": "This is the second challenege"
+		},
+		"12": {
+			"id": "024f3205-ef9b-40a5-aeba-4e6694ca9ede",
+			"trainingId": "488434d6-1db9-4323-8856-a89716425524",
+			"challengeNumber": "3",
+			"shortDescription": "Third Challenge",
+			"timeSpan": "30",
+			"descriptionInDetails": "This is the third challenege"
+		},
+		"13": {
+			"id": "8b4685cf-677d-47db-9496-86199ab3a1bf",
+			"trainingId": "01f02afc-43f6-4405-afc7-dd82dddc5aa2",
+			"challengeNumber": "1",
+			"shortDescription": "Understand your world",
+			"timeSpan": "15",
+			"descriptionInDetails": "This is the first challenege, you should understand your world"
+		},
+		"14": {
+			"id": "95219319-b2c2-44a4-b081-63fd452d7c46",
+			"trainingId": "01f02afc-43f6-4405-afc7-dd82dddc5aa2",
+			"challengeNumber": "2",
+			"shortDescription": "Second Challenge",
+			"timeSpan": "20",
+			"descriptionInDetails": "This is the second challenege"
+		},
+		"15": {
+			"id": "254af585-87c1-4bdc-bfa2-4c35401f4bd8",
+			"trainingId": "01f02afc-43f6-4405-afc7-dd82dddc5aa2",
+			"challengeNumber": "3",
+			"shortDescription": "Third Challenge",
+			"timeSpan": "30",
+			"descriptionInDetails": "This is the third challenege"
+		},
+		"16": {
+			"id": "e5593b4d-0c95-4bb0-bc70-b5e6a947b423",
+			"trainingId": "c05035e4-12e5-41c5-9af9-df8b22294a17",
+			"challengeNumber": "1",
+			"shortDescription": "Understand your world",
+			"timeSpan": "15",
+			"descriptionInDetails": "This is the first challenege, you should understand your world"
+		},
+		"17": {
+			"id": "8975ee43-3f85-4178-aa7f-10e8417d1470",
+			"trainingId": "c05035e4-12e5-41c5-9af9-df8b22294a17",
+			"challengeNumber": "2",
+			"shortDescription": "Second Challenge",
+			"timeSpan": "20",
+			"descriptionInDetails": "This is the second challenege"
+		},
+		"18": {
+			"id": "1865f8a5-1192-481a-823b-f94cb7ea32b9",
+			"trainingId": "c05035e4-12e5-41c5-9af9-df8b22294a17",
+			"challengeNumber": "3",
+			"shortDescription": "Third Challenge",
+			"timeSpan": "30",
+			"descriptionInDetails": "This is the third challenege"
+		},
+		"19": {
+			"id": "accb132b-9ee2-4a86-a397-553cc5130d52",
+			"trainingId": "8c11e3a9-7684-48f3-9623-b88429b2d23b",
+			"challengeNumber": "1",
+			"shortDescription": "Understand your world",
+			"timeSpan": "15",
+			"descriptionInDetails": "This is the first challenege, you should understand your world"
+		},
+		"20": {
+			"id": "06da5363-7615-4df2-a787-063a9f7860fa",
+			"trainingId": "8c11e3a9-7684-48f3-9623-b88429b2d23b",
+			"challengeNumber": "2",
+			"shortDescription": "Second Challenge",
+			"timeSpan": "20",
+			"descriptionInDetails": "This is the second challenege"
+		},
+		"21": {
+			"id": "95270eab-4d4b-42a3-9dca-0898b748a1b9",
+			"trainingId": "8c11e3a9-7684-48f3-9623-b88429b2d23b",
+			"challengeNumber": "3",
+			"shortDescription": "Third Challenge",
+			"timeSpan": "30",
+			"descriptionInDetails": "This is the third challenege"
 		}
 	},
 	"courseMetaDataTable": {
 		"1": {
 			"id": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
-			"name": "course name",
-			"description": "This is the course description",
-			"partsNumber": "12"
+			"name": "Feedback",
+			"description": "Provide a feedback like a pro",
+			"partsNumber": "8"
+		},
+		"2": {
+			"id": "66bef455-991a-4ef8-8026-2071e599ba8d",
+			"issueId": "a21ffbbe-97e6-418d-96a7-8625ed85f796",
+			"name": "Micromanagement",
+			"description": "How to provide the right freedom and responsibility",
+			"partsNumber": "3"
+		},
+		"3": {
+			"id": "d2338eeb-accc-4b14-b2d0-1212a2983457",
+			"issueId": "427e1335-5a0f-45a2-8c3f-3139f98452df",
+			"name": "Time management",
+			"description": "How to manage your time",
+			"partsNumber": "3"
+		},
+		"4": {
+			"id": "c6252a26-d61a-4e6e-bbbc-1806ecccbf29",
+			"issueId": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
+			"name": "Leading",
+			"description": "How to lead",
+			"partsNumber": "3"
+		},
+		"5": {
+			"id": "969c2a57-f6ba-449a-a458-7de602d10ca4",
+			"issueId": "5631dfbc-65a7-431a-b08f-456058bbddf7",
+			"name": "Technical Vs Managerial ",
+			"description": "How to balance and focus on the rigth aspects of your role",
+			"partsNumber": "3"
 		}
 	},
 	"courseClassesTable": {
 		"1": {
-			"id": "ee036d7c-7f8b-474a-b194-07c7752ba0f3",
-			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
-			"lessonNumber": "1",
-			"shortDescription": "This is a short descritption for the first lesson",
-			"videoURL": "https://www.youtube.com//watch?v=DuWAyhxCqQ4"
-		},
-		"2": {
 			"id": "6d78c6b4-ba92-4fe8-8aa7-46a1f62eecae",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"lessonNumber": "1",
+			"shortDescription": "Why feedback is important",
+			"timeSpan": "3:00",
+			"videoURL": "https://www.youtube.com/watch?v=udCqSrTzHSU"
+		},
+		"2": {
+			"id": "ee6a171f-164e-4d98-82a2-460bcd4c41f8",
+			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the second lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Giving Feedback - what is a good feedback",
+			"timeSpan": "9:30",
+			"videoURL": "https://www.youtube.com/watch?v=tnSE-Cuxp40"
 		},
 		"3": {
-			"id": "6ced4bc9-5497-4536-9ba1-4ed09f46e7c0",
+			"id": "9e6f45ec-551e-481a-8faf-cdc3ffd5ca0f",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "3",
-			"shortDescription": "This is a short descritption for the third lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Feedback is a gift",
+			"timeSpan": "09:30",
+			"videoURL": "https://www.youtube.com/watch?v=tttv9lRPcLA"
 		},
 		"4": {
-			"id": "64c93bc6-9867-4e53-ba7a-7bd616ef0cf9",
+			"id": "ad494a56-d6dc-47fb-97cd-6bba9c8ba6c3",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "4",
-			"shortDescription": "This is a short descritption for the fourth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "The Secret to giving great feedback",
+			"timeSpan": "05:00",
+			"videoURL": "https://www.youtube.com/watch?v=wtl5UrrgU8c"
 		},
 		"5": {
-			"id": "a5c5b51a-9e90-4ee0-a84e-324d42ffa26c",
+			"id": "aeed47da-724e-4dad-86c5-c549bf7f2304",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "5",
-			"shortDescription": "This is a short descritption for the fifth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Practical 8 steps to provide feedback",
+			"timeSpan": "14:30",
+			"videoURL": "https://www.youtube.com/watch?v=28N2p3smEsw"
 		},
 		"6": {
-			"id": "dbb8d073-399d-4970-86d7-275bdb6109d6",
+			"id": "38dc0986-2eab-4a48-8beb-1440c7f4f9b1",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
-			"lessonNumber": "6l",
-			"shortDescription": "This is a short descritption for the sixth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"lessonNumber": "6",
+			"shortDescription": "Hard feedback example",
+			"timeSpan": "02:00",
+			"videoURL": "https://www.youtube.com/watch?v=PLaJq5Ec0rI"
 		},
 		"7": {
-			"id": "33313797-31b7-48d7-ac17-e37089c55b0a",
+			"id": "96ecf112-7a7e-4fa2-af32-8734d17278a4",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
 			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the seventh lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Feedback Mistakes",
+			"timeSpan": "03:00",
+			"videoURL": "https://www.youtube.com/watch?v=Fovrb4Y6OTI"
 		},
 		"8": {
-			"id": "7f2f5e05-265a-451c-8f08-7c1ee9fcd020",
+			"id": "34dd1bf3-6e3e-40ab-ad9e-4dc2909fb625",
 			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
-			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the eignth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"lessonNumber": "8",
+			"shortDescription": "Feedback as a routine",
+			"timeSpan": "03:30",
+			"videoURL": "https://www.youtube.com/watch?v=wt1DIPtwLQs"
 		},
 		"9": {
-			"id": "c9910299-9441-462d-be96-ff9901e0e84d",
-			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
-			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the ninth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"id": "c199f3f1-8b5b-4387-b5e9-6a95fcb23527",
+			"courseId": "66bef455-991a-4ef8-8026-2071e599ba8d",
+			"lessonNumber": "1",
+			"shortDescription": "Introduction to Micromanagement",
+			"timeSpan": "08:30",
+			"videoURL": "https://www.youtube.com/watch?v=urrYhnaKvy4"
 		},
 		"10": {
-			"id": "6dffba87-0782-43cf-8f08-4ac011d4c70c",
-			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"id": "50ed4f00-6b00-494c-a2e9-ae103eac1cfd",
+			"courseId": "66bef455-991a-4ef8-8026-2071e599ba8d",
 			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the tenth lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Freedom and Responsibility",
+			"timeSpan": "03:30",
+			"videoURL": "https://www.youtube.com/watch?v=pl4UYZfVmTA"
 		},
 		"11": {
-			"id": "163e940e-a0aa-46b0-8aab-0a8106dc58e2",
-			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
-			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the eleven lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"id": "2d212f10-8336-4ce2-9dee-cf2e836a7dc7",
+			"courseId": "66bef455-991a-4ef8-8026-2071e599ba8d",
+			"lessonNumber": "3",
+			"shortDescription": "Leadership",
+			"timeSpan": "12:30",
+			"videoURL": "https://www.youtube.com/watch?v=vlpKyLklDDY"
 		},
 		"12": {
-			"id": "f6ceea3f-0cff-4004-9a41-b6dfb34e4ee3",
-			"courseId": "bac1a32a-e07f-4d34-9a42-adc59bcd0f79",
+			"id": "e7a2eb29-517d-44bb-81cc-3754298ae1e6",
+			"courseId": "d2338eeb-accc-4b14-b2d0-1212a2983457",
+			"lessonNumber": "1",
+			"shortDescription": "Introduction to Time management",
+			"timeSpan": "08:30",
+			"videoURL": "https://www.youtube.com/watch?v=urrYhnaKvy4"
+		},
+		"13": {
+			"id": "0e7d4720-4d7a-4916-889f-44608a35a486",
+			"courseId": "d2338eeb-accc-4b14-b2d0-1212a2983457",
 			"lessonNumber": "2",
-			"shortDescription": "This is a short descritption for the twelve lesson",
-			"videoURL": "https://www.youtube.com/watch?v=suIAo0EYwOE"
+			"shortDescription": "Freedom and Responsibility",
+			"timeSpan": "03:30",
+			"videoURL": "https://www.youtube.com/watch?v=pl4UYZfVmTA"
+		},
+		"14": {
+			"id": "55749518-9bca-4688-a8dc-62e93b65c511",
+			"courseId": "66bef455-991a-4ef8-8026-2071e599ba8d",
+			"lessonNumber": "3",
+			"shortDescription": "Leadership",
+			"timeSpan": "12:30",
+			"videoURL": "https://www.youtube.com/watch?v=vlpKyLklDDY"
+		},
+		"15": {
+			"id": "35723150-fdbc-4538-85b4-940bcca4301f",
+			"courseId": "c6252a26-d61a-4e6e-bbbc-1806ecccbf29",
+			"lessonNumber": "1",
+			"shortDescription": "Introduction to Leading",
+			"timeSpan": "08:30",
+			"videoURL": "https://www.youtube.com/watch?v=urrYhnaKvy4"
+		},
+		"16": {
+			"id": "4c6486f1-b739-4b49-99d6-28bce6b24cb6",
+			"courseId": "c6252a26-d61a-4e6e-bbbc-1806ecccbf29",
+			"lessonNumber": "2",
+			"shortDescription": "Freedom and Responsibility",
+			"timeSpan": "03:30",
+			"videoURL": "https://www.youtube.com/watch?v=pl4UYZfVmTA"
+		},
+		"17": {
+			"id": "4a7b62da-1681-4139-bbf0-b9c988110ea4",
+			"courseId": "c6252a26-d61a-4e6e-bbbc-1806ecccbf29",
+			"lessonNumber": "3",
+			"shortDescription": "Leadership",
+			"timeSpan": "12:30",
+			"videoURL": "https://www.youtube.com/watch?v=vlpKyLklDDY"
+		},
+		"18": {
+			"id": "8fe55b63-40bb-40e4-a52d-71135606974c",
+			"courseId": "969c2a57-f6ba-449a-a458-7de602d10ca4",
+			"lessonNumber": "1",
+			"shortDescription": "Introduction to Technical Vs Managerial balance",
+			"timeSpan": "08:30",
+			"videoURL": "https://www.youtube.com/watch?v=urrYhnaKvy4"
+		},
+		"19": {
+			"id": "3bd464a8-a799-4f51-87bc-f0323471e88c",
+			"courseId": "969c2a57-f6ba-449a-a458-7de602d10ca4",
+			"lessonNumber": "2",
+			"shortDescription": "Freedom and Responsibility",
+			"timeSpan": "03:30",
+			"videoURL": "https://www.youtube.com/watch?v=pl4UYZfVmTA"
+		},
+		"20": {
+			"id": "2e711283-b1ee-4e0f-be44-9e5d2c4530f2",
+			"courseId": "969c2a57-f6ba-449a-a458-7de602d10ca4",
+			"lessonNumber": "3",
+			"shortDescription": "Leadership",
+			"timeSpan": "12:30",
+			"videoURL": "https://www.youtube.com/watch?v=vlpKyLklDDY"
+		}
+	},
+	"issuesAdditionalInfoTable": {
+		"1": {
+			"id": "548c3c2f-958b-4709-9f15-be65b6c0e0ad",
+			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"name": "Thanks for the feedback",
+			"description": "How to turn evaluations, advice, criticisms, and coaching into productive listening and learning",
+			"url": "https://www.amazon.com/Thanks-Feedback-Science-Receiving-Well-ebook/dp/B00DMCV0XE/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1626093525&sr=8-1"
+		},
+		"2": {
+			"id": "14ac5bf4-381b-4e51-a032-a805d3b29065",
+			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"name": "How to Say Anything to Anyone",
+			"description": "Many of us remain passive against broken, indirect communication habits, hoping that things will miraculously improve⎯but they won’t. Not without skills and effort.",
+			"url": "https://www.amazon.com/How-Say-Anything-Anyone-Relationships-ebook/dp/B00AY79L0O/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1626169033&sr=8-1"
+		},
+		"3": {
+			"id": "8f2fb230-ee63-42a0-95a9-018c6bc14f90",
+			"issueId": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
+			"name": "Radical Candor",
+			"description": "How to Get What You Want by Saying What You Mean",
+			"url": "https://www.amazon.com/Radical-Candor-What-Want-Saying-ebook/dp/B01LW1LESC/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1625581743&sr=1-7"
 		}
 	}
 }
