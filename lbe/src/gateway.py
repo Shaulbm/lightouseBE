@@ -49,3 +49,8 @@ def set_user_next_training_stage(userName):
 def set_user_next_course_lesson(userName):
     userDetails = users.setUserNextCourseLesson(userName)
     return userDetails
+
+@router.post("/additionalIssueDetails")
+def additional_issue_details(issueId):
+    additionalIssueDetails = users.getIssueAdditionalData(issueId)
+    return additionalIssueDetails

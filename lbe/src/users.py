@@ -20,8 +20,8 @@ class UserData:
             # parse from json
 
             # mandatory fields
-            self.id = userDetails[0]['id']
-            self.name = userDetails[0]['name']
+            self.id = userDetails['id']
+            self.name = userDetails['name']
 
             # non mandatory fields - set default values:
             self.mail = ''
@@ -31,20 +31,20 @@ class UserData:
 
 
             # non mandatory values - set only if existing
-            if ('mail' in userDetails[0]):
-                self.mail = userDetails[0]['mail']
+            if ('mail' in userDetails):
+                self.mail = userDetails['mail']
 
-            if ('status' in userDetails[0]):
-                self.status = userDetails[0]['status']
+            if ('status' in userDetails):
+                self.status = userDetails['status']
 
-            if ('currentIssue' in userDetails[0]):    
-                self.currentIssue = userDetails[0]['currentIssue']
+            if ('currentIssue' in userDetails):    
+                self.currentIssue = userDetails['currentIssue']
             
-            if ('trainingStage' in userDetails[0]): 
-                self.trainingStage = userDetails[0]['trainingStage']
+            if ('trainingStage' in userDetails): 
+                self.trainingStage = userDetails['trainingStage']
 
-            if ('courseLesson' in userDetails[0]):
-                self.courseLesson = userDetails[0]['courseLesson']
+            if ('courseLesson' in userDetails):
+                self.courseLesson = userDetails['courseLesson']
 
 class trainingStageData:
     def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, timespan = None, descriptionInDetails = None, trainingStageDetails = None):
@@ -60,9 +60,9 @@ class trainingStageData:
             # parse from json
 
             # mandatory fields
-            self.id = trainingStageDetails[0]['id']
-            self.trainingId = trainingStageDetails[0]['trainingId']
-            self.challengeNumber = trainingStageDetails[0]['challengeNumber']
+            self.id = trainingStageDetails['id']
+            self.trainingId = trainingStageDetails['trainingId']
+            self.challengeNumber = trainingStageDetails['challengeNumber']
 
             # non mandatory fields - set default values:
             self.shortDescription = ''
@@ -70,14 +70,14 @@ class trainingStageData:
             self.timeSpan = ''
 
             # non mandatory values - set only if existing
-            if ('shortDescription' in trainingStageDetails[0]):
-                self.shortDescription = trainingStageDetails[0]['shortDescription']
+            if ('shortDescription' in trainingStageDetails):
+                self.shortDescription = trainingStageDetails['shortDescription']
 
-            if ('descriptionInDetails' in trainingStageDetails[0]):    
-                self.descriptionInDetails = trainingStageDetails[0]['descriptionInDetails']
+            if ('descriptionInDetails' in trainingStageDetails):    
+                self.descriptionInDetails = trainingStageDetails['descriptionInDetails']
 
-            if ('timespan' in trainingStageDetails[0]):    
-                self.timeSpan = trainingStageDetails[0]['timeSpan']            
+            if ('timespan' in trainingStageDetails):    
+                self.timeSpan = trainingStageDetails['timeSpan']            
 
 class trainingData:
     def __init__(self, id = None, name  = None, description = None, issueId = None, challengesNo = None, trainingDetails = None):
@@ -92,20 +92,20 @@ class trainingData:
             # parse from json
 
             # mandatory fields
-            self.id = trainingDetails[0]['id']
-            self.name = trainingDetails[0]['name']
-            self.issueId = trainingDetails[0]['issueId']
+            self.id = trainingDetails['id']
+            self.name = trainingDetails['name']
+            self.issueId = trainingDetails['issueId']
 
             # non mandatory fields - set default values:
             self.description = ''
             self.challengesNo = ''
 
             # non mandatory values - set only if existing
-            if ('description' in trainingDetails[0]):
-                self.description = trainingDetails[0]['description']
+            if ('description' in trainingDetails):
+                self.description = trainingDetails['description']
 
-            if ('challengesNumber' in trainingDetails[0]):
-                self.challengesNo = trainingDetails[0]['challengesNumber']
+            if ('challengesNumber' in trainingDetails):
+                self.challengesNo = trainingDetails['challengesNumber']
 
 class courseLessonData:
     def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, timeSpan = None, videoURL = None, courseLessonDetails = None):
@@ -121,9 +121,9 @@ class courseLessonData:
             # parse from json
 
             # mandatory fields
-            self.id = courseLessonDetails[0]['id']
-            self.courseId = courseLessonDetails[0]['courseId']
-            self.lessonNumber = courseLessonDetails[0]['lessonNumber']
+            self.id = courseLessonDetails['id']
+            self.courseId = courseLessonDetails['courseId']
+            self.lessonNumber = courseLessonDetails['lessonNumber']
 
             # non mandatory fields - set default values:
             self.shortDescription = ''
@@ -131,14 +131,14 @@ class courseLessonData:
             self.timeSpan = ''
 
             # non mandatory values - set only if existing
-            if ('shortDescription' in courseLessonDetails[0]):
-                self.shortDescription = courseLessonDetails[0]['shortDescription']
+            if ('shortDescription' in courseLessonDetails):
+                self.shortDescription = courseLessonDetails['shortDescription']
 
-            if ('timeSpan' in courseLessonDetails[0]):
-                self.timeSpan = courseLessonDetails[0]['timeSpan']
+            if ('timeSpan' in courseLessonDetails):
+                self.timeSpan = courseLessonDetails['timeSpan']
 
-            if ('videoURL' in courseLessonDetails[0]):    
-                self.videoURL = courseLessonDetails[0]['videoURL']
+            if ('videoURL' in courseLessonDetails):    
+                self.videoURL = courseLessonDetails['videoURL']
 
 
 class courseData:
@@ -154,20 +154,20 @@ class courseData:
             # parse from json
 
             # mandatory fields
-            self.id = courseDetails[0]['id']
-            self.name = courseDetails[0]['name']
-            self.issueId = courseDetails[0]['issueId']
+            self.id = courseDetails['id']
+            self.name = courseDetails['name']
+            self.issueId = courseDetails['issueId']
 
             # non mandatory fields - set default values:
             self.description = ''
             self.partsNumber = ''
 
             # non mandatory values - set only if existing
-            if ('description' in courseDetails[0]):
-                self.description = courseDetails[0]['description']
+            if ('description' in courseDetails):
+                self.description = courseDetails['description']
 
-            if ('partsNumber' in courseDetails[0]):
-                self.partsNumber = courseDetails[0]['partsNumber']
+            if ('partsNumber' in courseDetails):
+                self.partsNumber = courseDetails['partsNumber']
 
 class courseLessonData:
     def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, videoURL = None, courseLessonDetails = None):
@@ -182,49 +182,51 @@ class courseLessonData:
             # parse from json
 
             # mandatory fields
-            self.id = courseLessonDetails[0]['id']
-            self.courseId = courseLessonDetails[0]['courseId']
-            self.lessonNumber = courseLessonDetails[0]['lessonNumber']
+            self.id = courseLessonDetails['id']
+            self.courseId = courseLessonDetails['courseId']
+            self.lessonNumber = courseLessonDetails['lessonNumber']
 
             # non mandatory fields - set default values:
             self.shortDescription = ''
             self.videoURL = ''
 
             # non mandatory values - set only if existing
-            if ('shortDescription' in courseLessonDetails[0]):
-                self.shortDescription = courseLessonDetails[0]['shortDescription']
+            if ('shortDescription' in courseLessonDetails):
+                self.shortDescription = courseLessonDetails['shortDescription']
 
-            if ('videoURL' in courseLessonDetails[0]):    
-                self.videoURL = courseLessonDetails[0]['videoURL']
+            if ('videoURL' in courseLessonDetails):    
+                self.videoURL = courseLessonDetails['videoURL']
 
 
 class additionalInfoData:
-    def __init__(self, id = None, name  = None, description = None, issueId = None, url = None, additionalInfoDetails = None):
+    def __init__(self, id = None, issueId = None, type = None, name  = None, description = None, url = None, additionalInfoDetails = None):
         if (additionalInfoDetails is None):
             self.id = id
-            self.name = name
-            self.description = description,
             self.issueId = issueId
+            self.type = type
+            self.name = name
+            self.description = description
             self.url = url
 
         else:
             # parse from json
 
             # mandatory fields
-            self.id = additionalInfoDetails[0]['id']
-            self.name = additionalInfoDetails[0]['name']
-            self.issueId = additionalInfoDetails[0]['issueId']
+            self.id = additionalInfoDetails['id']
+            self.name = additionalInfoDetails['name']
+            self.issueId = additionalInfoDetails['issueId']
+            self.type = additionalInfoDetails['type']
 
             # non mandatory fields - set default values:
             self.description = ''
-            self.partsNumber = ''
+            self.url = ''
 
             # non mandatory values - set only if existing
-            if ('description' in additionalInfoDetails[0]):
-                self.description = additionalInfoDetails[0]['description']
+            if ('description' in additionalInfoDetails):
+                self.description = additionalInfoDetails['description']
 
-            if ('url' in additionalInfoDetails[0]):
-                self.url = additionalInfoDetails[0]['url']
+            if ('url' in additionalInfoDetails):
+                self.url = additionalInfoDetails['url']
 
 class issueData:
     def __init__(self,  id = None, name  = None, description = None, issuseDetails = None):
@@ -237,9 +239,9 @@ class issueData:
             #parse from json
 
             #mandatory fields
-            self.id = issuseDetails[0]['id']
-            self.name = issuseDetails[0]['name']
-            self.description = issuseDetails[0]['description']
+            self.id = issuseDetails['id']
+            self.name = issuseDetails['name']
+            self.description = issuseDetails['description']
 
 class trainingMapData:
     def __init__(self, stageData):
@@ -271,7 +273,7 @@ class usersDB:
             self.insert_user(userDetails)
         else:
             # user found 
-            userDetails = UserData (userDetails = foundUser)
+            userDetails = UserData (userDetails = foundUser[0])
 
         return userDetails
 
@@ -368,7 +370,7 @@ class usersDB:
         trainingStageDetails = None
 
         if (len (foundTraingStageDetails) > 0):
-            trainingStageDetails = trainingStageData (trainingStageDetails = foundTraingStageDetails)
+            trainingStageDetails = trainingStageData (trainingStageDetails = foundTraingStageDetails[0])
 
         return trainingStageDetails
 
@@ -380,7 +382,7 @@ class usersDB:
         trainingDetails = None
 
         if (len(foundTrainingDetails) > 0):
-            trainingDetails = trainingData (trainingDetails = foundTrainingDetails)
+            trainingDetails = trainingData (trainingDetails = foundTrainingDetails[0])
 
         return trainingDetails
 
@@ -397,7 +399,7 @@ class usersDB:
         courseLessonDetails = None
 
         if (len (foundCourseLessonDetails) > 0):
-            courseLessonDetails = courseLessonData (courseLessonDetails = foundCourseLessonDetails)
+            courseLessonDetails = courseLessonData (courseLessonDetails = foundCourseLessonDetails[0])
 
         return courseLessonDetails
 
@@ -410,7 +412,7 @@ class usersDB:
         courseDetails = None
 
         if (len(foundCourseDetails) > 0):
-            courseDetails = courseData (courseDetails = foundCourseDetails)
+            courseDetails = courseData (courseDetails = foundCourseDetails[0])
 
         return courseDetails
 
@@ -449,9 +451,11 @@ class usersDB:
         issueDetails = None
 
         if (len(foundIssueDetails) > 0):
-            issueDetails = issueData (issuseDetails = foundIssueDetails)
+            issueDetails = issueData (issuseDetails = foundIssueDetails[0])
 
         return issueDetails
+
+    
     def setUserCurrIssueId (self, userName, issueId):
         userDetails = self.getUserDetails(userName)
 
@@ -503,9 +507,24 @@ class usersDB:
 
         if (len(foundUser) > 0):
             # user found 
-            userDetails = UserData (userDetails = foundUser)
+            userDetails = UserData (userDetails = foundUser[0])
         
         return userDetails
+
+    def getAdditionalIssueData (self, issueId):
+        additionalInfoQuery = Query()
+        additionalInfoTable = self.db.table('issuesAdditionalInfoTable')
+        foundAdditionalInfoDetailsList = additionalInfoTable.search(additionalInfoQuery.issueId == issueId)
+
+        additionalInfoDetailsList = []
+
+        if (len (foundAdditionalInfoDetailsList) > 0):
+            # found additional issue data - parse and add each on to the additionalInfoDetailsList
+            for currAdditionalInfoDetails in foundAdditionalInfoDetailsList:
+                additionalInfoDetails = additionalInfoData(additionalInfoDetails=currAdditionalInfoDetails)
+                additionalInfoDetailsList.append(additionalInfoDetails)
+
+        return additionalInfoDetailsList
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -544,7 +563,8 @@ class UsersLogic(metaclass=Singleton):
         return issueDetails
 
     def getIssueAdditionalData (self, issueId):
-        pass
+        additionalIssueInfoDetails = self.usersDB.getAdditionalIssueData(issueId)
+        return additionalIssueInfoDetails
 
     def setUserCurrIssueId (self, userName, issueId):
         userDetails = self.usersDB.setUserCurrIssueId(userName, issueId)

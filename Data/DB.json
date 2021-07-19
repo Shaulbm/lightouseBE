@@ -23,9 +23,9 @@
 			"name": "shaul.ben.maor@gmail.com",
 			"mail": "",
 			"status": "new",
-			"currentIssue": "",
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
 			"trainingStage": "1",
-			"courseLesson": "2"
+			"courseLesson": "1"
 		}
 	},
 	"issuesTable": {
@@ -465,6 +465,7 @@
 		"1": {
 			"id": "548c3c2f-958b-4709-9f15-be65b6c0e0ad",
 			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"type" : "book",
 			"name": "Thanks for the feedback",
 			"description": "How to turn evaluations, advice, criticisms, and coaching into productive listening and learning",
 			"url": "https://www.amazon.com/Thanks-Feedback-Science-Receiving-Well-ebook/dp/B00DMCV0XE/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1626093525&sr=8-1"
@@ -472,13 +473,23 @@
 		"2": {
 			"id": "14ac5bf4-381b-4e51-a032-a805d3b29065",
 			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"type" : "book",
 			"name": "How to Say Anything to Anyone",
 			"description": "Many of us remain passive against broken, indirect communication habits, hoping that things will miraculously improve⎯but they won’t. Not without skills and effort.",
 			"url": "https://www.amazon.com/How-Say-Anything-Anyone-Relationships-ebook/dp/B00AY79L0O/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1626169033&sr=8-1"
 		},
 		"3": {
+			"id": "450c3768-562d-4083-9e71-0f8bbea7048d",
+			"issueId": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"type" : "process",
+			"name": "2 Min feedback process",
+			"description": "Simple any feedback process",
+			"url": "https://drive.google.com/uc?export=download&id=1wf9BWjzcFOZM0IKmdDvT7JMU6ROL_vZj"
+		},
+		"4": {
 			"id": "8f2fb230-ee63-42a0-95a9-018c6bc14f90",
 			"issueId": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
+			"type" : "book",
 			"name": "Radical Candor",
 			"description": "How to Get What You Want by Saying What You Mean",
 			"url": "https://www.amazon.com/Radical-Candor-What-Want-Saying-ebook/dp/B01LW1LESC/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1625581743&sr=1-7"
