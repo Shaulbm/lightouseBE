@@ -4,12 +4,18 @@ import {fetch} from 'wix-fetch';
 import wixUsers from 'wix-users';
 import {session} from 'wix-storage'
 
+let likeLessonPressed = false;
+let dislikeLessonPressed = false;
+let likeChallengePressed = false;
+let dislikeChallengePressed = false;
+
 $w.onReady (async function ()
 {
-	
-	$w("#footer1").style.backgroundColor = "rgba(0, 0, 0, 1.0)";
-	$w("#footer1").children.forEach((item, i) =>{item.collapse()});
+	await $w("#processImage").hide();
+	await $w("#processDownload").hide();
+
 	await updateUserData();
+
 	await $w("#loadingBox1").hide();
 	await $w("#loadingBox2").hide();
 });
@@ -31,6 +37,37 @@ export async function updateUserData()
 		$w('#issueName').text = issueData.name;
 		$w('#issueDescription').text = issueData.description;
 	} 
+
+	const issueAdditionalDataList = await fetchIssueAdditionalData(issueData.id);
+	let processImageUrl = "";
+
+	if (issueAdditionalDataList)
+	{
+		// Search for the process
+		for (let currIssueDataIdx = 0; currIssueDataIdx < issueAdditionalDataList.length; currIssueDataIdx++)
+		{
+			if (issueAdditionalDataList[currIssueDataIdx].type == "process")
+			{
+				processImageUrl = issueAdditionalDataList[currIssueDataIdx].url;
+				break;
+			}	
+		}
+	}
+
+	if (processImageUrl != "")
+	{
+		$w("#processImage").src = processImageUrl;
+		$w("#processDownload").link = processImageUrl;
+
+		await $w("#processImage").show();
+		await $w("#processDownload").show();
+	}
+	else
+	{
+		// No process URL - hide the process data
+		await $w("#processImage").hide();
+		await $w("#processDownload").hide();
+	}
 
 	const trainingStageData = await fetchTrainingData(userData.currentIssue, userData.trainingStage);
 
@@ -69,25 +106,21 @@ export async function updateUserData()
 
 		if (trainingMapData.pastStages.length > 0)
 		{
-			console.log ("past 0 "+ trainingMapData.pastStages[0]);
 			$w('#activityHistory1StepsAgo').text = trainingMapData.pastStages[0].shortDescription;
 		}
 
 		if (trainingMapData.pastStages.length > 1)
 		{
-			console.log ("past 1 "+ trainingMapData.pastStages[1]);
 			$w('#activityHistory2StepsAgo').text = trainingMapData.pastStages[1].shortDescription;
 		}
 
 		if (trainingMapData.futureStages.length > 0)
 		{
-			console.log ("future 0 " + trainingMapData.futureStages[0]);
 			$w('#activityFuture1StepsAhead').text = trainingMapData.futureStages[0].shortDescription;
 		}
 
 		if (trainingMapData.futureStages.length > 1)
 		{
-			console.log ("future 1 "+ trainingMapData.futureStages[1]);
 			$w('#activityFuture2StepsAhead').text = trainingMapData.futureStages[1].shortDescription;
 		}
 		
@@ -164,6 +197,17 @@ export async function fetchIssueData(issueId)
     return {};
 }
 
+export async function fetchIssueAdditionalData(issueId)
+{
+	const url = "https://52.30.104.65:8000/additionalIssueDetails?issueId=" + issueId;
+	const httpResponse = await fetch(url,{'method':'POST'});
+    if (httpResponse.ok){
+        const result = await httpResponse.json();
+        return result;
+    }
+    return {};
+}
+
 /**
  *	Adds an event handler that runs when the element is clicked.
  *	 @param {$w.MouseEvent} event
@@ -180,6 +224,15 @@ export async function nextChallenge_click(event) {
 		userMail = await user.getEmail();
 		console.log("user id is: " + user.id + " user email is: " + userMail)
 	}
+
+	//Zero like/dislike
+	$w("#likeChallenge").style.borderWidth = "1px";
+	$w("#likeChallenge").style.borderColor = "#57BBBF";
+	$w("#dislikeChallenge").style.borderWidth = "1px";
+	$w("#dislikeChallenge").style.borderColor = "#57BBBF";
+	likeChallengePressed = false;
+	dislikeChallengePressed = false;
+
 	const url = "https://52.30.104.65:8000/setUserNextTrainingStage?userName=" + userMail;
 	const httpResponse = await fetch(url,{'method':'POST'});
     if (httpResponse.ok){
@@ -209,6 +262,15 @@ export async function nextLesson_click(event) {
 		userMail = await user.getEmail();
 		console.log("user id is: " + user.id + " user email is: " + userMail)
 	}
+
+	//Zero like/dislike
+	$w("#likeLesson").style.borderWidth = "1px";
+	$w("#likeLesson").style.borderColor = "#57BBBF";
+	$w("#dislikeLesson").style.borderWidth = "1px";
+	$w("#dislikeLesson").style.borderColor = "#57BBBF";
+	likeLessonPressed = false;
+	dislikeLessonPressed = false;
+
 	const url = "https://52.30.104.65:8000/setUserNextCourseLesson?userName=" + userMail;
 	const httpResponse = await fetch(url,{'method':'POST'});
     if (httpResponse.ok){
@@ -219,5 +281,139 @@ export async function nextLesson_click(event) {
         return result;
     }
 	await $w("#loadingBox1").hide();
+
     return {};
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function likeLesson_click(event)
+{
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	
+	if (likeLessonPressed)
+	{
+		console.log ("Like Lesson was true");
+		likeLessonPressed = false;
+		// like lesson remove border
+		$w("#likeLesson").style.borderWidth = "1px";
+		$w("#likeLesson").style.borderColor = "#57BBBF";
+
+	}
+	else
+	{
+		console.log ("Like Lesson was false");
+		likeLessonPressed = true;
+		dislikeChallengePressed = false;
+		// like lesson show border
+		$w("#likeLesson").style.borderWidth = "2px";
+		$w("#likeLesson").style.borderColor = "#E9DB89";
+
+		// verify dislike lesson remove border
+		$w("#dislikeLesson").style.borderWidth = "1px";
+		$w("#dislikeLesson").style.borderColor = "#57BBBF";
+	}
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function dislikeLesson_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	
+	if (dislikeLessonPressed)
+	{
+		console.log ("Dislike Lesson was true");
+		dislikeLessonPressed = false;
+		// like lesson remove border
+		$w("#dislikeLesson").style.borderWidth = "1px";
+		$w("#dislikeLesson").style.borderColor = "#57BBBF";
+
+	}
+	else
+	{
+		console.log ("Dislike Lesson was false");
+		dislikeLessonPressed = true;
+		likeChallengePressed = false;
+		// like lesson show border
+		$w("#dislikeLesson").style.borderWidth = "2px";
+		$w("#dislikeLesson").style.borderColor = "#E9DB89";
+
+		// verify dislike lesson remove border
+		$w("#likeLesson").style.borderWidth = "1px";
+		$w("#likeLesson").style.borderColor = "#57BBBF";
+	}
+
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function likeChallenge_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+
+	if (likeChallengePressed)
+	{
+		console.log ("Like challenge was true");
+		likeChallengePressed = false;
+		// like lesson remove border
+		$w("#likeChallenge").style.borderWidth = "1px";
+		$w("#likeChallenge").style.borderColor = "#57BBBF";
+
+	}
+	else
+	{
+		console.log ("Like challenge was false");
+		likeChallengePressed = true;
+		dislikeChallengePressed = false;
+		// like lesson show border
+		$w("#likeChallenge").style.borderWidth = "2px";
+		$w("#likeChallenge").style.borderColor = "#E9DB89";
+
+		// verify dislike lesson remove border
+		$w("#dislikeChallenge").style.borderWidth = "1px";
+		$w("#dislikeChallenge").style.borderColor = "#57BBBF";
+	}
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export function dislikeChallenge_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	if (dislikeChallengePressed)
+	{
+		console.log ("Dislike challenge was true");
+		dislikeChallengePressed = false;
+		// like lesson remove border
+		$w("#dislikeChallenge").style.borderWidth = "1px";
+		$w("#dislikeChallenge").style.borderColor = "#57BBBF";
+
+	}
+	else
+	{
+		console.log ("Dislike Challenge was false");
+		dislikeChallengePressed = true;
+		likeChallengePressed = false;
+		// like lesson show border
+		$w("#dislikeChallenge").style.borderWidth = "2px";
+		$w("#dislikeChallenge").style.borderColor = "#E9DB89";
+
+		// verify dislike lesson remove border
+		$w("#likeChallenge").style.borderWidth = "1px";
+		$w("#likeChallenge").style.borderColor = "#57BBBF";
+	}
 }
