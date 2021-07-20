@@ -2,3 +2,4 @@ alpha_vantage
 cargo
 fastapi
 tinydb
+munch

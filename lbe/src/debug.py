@@ -26,4 +26,5 @@ while index > 0:
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
 #gateway.set_user_issue_id ('Test2', 'ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
 #gateway.set_user_next_training_stage('shaul.ben.maor@gmail.com')
-gateway.additional_issue_details('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
+#gateway.additional_issue_details('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
+gateway.question_details("5680bbea-3977-4d33-be2b-932c4bc94884")

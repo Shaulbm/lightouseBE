@@ -494,5 +494,125 @@
 			"description": "How to Get What You Want by Saying What You Mean",
 			"url": "https://www.amazon.com/Radical-Candor-What-Want-Saying-ebook/dp/B01LW1LESC/ref=tmm_kin_swatch_0?_encoding=UTF8&qid=1625581743&sr=1-7"
 		}
+	},
+	"discoveryQuestionsTable" : {
+		"1": {
+			"id": "2dd5a5ce-db7e-436c-86a9-48fddd5a956a",
+			"stage": "1",
+			"text" : "Are you Lorem Ipsum?",
+			"type" : "options",
+			"range" : "",
+			"options" : {
+				"1" :{
+					"idx" : "1",
+					"text" : "response 1",
+					"attributes" : {
+							"People Oriented" : "2",
+							"Negative Feedback Gap" : "3",
+							"Care for the team" : "2"
+					}
+				},
+				"2" :{
+					"idx" : "2",
+					"text" : "response 2",
+					"attributes" : {
+							"People Oriented" : "1",
+							"Negative Feedback Gap" : "1",
+							"Care for the team" : "2"
+					}
+				},
+				"3" :{
+					"idx" : "3",
+					"text" : "response 3",
+					"attributes" : {
+							"Task Oriented" : "2",
+							"Negative Feedback Gap" : "-1",
+							"Focus Gap" : "2"
+					}
+				},
+				"4" :{
+				"idx" : "4",
+				"text" : "response 4",
+				"attributes" : {
+						"Task Oriented" : "1",
+						"Micromanagement" : "2",
+						"Pressure" : "2",
+						"WLB Gap" : "2"
+					}
+				}
+			}
+		},
+		"2": {
+			"id": "35270681-08ec-44a5-b469-9ee8cf97bd31",
+			"stage": "1",
+			"text" : "Are you really really Lorem Ipsum?",
+			"type" : "options",
+			"range":{
+				"min" : {
+					"text":"",
+					"attributes" : {
+						"People Oriented" : "2",
+						"Negative Feedback Gap" : "3",
+						"Care for the team" : "2"
+					}
+				},
+				"max" : {
+					"text" : "",
+					"attributes" : {
+						"People Oriented" : "2",
+						"Negative Feedback Gap" : "3",
+						"Care for the team" : "2"
+					}
+				},
+				"rangeValue": "7"
+			},
+			"options" : ""
+		},
+		"3": {
+			"id": "5680bbea-3977-4d33-be2b-932c4bc94884",
+			"stage": "1",
+			"text" : "do you Lorem Ipsum to anyone?",
+			"type" : "options",
+			"range" : "",
+			"options" : {
+				"1" :{
+					"idx" : "1",
+					"text" : "response 1",
+					"attributes" : {
+							"People Oriented" : "2",
+							"Negative Feedback Gap" : "3",
+							"Care for the team" : "2"
+					}
+				},
+				"2" :{
+					"idx" : "2",
+					"text" : "response 2",
+					"attributes" : {
+							"People Oriented" : "1",
+							"Negative Feedback Gap" : "1",
+							"Care for the team" : "2"
+					}
+				},
+				"3" :{
+					"idx" : "3",
+					"text" : "response 3",
+					"attributes" : {
+							"Task Oriented" : "2",
+							"Negative Feedback Gap" : "-1",
+							"Focus Gap" : "2"
+					}
+				},
+				"4" :{
+				"idx" : "4",
+				"text" : "response 4",
+				"attributes" : {
+						"Task Oriented" : "1",
+						"Micromanagement" : "2",
+						"Pressure" : "2",
+						"WLB Gap" : "2"
+					}
+				}
+			}
+		}
 	}
 }

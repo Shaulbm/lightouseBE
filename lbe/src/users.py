@@ -1,254 +1,14 @@
 #from Sheets_handler import sheets_handler_script
 from threading import current_thread
+from munch import Munch
+import json
+from types import SimpleNamespace
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData
 
 STEPS_FOR_STAGE_MAP = 2
-
-class UserData:
-    def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userDetails = None):
-        if (userDetails is None):
-            self.id = id
-            self.name = name
-            self.mail = mail
-            self.status = status
-            self.currentIssue = currentIssue
-            self.trainingStage = trainingStage
-            self.courseLesson = courseLesson
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = userDetails['id']
-            self.name = userDetails['name']
-
-            # non mandatory fields - set default values:
-            self.mail = ''
-            self.status = ''
-            self.currentIssue = ''
-            self.trainingStage = ''
-
-
-            # non mandatory values - set only if existing
-            if ('mail' in userDetails):
-                self.mail = userDetails['mail']
-
-            if ('status' in userDetails):
-                self.status = userDetails['status']
-
-            if ('currentIssue' in userDetails):    
-                self.currentIssue = userDetails['currentIssue']
-            
-            if ('trainingStage' in userDetails): 
-                self.trainingStage = userDetails['trainingStage']
-
-            if ('courseLesson' in userDetails):
-                self.courseLesson = userDetails['courseLesson']
-
-class trainingStageData:
-    def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, timespan = None, descriptionInDetails = None, trainingStageDetails = None):
-        if (trainingStageDetails is None):
-            self.id = id
-            self.trainingId = trainingId
-            self.challengeNumber = challengeNumber
-            self.shortDescription = shortDescription
-            self.descriptionInDetails = descriptionInDetails
-            self.timeSpan = timespan
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = trainingStageDetails['id']
-            self.trainingId = trainingStageDetails['trainingId']
-            self.challengeNumber = trainingStageDetails['challengeNumber']
-
-            # non mandatory fields - set default values:
-            self.shortDescription = ''
-            self.descriptionInDetails = ''
-            self.timeSpan = ''
-
-            # non mandatory values - set only if existing
-            if ('shortDescription' in trainingStageDetails):
-                self.shortDescription = trainingStageDetails['shortDescription']
-
-            if ('descriptionInDetails' in trainingStageDetails):    
-                self.descriptionInDetails = trainingStageDetails['descriptionInDetails']
-
-            if ('timespan' in trainingStageDetails):    
-                self.timeSpan = trainingStageDetails['timeSpan']            
-
-class trainingData:
-    def __init__(self, id = None, name  = None, description = None, issueId = None, challengesNo = None, trainingDetails = None):
-        if (trainingDetails is None):
-            self.id = id
-            self.name = name
-            self.description = description,
-            self.issueId = issueId
-            self.callengesNo = challengesNo
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = trainingDetails['id']
-            self.name = trainingDetails['name']
-            self.issueId = trainingDetails['issueId']
-
-            # non mandatory fields - set default values:
-            self.description = ''
-            self.challengesNo = ''
-
-            # non mandatory values - set only if existing
-            if ('description' in trainingDetails):
-                self.description = trainingDetails['description']
-
-            if ('challengesNumber' in trainingDetails):
-                self.challengesNo = trainingDetails['challengesNumber']
-
-class courseLessonData:
-    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, timeSpan = None, videoURL = None, courseLessonDetails = None):
-        if (courseLessonDetails is None):
-            self.id = id
-            self.courseId = courseId
-            self.lessonNumber = lessonNumber
-            self.shortDescription = shortDescription
-            self.timeSpan = timeSpan
-            self.videoURL = videoURL
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = courseLessonDetails['id']
-            self.courseId = courseLessonDetails['courseId']
-            self.lessonNumber = courseLessonDetails['lessonNumber']
-
-            # non mandatory fields - set default values:
-            self.shortDescription = ''
-            self.videoURL = ''
-            self.timeSpan = ''
-
-            # non mandatory values - set only if existing
-            if ('shortDescription' in courseLessonDetails):
-                self.shortDescription = courseLessonDetails['shortDescription']
-
-            if ('timeSpan' in courseLessonDetails):
-                self.timeSpan = courseLessonDetails['timeSpan']
-
-            if ('videoURL' in courseLessonDetails):    
-                self.videoURL = courseLessonDetails['videoURL']
-
-
-class courseData:
-    def __init__(self, id = None, name  = None, description = None, issueId = None, partsNumber = None, courseDetails = None):
-        if (courseDetails is None):
-            self.id = id
-            self.name = name
-            self.description = description,
-            self.issueId = issueId
-            self.partsNumber = partsNumber
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = courseDetails['id']
-            self.name = courseDetails['name']
-            self.issueId = courseDetails['issueId']
-
-            # non mandatory fields - set default values:
-            self.description = ''
-            self.partsNumber = ''
-
-            # non mandatory values - set only if existing
-            if ('description' in courseDetails):
-                self.description = courseDetails['description']
-
-            if ('partsNumber' in courseDetails):
-                self.partsNumber = courseDetails['partsNumber']
-
-class courseLessonData:
-    def __init__(self, id = None, courseId  = None, lessonNumber = None, shortDescription = None, videoURL = None, courseLessonDetails = None):
-        if (courseLessonDetails is None):
-            self.id = id
-            self.courseId = courseId
-            self.lessonNumber = lessonNumber
-            self.shortDescription = shortDescription
-            self.videoURL = videoURL
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = courseLessonDetails['id']
-            self.courseId = courseLessonDetails['courseId']
-            self.lessonNumber = courseLessonDetails['lessonNumber']
-
-            # non mandatory fields - set default values:
-            self.shortDescription = ''
-            self.videoURL = ''
-
-            # non mandatory values - set only if existing
-            if ('shortDescription' in courseLessonDetails):
-                self.shortDescription = courseLessonDetails['shortDescription']
-
-            if ('videoURL' in courseLessonDetails):    
-                self.videoURL = courseLessonDetails['videoURL']
-
-
-class additionalInfoData:
-    def __init__(self, id = None, issueId = None, type = None, name  = None, description = None, url = None, additionalInfoDetails = None):
-        if (additionalInfoDetails is None):
-            self.id = id
-            self.issueId = issueId
-            self.type = type
-            self.name = name
-            self.description = description
-            self.url = url
-
-        else:
-            # parse from json
-
-            # mandatory fields
-            self.id = additionalInfoDetails['id']
-            self.name = additionalInfoDetails['name']
-            self.issueId = additionalInfoDetails['issueId']
-            self.type = additionalInfoDetails['type']
-
-            # non mandatory fields - set default values:
-            self.description = ''
-            self.url = ''
-
-            # non mandatory values - set only if existing
-            if ('description' in additionalInfoDetails):
-                self.description = additionalInfoDetails['description']
-
-            if ('url' in additionalInfoDetails):
-                self.url = additionalInfoDetails['url']
-
-class issueData:
-    def __init__(self,  id = None, name  = None, description = None, issuseDetails = None):
-        if (issuseDetails is None):
-            self.id = id
-            self.name = name
-            self.description = description
-
-        else:
-            #parse from json
-
-            #mandatory fields
-            self.id = issuseDetails['id']
-            self.name = issuseDetails['name']
-            self.description = issuseDetails['description']
-
-class trainingMapData:
-    def __init__(self, stageData):
-        self.currentStage = stageData
-        self.pastStages = []
-        self.futureStages = []
-        pass
 
 class usersDB:
     db_file:str
@@ -284,6 +44,28 @@ class usersDB:
         user = Query()
         self.db.update ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson},
                         where ('id') == userDetails.id)
+
+    def getQuestionDetails (self, questionId):
+        questionQuery = Query()
+        questionsTable = self.db.table('discoveryQuestionsTable')
+        foundQuestionDetails = questionsTable.search (questionQuery.id == questionId)
+
+        questionDetails = None
+
+        questionDetails = Munch.fromDict(foundQuestionDetails[0])
+        print (questionDetails.text)
+        print (questionDetails.type)
+
+        typeData = type(questionDetails.options)
+
+        for currOption in questionDetails.options:
+            for attr in currOption.attributes:
+                print (currOption.attributes[attr])
+
+        if (len (foundQuestionDetails) > 0):
+            #questionDetails = json.loads(foundQuestionDetails[0].__str__(), object_hook=lambda d: SimpleNamespace(**d))
+            pass
+        pass
 
     def createTrainingData (self):
         issuesTable = self.db.table ('issuesTable')
@@ -577,3 +359,7 @@ class UsersLogic(metaclass=Singleton):
     def setUserNextCourseLesson(self, userName):
         userDetalis = self.usersDB.setUserNextCourseLesson(userName)
         return userDetalis
+
+    def getQuestionDetails (self, questionId):
+        questionDetails = self.usersDB.getQuestionDetails (questionId)
+        return questionDetails
