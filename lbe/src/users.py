@@ -6,7 +6,7 @@ from types import SimpleNamespace
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
-from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData
 
 STEPS_FOR_STAGE_MAP = 2
 
@@ -52,17 +52,8 @@ class usersDB:
 
         questionDetails = None
 
-        questionDetails = Munch.fromDict(foundQuestionDetails[0])
-        print (questionDetails.text)
-        print (questionDetails.type)
-
-        typeData = type(questionDetails.options)
-
-        for currOption in questionDetails.options:
-            for attr in currOption.attributes:
-                print (currOption.attributes[attr])
-
         if (len (foundQuestionDetails) > 0):
+            currQuestionData = questionData(questionDetails = foundQuestionDetails[0])
             #questionDetails = json.loads(foundQuestionDetails[0].__str__(), object_hook=lambda d: SimpleNamespace(**d))
             pass
         pass

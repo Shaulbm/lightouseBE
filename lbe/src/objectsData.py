@@ -1,7 +1,3 @@
-from _typeshed import Self
-from lbe.src.gateway import question_details
-
-
 class UserData:
     def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userDetails = None):
         if (userDetails is None):
@@ -250,9 +246,9 @@ class attributesDeltaData:
     def __init__(self) -> None:
         pass
 
-class questionOptionsData: 
-    def __init__ (self, idx = None, text = None, attributesDelta = None, questionOptionsDetails = None):
-        if (questionOptionsDetails is None):
+class questionOptionData: 
+    def __init__ (self, idx = None, text = None, attributesDelta = None, questionOptionDetails = None):
+        if (questionOptionDetails is None):
             self.idx = idx
             self.text = text
             self.attributeDetla = None
@@ -263,9 +259,9 @@ class questionOptionsData:
         else:
             #parse from list 
             # mandatory fields
-            self.idx = questionOptionsDetails['idx']
-            self.text = questionOptionsDetails['text']
-            self.attributeDetla = questionOptionsDetails['attributes'].copy()
+            self.idx = questionOptionDetails['idx']
+            self.text = questionOptionDetails['text']
+            self.attributeDetla = questionOptionDetails['attributes'].copy()
 
 class questionRangeData: 
     def __init__ (self, minText = None, maxText = None, rangeValue = None, minAttributesDelta = None, maxAttributesDelta = None, questionRangeDetails = None):
@@ -324,14 +320,14 @@ class questionData:
             self.options = None
             self.range = None
 
-            if ('options' in question_details):
-                if (question_details['options'].len > 0):
+            if ('options' in questionDetails):
+                if (questionDetails['options'].len > 0):
                     self.options = []
 
                     #create options list
-                    for currOption in question_details['options']:
-                        self.options.append(questionOptionsData(currOption))
+                    for currOption in questionDetails['options']:
+                        self.options.append(questionOptionDetails = questionOptionData(currOption))
 
-            if ('range' in question_details):
-                if (question_details['range'].len > 0):
-                    self.range = questionRangeData(question_details['range'])
+            if ('range' in questionDetails):
+                if (questionDetails['range'].len > 0):
+                    self.range = questionRangeData(questionRangeDetails = questionDetails['range'])
