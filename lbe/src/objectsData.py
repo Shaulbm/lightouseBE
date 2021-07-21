@@ -1,5 +1,5 @@
 class UserData:
-    def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userDetails = None):
+    def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
         if (userDetails is None):
             self.id = id
             self.name = name
@@ -8,6 +8,12 @@ class UserData:
             self.currentIssue = currentIssue
             self.trainingStage = trainingStage
             self.courseLesson = courseLesson
+            
+            if (userAttributes is None):
+                self.userAttributes = None
+            else:
+                self.userAttributes = userAttributes.copy()
+
         else:
             # parse from json
 
@@ -20,7 +26,7 @@ class UserData:
             self.status = ''
             self.currentIssue = ''
             self.trainingStage = ''
-
+            self.userAttributes = None
 
             # non mandatory values - set only if existing
             if ('mail' in userDetails):
@@ -37,6 +43,10 @@ class UserData:
 
             if ('courseLesson' in userDetails):
                 self.courseLesson = userDetails['courseLesson']
+
+            if ('attributes' in userDetails):
+                if (len(userDetails['attributes']) > 0):            
+                    self.userAttributes = userDetails['attributes'].copy()
 
 class trainingStageData:
     def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, timespan = None, descriptionInDetails = None, trainingStageDetails = None):
