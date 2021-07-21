@@ -191,11 +191,11 @@ class courseLessonData:
 
 
 class additionalInfoData:
-    def __init__(self, id = None, issueId = None, type = None, name  = None, description = None, url = None, additionalInfoDetails = None):
+    def __init__(self, id = None, issueId = None, infoType = None, name  = None, description = None, url = None, additionalInfoDetails = None):
         if (additionalInfoDetails is None):
             self.id = id
             self.issueId = issueId
-            self.type = type
+            self.infoType = infoType
             self.name = name
             self.description = description
             self.url = url
@@ -207,7 +207,7 @@ class additionalInfoData:
             self.id = additionalInfoDetails['id']
             self.name = additionalInfoDetails['name']
             self.issueId = additionalInfoDetails['issueId']
-            self.type = additionalInfoDetails['type']
+            self.infoType = additionalInfoDetails['type']
 
             # non mandatory fields - set default values:
             self.description = ''
@@ -270,38 +270,38 @@ class questionRangeData:
             self.maxText = maxText
             self.rangeValue = rangeValue
             self.minAttributesDelta = None
-            self.maxAttributesDetla = None
+            self.maxAttributesDelta = None
                 
             if (minAttributesDelta is not None):
                 self.minAttributesDelta = minAttributesDelta.copy()
 
             if (maxAttributesDelta is not None):
-                self.minAttributesDelta = maxAttributesDelta.copy()
+                self.maxAttributesDelta = maxAttributesDelta.copy()
 
         else:
             #parse from list 
             # mandatory fields
-            self.minText = questionRangeDetails['min']['idx']
-            self.maxText = questionRangeDetails['max']['idx']
-            self.tangeValue = questionRangeDetails['rangeValue']
+            self.minText = questionRangeDetails['min']['text']
+            self.maxText = questionRangeDetails['max']['text']
+            self.rangeValue = questionRangeDetails['rangeValue']
             self.minAttributesDelta = None
-            self.maxAttributesDetla = None
+            self.maxAttributesDelta = None
 
             if ('attributes' in questionRangeDetails['min']):
-                if (questionRangeDetails['min']['attributes'].len > 0):
+                if (len(questionRangeDetails['min']['attributes']) > 0):
                     self.minAttributesDelta = questionRangeDetails['min']['attributes'].copy()
             
             if ('attributes' in questionRangeDetails['max']):
-                if (questionRangeDetails['max']['attributes'].len > 0):            
+                if (len(questionRangeDetails['max']['attributes']) > 0):            
                     self.maxAttributesDelta = questionRangeDetails['max']['attributes'].copy()
 
 class questionData:
-    def __init__(self, id = None, text = None, stage = None, type = None, options = None, range = None, questionDetails = None):
+    def __init__(self, id = None, text = None, stage = None, questionType = None, options = None, range = None, questionDetails = None):
         if (questionDetails is None):
             self.id = id
             self.text = text
             self.stage = stage
-            self.type = type
+            self.Questiontype = questionType
             self.options = None
             self.range = None
 
@@ -316,18 +316,19 @@ class questionData:
             self.id = questionDetails['id']
             self.text = questionDetails['text']
             self.stage = questionDetails['stage']
-            self.type = questionDetails['type']
+            self.Questiontype = questionDetails['type']
             self.options = None
             self.range = None
 
             if ('options' in questionDetails):
-                if (questionDetails['options'].len > 0):
+                optionsDBG = questionDetails['options']
+                if (len(questionDetails['options']) > 0):
                     self.options = []
 
                     #create options list
-                    for currOption in questionDetails['options']:
-                        self.options.append(questionOptionDetails = questionOptionData(currOption))
+                    for currOptionIdx in questionDetails['options']:
+                        self.options.append(questionOptionData(questionOptionDetails = questionDetails['options'][currOptionIdx]))
 
             if ('range' in questionDetails):
-                if (questionDetails['range'].len > 0):
+                if (len (questionDetails['range']) > 0):
                     self.range = questionRangeData(questionRangeDetails = questionDetails['range'])

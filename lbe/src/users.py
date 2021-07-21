@@ -53,10 +53,9 @@ class usersDB:
         questionDetails = None
 
         if (len (foundQuestionDetails) > 0):
-            currQuestionData = questionData(questionDetails = foundQuestionDetails[0])
-            #questionDetails = json.loads(foundQuestionDetails[0].__str__(), object_hook=lambda d: SimpleNamespace(**d))
-            pass
-        pass
+            questionDetails = questionData(questionDetails = foundQuestionDetails[0])
+        
+        return questionDetails
 
     def createTrainingData (self):
         issuesTable = self.db.table ('issuesTable')
