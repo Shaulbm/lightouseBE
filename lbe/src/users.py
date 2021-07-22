@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
-from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData
 
 STEPS_FOR_STAGE_MAP = 2
 
