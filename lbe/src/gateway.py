@@ -59,3 +59,8 @@ def additional_issue_details(issueId):
 def question_details(questionId):
     questionDetails = users.getQuestionDetails(questionId)
     return questionDetails
+
+@router.post("/respondQuestion")
+def question_response(questionId, userId, response):
+    questionDetails = users.respondQuestion(questionId, userId, response)
+    return questionDetails
