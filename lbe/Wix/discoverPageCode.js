@@ -1,6 +1,7 @@
 // API Reference: https://www.wix.com/velo/reference/api-overview/introduction
 // “Hello, World!” Example: https://learn-code.wix.com/en/article/1-hello-world
 import wixAnimations from 'wix-animations';
+import wixWindow from 'wix-window';
 import {fetch} from 'wix-fetch'; 
 import wixUsers from 'wix-users';
 
@@ -20,9 +21,28 @@ $w.onReady(function () {
 	// Write your JavaScript here
 
 	// To select an element by ID use: $w("#elementID")
+	hideIssuesOption();
+	$w("#OpenDiscovery").show();
 
 	// Click "Preview" to run your code
 });
+
+
+export function showIssuesOption ()
+{
+	$w("#feedback").show();
+	$w("#timeManagement").show();
+	$w("#technicalManagerialBalance").show();
+	$w("#leading").show();
+}
+
+export function hideIssuesOption ()
+{
+	$w("#feedback").hide();
+	$w("#timeManagement").hide();
+	$w("#technicalManagerialBalance").hide();
+	$w("#leading").hide();
+}
 
 export function changeSeletionText (selectionText)
 {
@@ -48,8 +68,6 @@ export function changeSeletionText (selectionText)
 		console.log ("timeline replay");
 		timeline1.replay();
 	}
-
-
 }
 
 export async function setUserIssueSelection(selectedIssueId)
@@ -108,6 +126,23 @@ export function technicalManagerialBalance_click(event) {
 export function leading_click(event) {
 	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
 	// Add your code for this event here: 
+	console.log("leading selected");
 	setUserIssueSelection(leadingIssue);
 	changeSeletionText ("Want to improve in leading? let's train!")
+}
+
+/**
+ *	Adds an event handler that runs when the element is clicked.
+ *	 @param {$w.MouseEvent} event
+ */
+export async function OpenDiscovery_click(event) {
+	// This function was added from the Properties & Events panel. To learn more, visit http://wix.to/UcBnC-4
+	// Add your code for this event here: 
+	await wixWindow.openLightbox("DiscoveryForm");
+
+	changeSeletionText("are these issues bothering you?");
+
+	$w("#OpenDiscovery").hide();
+	showIssuesOption();
+	$w("#selectedIssue").show();
 }

@@ -11,18 +11,21 @@ let dislikeChallengePressed = false;
 
 $w.onReady (async function ()
 {
-	await $w("#processImage").hide();
-	await $w("#processDownload").hide();
-
+	$w("#processBox").hide();
+	$w("#processImage").hide();
+	$w("#processDownload").hide();
+	
 	await updateUserData();
 
-	await $w("#loadingBox1").hide();
-	await $w("#loadingBox2").hide();
+	$w("#loadingBox1").hide();
+	$w("#loadingBox2").hide();
 });
 
 export async function updateUserData()
 {
    const userData = await fetchUserData();
+
+	console.log ("after fetch data");
 
 	if (userData.currentIssue == "")
 	{
@@ -30,7 +33,11 @@ export async function updateUserData()
 		$w('#issueDescription').text = "Nothing is bothering you? Please go the Discover page and do some work :)";
 	}
 
+	console.log ("after user response");
+
 	const issueData = await fetchIssueData(userData.currentIssue);
+
+	console.log ("got issue data");
 
 	if (issueData)
 	{
@@ -41,13 +48,17 @@ export async function updateUserData()
 	const issueAdditionalDataList = await fetchIssueAdditionalData(issueData.id);
 	let processImageUrl = "";
 
+	console.log ("got issue additional data");
+
 	if (issueAdditionalDataList)
 	{
+		console.log ("issueAddtionalData has values");
 		// Search for the process
 		for (let currIssueDataIdx = 0; currIssueDataIdx < issueAdditionalDataList.length; currIssueDataIdx++)
 		{
-			if (issueAdditionalDataList[currIssueDataIdx].type == "process")
+			if (issueAdditionalDataList[currIssueDataIdx].infoType == "process")
 			{
+				console.log ("process image url was set");
 				processImageUrl = issueAdditionalDataList[currIssueDataIdx].url;
 				break;
 			}	
@@ -59,15 +70,19 @@ export async function updateUserData()
 		$w("#processImage").src = processImageUrl;
 		$w("#processDownload").link = processImageUrl;
 
-		await $w("#processImage").show();
-		await $w("#processDownload").show();
+		$w("#processBox").show();
+		$w("#processImage").show();
+		$w("#processDownload").show();
 	}
 	else
 	{
 		// No process URL - hide the process data
-		await $w("#processImage").hide();
-		await $w("#processDownload").hide();
+		$w("#processBox").hide();
+		$w("#processImage").hide();
+		$w("#processDownload").hide();
 	}
+
+	console.log ("before training data");
 
 	const trainingStageData = await fetchTrainingData(userData.currentIssue, userData.trainingStage);
 
@@ -81,6 +96,8 @@ export async function updateUserData()
 		$w('#currentChallengeShortDesc').text = "No active training";
 		$w('#currentChallengeFullDesc').text = "can't find any training data on this issue";
 	}
+
+	console.log ("before course data");
 
 	const courseLessonData = await fetchCourseData(userData.currentIssue, userData.courseLesson);
 
@@ -98,6 +115,8 @@ export async function updateUserData()
 		$w('#currentLessonShortDesc').text = "No course data";
 		//$w('#lessonVideoURL').text = "can't find any course data on this issue";
 	}
+
+	console.log ("before map data");
 
 	const trainingMapData = await fetchTrainingMapData(userData.currentIssue, userData.trainingStage);
 	if (trainingMapData)
@@ -130,7 +149,7 @@ export async function updateUserData()
 
 /**
  *	Adds an event handler that runs when the element is clicked.
- *	 @param {$w.MouseEvent} event
+ *	 @param {$w.MouseEvent} 
  */
 export async function fetchUserData()
 {
@@ -146,6 +165,7 @@ export async function fetchUserData()
 	const httpResponse = await fetch(url,{'method':'POST'});
     if (httpResponse.ok){
         const result = await httpResponse.json();
+		console.log ("got user details response");
         return result;
     }
     return {};
