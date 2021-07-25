@@ -47,27 +47,27 @@
 		"1": {
 			"id": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
 			"name": "Feedback",
-			"description": "The user have issues providing feedback to his subprdonates, his peers or to his managers"
+			"description": "Providing it to subprdonates, peers or managers"
 		},
 		"2": {
 			"id": "427e1335-5a0f-45a2-8c3f-3139f98452df",
 			"name": "Time Management",
-			"description": "The user have issues managing his time, his tasks and his team"
+			"description": "Managing time...Your tasks and the team's"
 		},
 		"3": {
 			"id": "5631dfbc-65a7-431a-b08f-456058bbddf7",
 			"name": "Technical Vs Managerial Balance",
-			"description": "The user have issues balancing his focus between the technical and managerial aspects of the role"
+			"description": "Balancing your focus between the technical and managerial aspects of your role"
 		},
 		"4": {
 			"id": "dabe54b7-47f3-4ed9-a02c-11868f3d94d1",
 			"name": "Leading",
-			"description": "The user wants to get better at leading his team"
+			"description": "Leading the team, not managing it"
 		},
 		"5": {
 			"id": "a21ffbbe-97e6-418d-96a7-8625ed85f796",
 			"name": "Micromanagement",
-			"description": "The user wants to allow the right space to his team members"
+			"description": "Allow the right space to your team members"
 		}
 	},
 	"trainingMetaData": {
