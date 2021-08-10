@@ -18,8 +18,10 @@ class usersDB:
     def verify_user_exists (self, userName, userMail):
         userId = ""
         user = Query()
+        usersTable = self.db.table('usersTable')
 
-        foundUser = self.db.search (user.name == userName)
+
+        foundUser = usersTable.search (user.name == userName)
 
         if (len(foundUser) == 0):
            # no user with this name exists - add user  
@@ -37,11 +39,13 @@ class usersDB:
         return userDetails
 
     def insert_user (self, userDetails):
-        self.db.insert ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson})
+        usersTable = self.db.table ("usersTable")
+        usersTable.insert ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson})
 
     def update_user (self, userDetails):
-        user = Query()
-        self.db.update ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson},
+        usersTable = self.db.table('usersTable')
+
+        usersTable.update ({'id': userDetails.id ,'name': userDetails.name, 'mail': userDetails.mail, 'status': userDetails.status, 'currentIssue' : userDetails.currentIssue, 'trainingStage': userDetails.trainingStage, 'courseLesson' : userDetails.courseLesson},
                         where ('id') == userDetails.id)
 
     def getQuestionDetails (self, questionId):
@@ -57,6 +61,9 @@ class usersDB:
         return questionDetails
 
     def createTrainingData (self):
+        #not required any longer, protecting against DB corruption
+        return
+
         issuesTable = self.db.table ('issuesTable')
         issueId = str(uuid.uuid4())
         issuesTable.insert({
@@ -273,7 +280,8 @@ class usersDB:
     def getUserDetails (self, Name):
         user = Query()
 
-        foundUser = self.db.search (user.name == Name)
+        usersTable = self.db.table('usersTable')
+        foundUser = usersTable.search (user.name == Name)
         userDetails = None
 
         if (len(foundUser) > 0):

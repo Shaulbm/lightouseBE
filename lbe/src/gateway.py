@@ -12,9 +12,9 @@ def register_user(user):
 
 @router.get("/createTrainingData")
 def create_training_data():
+    return None #do nothing
     users.createTrainingData()
-    pass
-
+    
 @router.post("/getTrainingStage")
 def get_training_stage(issueId, stage):
     trainingStageDetails = users.getTrainingStage(issueId, stage)
