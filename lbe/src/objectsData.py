@@ -20,6 +20,7 @@ class UserData:
             # mandatory fields
             self.id = userDetails['id']
             self.name = userDetails['name']
+            self.orgId = userDetails['orgId']
 
             # non mandatory fields - set default values:
             self.mail = ''
@@ -47,6 +48,27 @@ class UserData:
             if ('attributes' in userDetails):
                 if (len(userDetails['attributes']) > 0):            
                     self.userAttributes = userDetails['attributes'].copy()
+
+class organizationData:
+    def __init__(self, id = None, name = None, url = None, orgDetails = None):
+        if (orgDetails is None):
+            self.id = id
+            self.name = name
+            self.url = url
+
+        else:
+            # parse from JSON
+
+            # mandatory fields
+            self.id = orgDetails['id']
+            self.name = orgDetails['name']
+
+            # non mandatory fields - set default values:
+            self.url = ''
+
+            # non mandatory values - set only if existing
+            if ('url' in orgDetails):
+                self.mail = orgDetails['url']
 
 class trainingStageData:
     def __init__(self, id = None, trainingId  = None, challengeNumber = None, shortDescription = None, timespan = None, descriptionInDetails = None, trainingStageDetails = None):

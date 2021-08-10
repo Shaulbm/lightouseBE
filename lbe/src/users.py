@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
-from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData, organizationData
 
 STEPS_FOR_STAGE_MAP = 2
 
@@ -25,10 +25,14 @@ class usersDB:
 
         if (len(foundUser) == 0):
            # no user with this name exists - add user  
+
+            unknownOrg = self.getOrgData("Unknown")
+
             userId = str(uuid.uuid4())
             userDetails = UserData (id = userId, 
                                     name = userName, 
-                                    mail = userMail, 
+                                    mail = userMail,
+                                    orgId = unknownOrg.id,
                                     status = 'new', currentIssue = '', 
                                     trainingStage = '')
             self.insert_user(userDetails)
@@ -304,6 +308,20 @@ class usersDB:
                 additionalInfoDetailsList.append(additionalInfoDetails)
 
         return additionalInfoDetailsList
+
+    def getOrgData (self, orgName):
+        org = Query()
+        orgsTable = self.db.table("organizationsTable")
+        foundOrg = orgsTable.search(org.name == orgName)
+
+        orgDetails = None
+
+        if (len(foundOrg) > 0):
+            # user found 
+            orgDetails = organizationData (orgDetails = foundOrg[0])
+
+        return orgDetails
+
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
