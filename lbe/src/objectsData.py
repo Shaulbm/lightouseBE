@@ -1,9 +1,19 @@
+from enum import Enum
+
+class UserRoles(Enum):
+    UNKNOWN = 1
+    USER = 2
+    MANAGER = 3
+    HR = 4
+
 class UserData:
-    def __init__(self, id = None, name  = None, mail = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
+    def __init__(self, id = None, name  = None, mail = None, role = None, managerId = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
         if (userDetails is None):
             self.id = id
             self.name = name
             self.mail = mail
+            self.role = role
+            self.managerId = managerId
             self.status = status
             self.currentIssue = currentIssue
             self.trainingStage = trainingStage
@@ -24,6 +34,8 @@ class UserData:
 
             # non mandatory fields - set default values:
             self.mail = ''
+            self.role = UserRoles.UNKNOWN
+            self.managerId = ''
             self.status = ''
             self.currentIssue = ''
             self.trainingStage = ''
@@ -32,6 +44,17 @@ class UserData:
             # non mandatory values - set only if existing
             if ('mail' in userDetails):
                 self.mail = userDetails['mail']
+
+            if ('role' in userDetails):
+                if (userDetails['role'] == 'user'):
+                    self.role = UserRoles.USER
+                elif (userDetails['role'] == 'manager'):
+                    self.role = UserRoles.MANAGER
+                elif (userDetails['role'] == 'hr'):
+                    self.role = UserRoles.HR
+
+            if ('managerId' in userDetails):
+                self.managerId = userDetails['managerId']
 
             if ('status' in userDetails):
                 self.status = userDetails['status']

@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
-from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData, organizationData
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData, organizationData, UserRoles
 
 STEPS_FOR_STAGE_MAP = 2
 
@@ -32,6 +32,7 @@ class usersDB:
             userDetails = UserData (id = userId, 
                                     name = userName, 
                                     mail = userMail,
+                                    role = UserRoles.USER,
                                     orgId = unknownOrg.id,
                                     status = 'new', currentIssue = '', 
                                     trainingStage = '')
@@ -239,7 +240,7 @@ class usersDB:
 
     
     def setUserCurrIssueId (self, userName, issueId):
-        userDetails = self.getUserDetails(userName)
+        userDetails = self.getUserDetailsByName(userName)
 
         if (userDetails):
             userDetails.currentIssue = issueId
@@ -250,7 +251,7 @@ class usersDB:
         return userDetails
 
     def setUserNextTrainingStage (self, userName):
-        userDetails = self.getUserDetails(userName)
+        userDetails = self.getUserDetailsByName(userName)
 
         if (userDetails):
             currentTrainingData = self.getTrainingData (userDetails.currentIssue)
@@ -266,7 +267,7 @@ class usersDB:
         return userDetails
 
     def setUserNextCourseLesson (self, userName):
-        userDetails = self.getUserDetails(userName)
+        userDetails = self.getUserDetailsByName(userName)
 
         if (userDetails):
             currentCourseData = self.getCourseData (userDetails.currentIssue)
@@ -281,7 +282,20 @@ class usersDB:
         
         return userDetails
 
-    def getUserDetails (self, Name):
+    def getUserDetailsById (self, id):
+        user = Query()
+
+        usersTable = self.db.table('usersTable')
+        foundUser = usersTable.search (user.id == id)
+        userDetails = None
+
+        if (len(foundUser) > 0):
+            # user found 
+            userDetails = UserData (userDetails = foundUser[0])
+        
+        return userDetails
+
+    def getUserDetailsByName (self, Name):
         user = Query()
 
         usersTable = self.db.table('usersTable')
@@ -322,6 +336,29 @@ class usersDB:
 
         return orgDetails
 
+    def getUserManagerDetails(self, id = None, name = None):
+        if (id is None and name is None):
+            return None
+
+        userDetails = None
+
+        if (id is not None):
+            userDetails = self.getUserDetailsById(id)
+        elif (name is not None):
+            # elif to avoid 2 consecutive calls in case both id and name are given
+            userDetails = self.getUserDetailsByName(name)
+
+        if (userDetails is None):
+            # User does not exist
+            return None
+
+        if (userDetails.managerId is None or userDetails.managerId == ''):
+            # no manager data
+            return None
+
+        managerDetails = self.getUserDetailsById(userDetails.managerId)
+
+        return managerDetails
 
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
@@ -378,3 +415,7 @@ class UsersLogic(metaclass=Singleton):
     def getQuestionDetails (self, questionId):
         questionDetails = self.usersDB.getQuestionDetails (questionId)
         return questionDetails
+
+    def getManagerDetails (self, id = None, name= None):
+        managerDetails = self.usersDB.getUserManagerDetails(id = id, name = name)
+        return managerDetails

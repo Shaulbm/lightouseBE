@@ -64,3 +64,8 @@ def question_details(questionId):
 def question_response(questionId, userId, response):
     questionDetails = users.respondQuestion(questionId, userId, response)
     return questionDetails
+
+@router.post("/userManager")
+def get_manager_details(userName):
+    managerDetails = users.getManagerDetails(name = userName)
+    return managerDetails
