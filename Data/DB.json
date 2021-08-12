@@ -57,7 +57,7 @@
 			"name": "manager@gmail.com",
 			"mail": "",
 			"role": "manager",
-			"managerId": "",
+			"managerId": "d83ab9f7-f0f0-4e78-8ccd-7894c4f27471",
 			"orgId": "e0c19e01-8e9a-4a8e-a15c-dea461b76acf",
 			"status": "new",
 			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
@@ -74,6 +74,57 @@
 			"name": "hr@gmail.com",
 			"mail": "",
 			"role": "hr",
+			"managerId": "",
+			"orgId": "e0c19e01-8e9a-4a8e-a15c-dea461b76acf",
+			"status": "new",
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "1",
+			"courseLesson": "1",
+			"attributes" : {
+				"People Oriented" : "2",
+				"Negative Feedback Gap" : "3",
+				"Care for the team" : "2"
+			}
+		},
+		"6": {
+			"id": "c5ace2f7-21fa-4afe-bc6d-a7bf517bc7f5",
+			"name": "sub1@gmail.com",
+			"mail": "",
+			"role": "user",
+			"managerId": "b0317aca-d4a4-40ef-bcc4-9f47364a8f4d",
+			"orgId": "e0c19e01-8e9a-4a8e-a15c-dea461b76acf",
+			"status": "new",
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "1",
+			"courseLesson": "1",
+			"attributes" : {
+				"People Oriented" : "2",
+				"Negative Feedback Gap" : "3",
+				"Care for the team" : "2"
+			}
+		},
+		"7": {
+			"id": "62fa80ec-f924-4d14-8071-956c0c3b34e2",
+			"name": "sub2@gmail.com",
+			"mail": "",
+			"role": "user",
+			"managerId": "b0317aca-d4a4-40ef-bcc4-9f47364a8f4d",
+			"orgId": "e0c19e01-8e9a-4a8e-a15c-dea461b76acf",
+			"status": "new",
+			"currentIssue": "ee728c15-c04a-4ecf-9c19-2a07ed37b65a",
+			"trainingStage": "1",
+			"courseLesson": "1",
+			"attributes" : {
+				"People Oriented" : "2",
+				"Negative Feedback Gap" : "3",
+				"Care for the team" : "2"
+			}
+		},
+		"8": {
+			"id": "d83ab9f7-f0f0-4e78-8ccd-7894c4f27471",
+			"name": "boss@gmail.com",
+			"mail": "",
+			"role": "user",
 			"managerId": "",
 			"orgId": "e0c19e01-8e9a-4a8e-a15c-dea461b76acf",
 			"status": "new",

@@ -29,4 +29,5 @@ while index > 0:
 #gateway.additional_issue_details('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
 #gateway.question_details("35270681-08ec-44a5-b469-9ee8cf97bd31")
 #userDetails = gateway.register_user("shaul.ben.maor@gmail.com")
-managerDetails = gateway.get_manager_details('shaul.ben.maor@gmail.com')
+#managerDetails = gateway.get_manager_details('shaul.ben.maor@gmail.com')
+gateway.get_users_under("boss@gmail.com")

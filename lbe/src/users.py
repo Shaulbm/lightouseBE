@@ -2,10 +2,12 @@
 from threading import current_thread
 import json
 from types import SimpleNamespace
+import anytree
 from tinydb import TinyDB, Query, where
 import uuid
 from singleton import Singleton
-from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData, organizationData, UserRoles
+from anytree import Node, RenderTree, AsciiStyle
+from objectsData import UserData, trainingStageData, courseLessonData, courseData, trainingMapData, trainingData, questionData, issueData, additionalInfoData, organizationData, UserRoles, UserMinimalData
 
 STEPS_FOR_STAGE_MAP = 2
 
@@ -360,6 +362,76 @@ class usersDB:
 
         return managerDetails
 
+    def getUsersUnder (self, name):
+        currentUser = self.getUserDetailsByName(name)
+
+        foundSubordinatesDataList = []
+
+        if (currentUser is None):
+            return None
+
+        user = Query()
+        usersTable = self.db.table("usersTable")
+
+        if (currentUser.orgId is None or currentUser.orgId == ""):
+            return None
+
+        # get all users in the user organization
+        foundUsers = usersTable.search(user.orgId == currentUser.orgId)
+
+        if (len(foundUsers) == 0):
+            # no users in the organization
+            return foundSubordinatesDataList
+
+        # if the currentUser is HR return all org
+        if (currentUser.role == UserRoles.HR):
+            # this is the HR of the organization - return a list of all the employees 
+            for currentFoundUser in foundUsers:
+                currentUserDetails = UserData(userDetails = currentFoundUser)
+
+                if (currentUserDetails.id != currentUser.id):
+                    foundSubordinatesDataList.append (UserMinimalData(id = currentUserDetails.id, name = currentUserDetails.name))
+
+            return foundSubordinatesDataList
+
+        rootNode = Node('root')
+        selectedManagerNode = None
+
+        # for each user in the organization
+        for currentFoundUser in foundUsers:
+            currentUserDetails = UserData(userDetails = currentFoundUser)
+            
+            currentUserNode = anytree.search.find_by_attr(rootNode, currentUserDetails.id)
+            currentUserParentNode = anytree.search.find_by_attr(rootNode, currentUserDetails.managerId)
+
+            if (currentUserParentNode is None):
+                #this is the first time we find this Id
+                currentUserParentNode = Node(currentUserDetails.managerId, rootNode)
+            
+            if (currentUserNode is None):
+                #this is the first time we find this Id
+                currentUserNode = Node (currentUserDetails.id, currentUserParentNode)
+            else:
+                # this user Id is already in the tree
+                currentUserNode.parent = currentUserParentNode
+
+            if (currentUserDetails.name == name):
+                #this is the user that we want to get all his subordinates
+                selectedManagerNode = currentUserNode
+
+        # now we have the organization hierarchy, get the list of all this managers subordinates
+        foundSubordinates = anytree.search.findall(selectedManagerNode)
+
+        if (foundSubordinates is not None):
+            foundSubordinatesList = list(foundSubordinates)
+            for currentSubordinate in foundSubordinatesList:
+                if (currentSubordinate.name != currentUser.id):
+                    #the manager is also part of the nodes list and should be ignored
+                    currentUserDetails = self.getUserDetailsById(currentSubordinate.name)
+                    foundSubordinatesDataList.append(UserMinimalData(currentUserDetails.id, currentUserDetails.name))
+
+        return foundSubordinatesDataList
+            
 class UsersLogic(metaclass=Singleton):
     def __init__(self) -> None:
         self.usersDB = usersDB('c:\\dev\\lighthouseBE\\Data\\DB.json')
@@ -419,3 +491,7 @@ class UsersLogic(metaclass=Singleton):
     def getManagerDetails (self, id = None, name= None):
         managerDetails = self.usersDB.getUserManagerDetails(id = id, name = name)
         return managerDetails
+
+    def getUsersUnder (self, name):
+        usersList = self.usersDB.getUsersUnder (name)
+        return usersList

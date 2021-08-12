@@ -69,3 +69,8 @@ def question_response(questionId, userId, response):
 def get_manager_details(userName):
     managerDetails = users.getManagerDetails(name = userName)
     return managerDetails
+
+@router.post("/usersUnder")
+def get_users_under(userName):
+    usersList = users.getUsersUnder(userName)
+    return usersList

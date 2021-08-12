@@ -6,6 +6,11 @@ class UserRoles(Enum):
     MANAGER = 3
     HR = 4
 
+class UserMinimalData:
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
 class UserData:
     def __init__(self, id = None, name  = None, mail = None, role = None, managerId = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
         if (userDetails is None):
