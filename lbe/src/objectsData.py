@@ -77,6 +77,36 @@ class UserData:
                 if (len(userDetails['attributes']) > 0):            
                     self.userAttributes = userDetails['attributes'].copy()
 
+
+class UserAttributesData:
+    def __init__(self, userId = None, demographicData = None, userAttributes = None, userAttributesDetails = None):
+        if (userAttributesDetails is None):
+            self.userId = userId
+
+            if (demographicData is None):
+                self.demographicData = None
+            else:
+                self.demographicData = demographicData.copy()
+
+            if (userAttributes is None):
+                self.userAttributes = None
+            else:
+                self.userAttributes = userAttributes.copy()
+
+        else:
+            # parse from json
+
+            # mandatory fields
+            self.userId = userAttributesDetails['userId']
+
+            if ('demographicData' in userAttributesDetails):
+                if (len(userAttributesDetails['demographicData']) > 0):            
+                    self.demographicData = userAttributesDetails['demographicData'].copy()
+
+            if ('attributes' in userAttributesDetails):
+                if (len(userAttributesDetails['attributes']) > 0):            
+                    self.userAttributes = userAttributesDetails['attributes'].copy()
+
 class organizationData:
     def __init__(self, id = None, name = None, url = None, orgDetails = None):
         if (orgDetails is None):
