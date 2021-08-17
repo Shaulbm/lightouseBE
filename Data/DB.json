@@ -138,6 +138,34 @@
 			}
 		}
 	},
+	"userAttributesTable":{
+		"1":{
+			"userId": "00a31809-08ed-497a-baa6-66f96fe531d7",
+			"demographic" : {
+				"Team Size" : "5",
+				"Role" : "Grop Manager",
+				"Years in Management": "7"
+			},
+			"attributes" : {
+				"People Oriented" : "2",
+				"Negative Feedback Gap" : "3",
+				"Care for the team" : "2"
+			}
+		},
+		"2":{
+			"userId": "c5ace2f7-21fa-4afe-bc6d-a7bf517bc7f5",
+			"demographic" : {
+				"Team Size" : "3",
+				"Role" : "Team Leader",
+				"Years in Management": "3"
+			},
+			"attributes" : {
+				"People Oriented" : "2",
+				"Negative Feedback Gap" : "3",
+				"Care for the team" : "2"
+			}
+		}
+	},
 	"organizationsTable":{
 		"1":{
 			"id":"0ce5782a-5da2-4b55-a275-2b5950c5c7ef",
