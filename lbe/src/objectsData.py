@@ -385,8 +385,31 @@ class questionRangeData:
                 if (len(questionRangeDetails['max']['attributes']) > 0):            
                     self.maxAttributesDelta = questionRangeDetails['max']['attributes'].copy()
 
+class questionBoolOptionsData: 
+    def __init__ (self, attributesDeltaForYes = None, attributesDeltaForNo = None, questionBoolOptionsDetails = None):
+        if (questionBoolOptionsDetails is None):
+            if (attributesDeltaForYes is not None):
+                self.attributesDeltaForYes = attributesDeltaForYes.copy()
+
+            if (attributesDeltaForNo is not None):
+                self.attributesDeltaForNo = attributesDeltaForNo.copy()
+
+        else:
+            #parse from list 
+            # mandatory fields
+            self.attributesDeltaForYes = None
+            self.attributesDeltaForNo = None
+
+            if ('attributes' in questionBoolOptionsDetails['Yes']):
+                if (len(questionBoolOptionsDetails['Yes']['attributes']) > 0):
+                    self.attributesDeltaForYes = questionBoolOptionsDetails['Yes']['attributes'].copy()
+            
+            if ('attributes' in questionBoolOptionsDetails['No']):
+                if (len(questionBoolOptionsDetails['No']['attributes']) > 0):            
+                    self.attributesDeltaForNo = questionBoolOptionsDetails['No']['attributes'].copy()
+
 class questionData:
-    def __init__(self, id = None, text = None, stage = None, questionType = None, options = None, range = None, questionDetails = None):
+    def __init__(self, id = None, text = None, stage = None, questionType = None, options = None, range = None, boolOptions = None, questionDetails = None):
         if (questionDetails is None):
             self.id = id
             self.text = text
@@ -394,12 +417,17 @@ class questionData:
             self.Questiontype = questionType
             self.options = None
             self.range = None
+            self.boolOptions = None
 
             if (options is not None):
                 self.options = options.copy()
 
             if (range is not None):
                 self.range = range.copy()
+
+            if (boolOptions is not None):
+                self.boolOptions = boolOptions.copy()
+
         else:
             #parse from list
             # mandatory fields
@@ -409,6 +437,7 @@ class questionData:
             self.Questiontype = questionDetails['type']
             self.options = None
             self.range = None
+            self.boolOptions = None
 
             if ('options' in questionDetails):
                 optionsDBG = questionDetails['options']
@@ -422,3 +451,7 @@ class questionData:
             if ('range' in questionDetails):
                 if (len (questionDetails['range']) > 0):
                     self.range = questionRangeData(questionRangeDetails = questionDetails['range'])
+
+            if ('boolOptions' in questionDetails):
+                if (len (questionDetails['boolOptions']) > 0):
+                    self.boolOptions = questionBoolOptionsData(questionBoolOptionsDetails = questionDetails['boolOptions'])

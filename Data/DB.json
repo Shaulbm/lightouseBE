@@ -141,7 +141,7 @@
 	"userAttributesTable":{
 		"1":{
 			"userId": "00a31809-08ed-497a-baa6-66f96fe531d7",
-			"demographic" : {
+			"demographicData" : {
 				"Team Size" : "5",
 				"Role" : "Grop Manager",
 				"Years in Management": "7"
@@ -154,7 +154,7 @@
 		},
 		"2":{
 			"userId": "c5ace2f7-21fa-4afe-bc6d-a7bf517bc7f5",
-			"demographic" : {
+			"demographicData" : {
 				"Team Size" : "3",
 				"Role" : "Team Leader",
 				"Years in Management": "3"
@@ -702,18 +702,18 @@
 			"id": "35270681-08ec-44a5-b469-9ee8cf97bd31",
 			"stage": "1",
 			"text" : "Are you really really Lorem Ipsum?",
-			"type" : "options",
+			"type" : "range",
 			"range":{
 				"min" : {
-					"text":"",
+					"text":"I am totally NOT!",
 					"attributes" : {
-						"People Oriented" : "2",
-						"Negative Feedback Gap" : "3",
-						"Care for the team" : "2"
+						"Task Oriented" : "2",
+						"Negative Feedback Gap" : "-2",
+						"Care for the team" : "-1"
 					}
 				},
 				"max" : {
-					"text" : "",
+					"text" : "I am, totally.",
 					"attributes" : {
 						"People Oriented" : "2",
 						"Negative Feedback Gap" : "3",
@@ -767,6 +767,31 @@
 						"Pressure" : "2",
 						"WLB Gap" : "2"
 					}
+				}
+			}
+		},
+		"4": {
+			"id": "b6a9a02d-534e-4259-ad1a-9833a125e5b4",
+			"stage": "1",
+			"text" : "Are you really really Lorem Ipsum?",
+			"type" : "Boolean",
+			"range" :"",
+			"options" : "",
+			"boolOptions" : {
+				"Yes" : {
+					"attributes" : {
+						"Task Oriented" : "1",
+						"Negative Feedback Gap" : "2",
+						"Pressure" : "2",
+						"WLB Gap" : "2"
+					}						
+				},
+				"No" : {
+					"attributes" : {
+						"Task Oriented" : "2",
+						"Negative Feedback Gap" : "-1",
+						"Focus Gap" : "2"
+					}							
 				}
 			}
 		}
