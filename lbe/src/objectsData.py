@@ -12,7 +12,7 @@ class UserMinimalData:
         self.name = name
 
 class UserData:
-    def __init__(self, id = None, name  = None, mail = None, role = None, managerId = None, status = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
+    def __init__(self, id = None, name  = None, mail = None, role = None, managerId = None, status = None, discoveryStage = None, currentIssue = None, trainingStage = None, courseLesson = None, userAttributes = None, userDetails = None):
         if (userDetails is None):
             self.id = id
             self.name = name
@@ -20,6 +20,7 @@ class UserData:
             self.role = role
             self.managerId = managerId
             self.status = status
+            self.discoveryStage = discoveryStage 
             self.currentIssue = currentIssue
             self.trainingStage = trainingStage
             self.courseLesson = courseLesson
@@ -63,6 +64,9 @@ class UserData:
 
             if ('status' in userDetails):
                 self.status = userDetails['status']
+
+            if ('discoveryStage' in userDetails):
+                self.discoveryStage = userDetails['discoveryStage']
 
             if ('currentIssue' in userDetails):    
                 self.currentIssue = userDetails['currentIssue']
