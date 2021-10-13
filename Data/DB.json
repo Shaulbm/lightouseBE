@@ -146,7 +146,7 @@
 			}
 		}
 	},
-	"userAttributesTable":{
+	"userProfileTable":{
 		"1":{
 			"userId": "00a31809-08ed-497a-baa6-66f96fe531d7",
 			"demographicData" : {
@@ -158,6 +158,11 @@
 				"People Oriented" : "2",
 				"Negative Feedback Gap" : "3",
 				"Care for the team" : "2"
+			},
+			"archetypes" : {
+				"Micro manager" : "7",
+				"Bereucrat" : "4",
+				"Natural Leader" : "12"
 			}
 		},
 		"2":{
@@ -169,8 +174,13 @@
 			},
 			"attributes" : {
 				"People Oriented" : "2",
-				"Negative Feedback Gap" : "3",
+				"Negative Feedback Gap" : "9",
 				"Care for the team" : "2"
+			},
+			"archetypes" : {
+				"People Pleaser" : "11",
+				"Bereucrat" : "7",
+				"Natural Leader" : "3"
 			}
 		}
 	},

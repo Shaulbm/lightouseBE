@@ -3,3 +3,5 @@ cargo
 fastapi
 tinydb
 anytree
+pymongo
+jsonpickle
