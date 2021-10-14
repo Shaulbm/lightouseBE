@@ -1,4 +1,3 @@
-from generalData import localedText
 from collections import namedtuple
 from bson import json_util
 import json
@@ -10,27 +9,26 @@ def motivationDecoder (motivationDict):
 
 class motivationData:
     def __init__(self):
-        self._id = ""
-        self.name = localedText()
-        self.shortDescription = localedText()
-        self.longDescription = localedText()
-        self.additionalData = localedText()
+        self.id = ""
+        self.name = ""
+        self.shortDescription = ""
+        self.longDescription = ""
+        self.additionalData = ""
         self.imageUrl = ""
-        self.tailResolution = localedText()
+        self.tailResolution = ""
 
-    def fromJson (self, jsonData):
+    def buildFromJson (self, jsonData, localedTextDic):
         # jsonDataStr = json_util.dumps(jsonData)
         # print (jsonDataStr)
         # motivtionObj = json.loads(jsonDataStr, object_hook=motivationDecoder)
 
         try:
-            self._id = jsonData["_id"]
-            self.name.en =  localedText(engText = jsonData["name"]["en"], hebText=jsonData["name"]["he"])
-            self.shortDescription = localedText(engText = jsonData["shortDescription"]["en"], hebText=jsonData["shortDescription"]["he"])
-            self.longDescription.en =localedText(engText = jsonData["longDescription"]["en"], hebText=jsonData["longDescription"]["he"])
-            self.additionalData.en = localedText(engText = jsonData["additionalData"]["en"], hebText=jsonData["additionalData"]["he"])
+            self.id = jsonData["id"]
+            self.name =  localedTextDic[jsonData["name"]]
+            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            self.longDescription = localedTextDic[jsonData["longDescription"]]
             self.imageUrl = jsonData["imageUrl"]
-            self.tailResolution.en = localedText(engText = jsonData["tailResolution"]["en"], hebText=jsonData["tailResolution"]["he"])
+            self.tailResolution = localedTextDic[jsonData["tailResolution"]]
         except Exception as err:
             #log this
             raise TypeError(str.format("failed to load motivation data from JSON, data is {0}, error is {1}", jsonData, err))
