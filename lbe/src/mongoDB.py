@@ -61,10 +61,10 @@ def insertMotivation():
     currentTextData = textData ("M01", "M01_4", "autonnomy tail resolution phrase")
     eng_LocaleCollection.insert_one(currentTextData.toJson())
 
-    currentTextData = textData ("M01", "M01_4", "ליצור איכות ולהימנע מבינוניות")
+    currentTextData = textData ("M01", "M01_4", "לקבל החלטות בדרך שלי")
     heb_ma_LocaleCollection.insert_one(currentTextData.toJson())
 
-    currentTextData = textData ("M01", "M01_4","ליצור איכות ולהימנע מבינוניות")
+    currentTextData = textData ("M01", "M01_4","לקבל החלטות בדרך שלי")
     heb_fe_LocaleCollection.insert_one(currentTextData.toJson())
 
     motivationsCollection.insert_one (newMotivation.toJson())
@@ -108,4 +108,4 @@ def getTextCollectionByLocale(locale):
         return db ["locale_en"]
 
 #insertMotivation()
-getMotivation("M01", LOCALE_HEB_MA)
+getMotivation("T01", LOCALE_EN)
