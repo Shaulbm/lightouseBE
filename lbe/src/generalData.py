@@ -1,26 +1,23 @@
 import json
 import jsonpickle
 
-class localedText:
-    def __init__(self, engText = "", hebText = ""):
-        self.en = engText
-        self.he = hebText
-
 class textData:
-    def __init__(self, parentId = "", textId = "", contentText = ""):
+    def __init__(self, parentId = "", Id = "", contentText = ""):
         self.parentId = parentId
-        self.textId = textId
+        self.id = Id
         self.text = contentText
 
-    def toJson(self):
+    def toJSON(self):
         textDataJSON = jsonpickle.encode(self, unpicklable=False)
 
-        return json.loads (textDataJSON)
+        jsonObject = json.loads (textDataJSON)
+
+        return jsonObject
 
     def fromJSON (self, jsonData):
         try:
             self.parentId = jsonData["parentId"]
-            self.textId = jsonData["textId"]
+            self.id = jsonData["textId"]
             self.contentText = jsonData["contentText"]
         except Exception as err:
             #log this

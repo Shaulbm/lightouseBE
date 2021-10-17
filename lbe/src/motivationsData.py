@@ -17,7 +17,7 @@ class motivationData:
         self.imageUrl = ""
         self.tailResolution = ""
 
-    def buildFromJson (self, jsonData, localedTextDic):
+    def buildFromJSON (self, jsonData, localedTextDic):
         # jsonDataStr = json_util.dumps(jsonData)
         # print (jsonDataStr)
         # motivtionObj = json.loads(jsonDataStr, object_hook=motivationDecoder)
@@ -35,7 +35,9 @@ class motivationData:
        
         return
 
-    def toJson(self):
+    def toJSON(self):
         motivationDataJSON = jsonpickle.encode(self, unpicklable=False)
 
-        return json.loads (motivationDataJSON)
+        jsonObject = json.loads (motivationDataJSON)
+
+        return jsonObject

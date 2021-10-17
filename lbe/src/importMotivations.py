@@ -59,7 +59,8 @@ def main():
             insertMotivation(currMotivation)
 
 def insertMotivation(motivationDataDict):
-    db = mongoDB.getDatabase()
+    dbInstance = mongoDB.moovDBInstance()
+    db = dbInstance.getDatabase()
     motivationsCollection = db["motivationsTest"]
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
@@ -75,42 +76,42 @@ def insertMotivation(motivationDataDict):
     newMotivation.imageUrl = motivationDataDict["imageUrl"]
 
     currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<en>>"])
-    eng_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_ma>>"])
-    heb_ma_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_fe>>"])
-    heb_fe_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<en>>"])
-    eng_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_ma>>"])
-    heb_ma_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_fe>>"])
-    heb_fe_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<en>>"])
-    eng_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_ma>>"])
-    heb_ma_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_fe>>"])
-    heb_fe_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<en>>"])
-    eng_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_ma>>"])
-    heb_ma_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_fe>>"])
-    heb_fe_LocaleCollection.insert_one(currentTextData.toJson())
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    motivationsCollection.insert_one (newMotivation.toJson())
+    dbInstance.insertOrUpdateMotivation(motivationsCollection, newMotivation)
 
 if __name__ == '__main__':
     main()
