@@ -1,6 +1,5 @@
 from fastapi import Header, APIRouter
 from fastapi import HTTPException
-from lbe.src.motivationsData import motivationDecoder
 from users import UsersLogic
 from mongoDB import moovDBInstance
 
