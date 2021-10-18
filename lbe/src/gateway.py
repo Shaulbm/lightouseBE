@@ -1,5 +1,6 @@
 from fastapi import Header, APIRouter
 from fastapi import HTTPException
+from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
 from users import UsersLogic
 from mongoDB import moovDBInstance
 
@@ -19,6 +20,13 @@ def get_user(id, mail):
     userDetails = dbActions.getUser (id, mail)
 
     return userDetails
+
+@router.post("/addUser")
+def add_or_update_user(id, mail, parentId = "", motivations = {}):
+    dbActions = moovDBInstance)__annotations()
+    dbActions.insertOrUpdateUser(id=id, mail=mail, parentId=parentId, motivations=motivations)
+
+    return 
 
 @router.post("/setMotivations")
 def set_motivations_to_user(id, motivations):
