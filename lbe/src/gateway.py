@@ -22,7 +22,7 @@ def get_user(id, mail):
     return userDetails
 
 @router.post("/addUser")
-def add_or_update_user(id, mail, parentId = "", motivations = {}):
+def add_or_update_user(id, mail, parentId = "", motivations = None):
     dbActions = moovDBInstance()
     dbActions.insertOrUpdateUserDetails(id=id, mail=mail, parentId=parentId, motivations=motivations)
 

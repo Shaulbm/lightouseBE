@@ -71,7 +71,7 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new motivation
             dataCollection.insert_one(textDataObj.toJSON())
     
-    def insertOrUpdateUserDetails (self, id, mail, parentId = "", motivations = {}):
+    def insertOrUpdateUserDetails (self, id, mail, parentId = "", motivations = None):
         newUser = userData(id=id, parentId=parentId, mailAddress=mail, motivations=motivations)
         self.insertOrUpdateUser(newUser)
 
