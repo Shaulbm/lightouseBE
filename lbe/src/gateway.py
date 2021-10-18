@@ -23,7 +23,7 @@ def get_user(id, mail):
 
 @router.post("/addUser")
 def add_or_update_user(id, mail, parentId = "", motivations = {}):
-    dbActions = moovDBInstance)__annotations()
+    dbActions = moovDBInstance()
     dbActions.insertOrUpdateUser(id=id, mail=mail, parentId=parentId, motivations=motivations)
 
     return 
