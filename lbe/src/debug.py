@@ -1,6 +1,8 @@
 import main
 import gateway
 import time
+from mongoDB import moovDBInstance
+from generalData import userData
 
 main.startup()
 '''
@@ -31,4 +33,12 @@ while index > 0:
 #userDetails = gateway.register_user("shaul.ben.maor@gmail.com")
 #managerDetails = gateway.get_manager_details('shaul.ben.maor@gmail.com')
 #gateway.get_users_under("boss@gmail.com")
-gateway.get_motivation("M002",2)
+#gateway.get_motivation("M002",2)
+
+userMotivations={"M002" : "7", "M004" : "12", "M006" : "19", "M008" : "8", "M010" : "12"}
+
+# newUser = userData (id = "U001", mailAddress="shaul@hotmail.com", motivations=userMotivations)
+# dbInstance = moovDBInstance()
+# dbInstance.insertOrUpdateUser(newUser)
+
+gateway.get_user(id="U001",mail="")

@@ -45,6 +45,6 @@ class userData:
         self.mailAddress = jsonData["mailAddress"]
 
         if (len(jsonData["motivations"]) > 0):
-            self.motivations = json.loads(jsonData["motivations"])
+            self.motivations = jsonData["motivations"].copy()
         else:
             self.motivations = {}

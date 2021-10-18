@@ -72,9 +72,7 @@ class moovDBInstance(metaclass=Singleton):
             dataCollection.insert_one(textDataObj.toJSON())
     
     def insertOrUpdateUser (self, currUserData):
-        userDataJSON = currUserData.toJSON()
-
-        db = self.dataBaseInstance()
+        db = self.getDatabase()
         usersCollection = db["users"]
 
         foundUser = usersCollection.find_one({"id":currUserData.id})
@@ -101,6 +99,27 @@ class moovDBInstance(metaclass=Singleton):
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return newMotivtion 
+    
+    def getUser (self, id = "", mail = ""):
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        userFilter = {}
+
+        if (id != ""): 
+            userFilter = {"id":id}
+        elif (mail != ""):
+            userFilter = {"mailAddress":mail}
+        else:
+            # no identifier is passed to the user
+            return None
+
+        userDataJSON = usersCollection.find_one(userFilter)
+
+        userDetails = userData()
+        userDetails.fromJSON(userDataJSON)
+
+        return userDetails
 
 #insertMotivation()
 #getMotivation("M001", LOCALE_HEB_MA)
