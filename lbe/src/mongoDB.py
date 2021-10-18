@@ -85,13 +85,29 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             usersCollection.insert_one(currUserData.toJSON())
 
+    def setMotivationsToUSer (self, id, motivations):
+        userDetails = self.getUser(id=id)
+
+        if (userDetails is None):
+            # user not found
+            return None
+
+        userDetails.motivations = motivations.copy()
+        userFilter = {"id":id}
+
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        usersCollection.replace_one(userFilter, userDetails.toJSON())
+
+
     def getMotivation (self, id, locale):
         db = self.getDatabase()
         motivationCollection = db["motivationsTest"]
 
         motivationDataJSON = motivationCollection.find_one({"id" : id})
 
-        if (motivationData is None)
+        if (motivationData is None):
             return None
 
         print ("motivation data is {0}", motivationDataJSON)

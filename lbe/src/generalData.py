@@ -28,6 +28,7 @@ class userData:
         self.id = id
         self.parentId = parentId
         self.mailAddress = mailAddress
+        self.motivations = {}
 
         if (motivations is not None):
             self.motivations = motivations.copy()
