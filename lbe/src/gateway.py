@@ -9,7 +9,7 @@ users = UsersLogic()
 @router.get("/motivation")
 def get_motivation(id, locale):
     dbActions = moovDBInstance()
-    motivationDetails = dbActions.getMotivation (id,locale)
+    motivationDetails = dbActions.getMotivation (id,int(locale))
 
     return motivationDetails
 # @router.post("/registerUser")
