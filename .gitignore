@@ -4,3 +4,5 @@ lbe/src/__pycache__/qrs_data.cpython-39.pyc
 lbe/src/__pycache__/stocks.cpython-39.pyc
 lbe/src/__pycache__/main.cpython-39.pyc
 lbe/src/__pycache__/stocks.cpython-39.pyc
+/moov.venv/*
+/__pycache__/*
