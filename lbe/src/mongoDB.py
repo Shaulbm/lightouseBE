@@ -33,7 +33,7 @@ class moovDBInstance(metaclass=Singleton):
         textDic = {}
 
         for currText in allTextsArray:
-            textDic[currText["textId"]] = currText["text"]
+            textDic[currText["id"]] = currText["text"]
 
         return textDic
 
