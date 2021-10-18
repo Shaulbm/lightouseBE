@@ -40,8 +40,6 @@ class userData:
         return jsonObject 
 
     def fromJSON (self, jsonData):
-        print ("userData from JSON: {0}", jsonData)
-        
         self.id = jsonData["id"]
         self.parentId = jsonData["parentId"]
         self.mailAddress = jsonData["mailAddress"]

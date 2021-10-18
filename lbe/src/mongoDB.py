@@ -90,6 +90,10 @@ class moovDBInstance(metaclass=Singleton):
         motivationCollection = db["motivationsTest"]
 
         motivationDataJSON = motivationCollection.find_one({"id" : id})
+
+        if (motivationData is None)
+            return None
+
         print ("motivation data is {0}", motivationDataJSON)
 
         motivationTextsDic = self.getTextDataByParent(id, locale)
@@ -115,6 +119,10 @@ class moovDBInstance(metaclass=Singleton):
             return None
 
         userDataJSON = usersCollection.find_one(userFilter)
+
+        if (userDataJSON is None):
+            #no user found
+            return None
 
         userDetails = userData()
         userDetails.fromJSON(userDataJSON)
