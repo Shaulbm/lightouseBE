@@ -100,6 +100,7 @@ class moovDBInstance(metaclass=Singleton):
 
         usersCollection.replace_one(userFilter, userDetails.toJSON())
 
+        return userDetails
 
     def getMotivation (self, id, locale):
         db = self.getDatabase()

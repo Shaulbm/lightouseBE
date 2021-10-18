@@ -19,6 +19,14 @@ def get_user(id, mail):
     userDetails = dbActions.getUser (id, mail)
 
     return userDetails
+
+@router.post("/setMotivations")
+def set_motivations_to_user(id, motivations):
+    dbActions = moovDBInstance()
+    userDetails = dbActions.setMotivationsToUSer (id, motivations)
+
+    return userDetails
+    
 # @router.post("/registerUser")
 # def register_user(user):
 #     userDetails = users.registerUser(userName=user)
