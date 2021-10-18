@@ -72,7 +72,7 @@ class moovDBInstance(metaclass=Singleton):
             dataCollection.insert_one(textDataObj.toJSON())
     
     def insertOrUpdateUserDetails (self, id, mail, parentId = "", motivations = {}):
-        newUser = userData(id=id, parnetId=parentId, mailAddress=mail, motivations=motivations)
+        newUser = userData(id=id, parentId=parentId, mailAddress=mail, motivations=motivations)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
