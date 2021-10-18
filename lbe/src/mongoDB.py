@@ -25,8 +25,8 @@ class moovDBInstance(metaclass=Singleton):
 
         return self.dataBaseInstance
 
-    def getTextDataByParent (parentId, locale):
-        textDataCollection = getTextCollectionByLocale(locale)
+    def getTextDataByParent (self, parentId, locale):
+        textDataCollection = self.getTextCollectionByLocale(locale)
             
         allTextsArray = textDataCollection.find ({"parentId" : parentId})
 
@@ -37,8 +37,8 @@ class moovDBInstance(metaclass=Singleton):
 
         return textDic
 
-    def getTextCollectionByLocale(locale):
-        db = getDatabase()
+    def getTextCollectionByLocale(self, locale):
+        db = self.getDatabase()
 
         if locale == LOCALE_HEB_FE:
             return db["locale_he_fe"]
@@ -87,7 +87,6 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             usersCollection.insert_one(currUserData.toJSON())
 
-
     def getMotivation (self, id, locale):
         db = self.getDatabase()
         motivationCollection = db["motivationsTest"]
@@ -95,14 +94,13 @@ class moovDBInstance(metaclass=Singleton):
         motivationDataJSON = motivationCollection.find_one({"id" : id})
         print ("motivation data is {0}", motivationDataJSON)
 
-        motivationTextsDic = getTextDataByParent(id, locale)
+        motivationTextsDic = self.getTextDataByParent(id, locale)
 
         newMotivtion = motivationData()
         newMotivtion.buildFromJSON(motivationDataJSON, motivationTextsDic)
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return newMotivtion 
-
 
 #insertMotivation()
 #getMotivation("M001", LOCALE_HEB_MA)
