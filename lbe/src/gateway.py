@@ -38,7 +38,7 @@ def set_motivations_to_user(id, motivations):
 @router.get("/question")
 def get_question(id, locale):
     dbActions = moovDBInstance()
-    questionDetails = dbActions.getQuestion(id, locale)
+    questionDetails = dbActions.getQuestion(id, int(locale))
 
     return questionDetails
     
