@@ -34,6 +34,13 @@ def set_motivations_to_user(id, motivations):
     userDetails = dbActions.setMotivationsToUSer (id, motivations)
 
     return userDetails
+
+@router.get("/question")
+def get_question(id, locale):
+    dbActions = moovDBInstance()
+    questionDetails = dbActions.getQuestion(id, locale)
+
+    return questionDetails
     
 # @router.post("/registerUser")
 # def register_user(user):

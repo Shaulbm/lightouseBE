@@ -1,10 +1,12 @@
 from threading import current_thread
 from typing import Text
+from google.auth import app_engine
 from pymongo import MongoClient
 import pymongo
 import json
 from motivationsData import motivationData
-from generalData import textData, userData
+from generalData import TextData
+from questionsData import QuestionData
 from singleton import Singleton
 
 LOCALE_HEB_MA = 1
@@ -36,6 +38,14 @@ class moovDBInstance(metaclass=Singleton):
             textDic[currText["id"]] = currText["text"]
 
         return textDic
+
+    def getTextDataByParents (self, parentsIds, locale):
+        resultTextDict = {}
+        for currParrentId in parentsIds:
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale)
+
+        return resultTextDict
+
 
     def getTextCollectionByLocale(self, locale):
         db = self.getDatabase()
@@ -72,7 +82,7 @@ class moovDBInstance(metaclass=Singleton):
             dataCollection.insert_one(textDataObj.toJSON())
     
     def insertOrUpdateUserDetails (self, id, mail, parentId = "", motivations = None):
-        newUser = userData(id=id, parentId=parentId, mailAddress=mail, motivations=motivations)
+        newUser = QuestionData(id=id, parentId=parentId, mailAddress=mail, motivations=motivations)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
@@ -112,7 +122,7 @@ class moovDBInstance(metaclass=Singleton):
 
         motivationDataJSON = motivationCollection.find_one({"id" : id})
 
-        if (motivationData is None):
+        if (motivationDataJSON is None):
             return None
 
         print ("motivation data is {0}", motivationDataJSON)
@@ -145,10 +155,43 @@ class moovDBInstance(metaclass=Singleton):
             #no user found
             return None
 
-        userDetails = userData()
+        userDetails = QuestionData()
         userDetails.fromJSON(userDataJSON)
 
         return userDetails
 
+    def insertOrUpdateQuestion(self, currQuestionData):
+        db = self.getDatabase()
+        questionsCollection = db["questions"]
+
+        foundQuestion = questionsCollection.find_one({"id":currQuestionData.id})
+
+        if (foundQuestion is not None):
+            #the user already exists - update the user
+            questionDataFilter = {"id" : currQuestionData.id}
+            questionsCollection.replace_one(questionDataFilter, currQuestionData.toJSON())
+        else:
+            #this is a new user
+            questionsCollection.insert_one(currQuestionData.toJSON())
+
+    def getQuestion(self, id, locale):
+        db = self.getDatabase()
+        questionsCollection = db["questions"]
+
+        questionsDataJSON = questionsCollection.find_one({"id" : id})
+
+        if (questionsDataJSON is None):
+            return None
+
+        parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
+        parentsIds.append(questionsDataJSON["id"])
+
+        questionTextsDic = self.getTextDataByParents(parentsIds, locale)
+
+        questionDetails = QuestionData()
+        questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
+
+        # print ("motivation object is {0}", newMotivtion.toJSON())
+        return questionDetails
 #insertMotivation()
 #getMotivation("M001", LOCALE_HEB_MA)

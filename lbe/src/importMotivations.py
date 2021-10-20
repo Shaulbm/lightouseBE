@@ -6,7 +6,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 import mongoDB
 from motivationsData import motivationData
-from generalData import textData
+from generalData import TextData
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -75,40 +75,40 @@ def insertMotivation(motivationDataDict):
     newMotivation.tailResolution = newMotivation.id + "_4"
     newMotivation.imageUrl = motivationDataDict["imageUrl"]
 
-    currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<en>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.name, motivationDataDict["name <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_ma>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_fe>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.name, motivationDataDict["name <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<en>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_ma>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_fe>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.shortDescription, motivationDataDict["short description <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<en>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_ma>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_fe>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<en>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_ma>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = textData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_fe>>"])
+    currentTextData = TextData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     dbInstance.insertOrUpdateMotivation(motivationsCollection, newMotivation)

@@ -1,7 +1,7 @@
 import json
 import jsonpickle
 
-class textData:
+class TextData:
     def __init__(self, parentId = "", Id = "", contentText = ""):
         self.parentId = parentId
         self.id = Id
@@ -23,7 +23,7 @@ class textData:
             #log this
             raise TypeError(str.format("failed to load text data from JSON, data is {0}, error is {1}", jsonData, err))
 
-class userData:
+class QuestionData:
     def __init__(self, id = "", parentId = "", mailAddress = "", motivations = None):
         self.id = id
         self.parentId = parentId

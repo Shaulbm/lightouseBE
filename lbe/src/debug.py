@@ -2,7 +2,7 @@ import main
 import gateway
 import time
 from mongoDB import moovDBInstance
-from generalData import userData
+from generalData import QuestionData
 
 main.startup()
 '''
@@ -36,7 +36,7 @@ while index > 0:
 #gateway.get_motivation("M002",2)
 
 # userMotivations={"M002" : "7", "M004" : "12", "M006" : "19", "M008" : "8", "M010" : "12"}
-userMotivations={"M001" : "7", "M003" : "12", "M005" : "19", "M007" : "8", "M009" : "12"}
+# userMotivations={"M001" : "7", "M003" : "12", "M005" : "19", "M007" : "8", "M009" : "12"}
 
 # newUser = userData (id = "U001", mailAddress="shaul@hotmail.com", motivations=userMotivations)
 # dbInstance = moovDBInstance()
@@ -44,10 +44,11 @@ userMotivations={"M001" : "7", "M003" : "12", "M005" : "19", "M007" : "8", "M009
 
 #gateway.get_user(id="U001",mail="")
 
-newUser = userData (id = "U002", mailAddress="smadar@hotmail.com")
+# newUser = QuestionData (id = "U002", mailAddress="smadar@hotmail.com")
 dbInstance = moovDBInstance()
-dbInstance.insertOrUpdateUser(newUser)
+# dbInstance.insertOrUpdateUser(newUser)
 
 #gateway.get_user(id="U002", mail="")
 
-dbInstance.setMotivationsToUSer(id="U002", motivations=userMotivations)
+# dbInstance.setMotivationsToUSer(id="U002", motivations=userMotivations)
+dbInstance.getQuestion("Q002", 2)
