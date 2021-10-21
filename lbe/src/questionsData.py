@@ -2,7 +2,7 @@ import jsonpickle
 import json
 
 class ResponseData:
-    def __init__(self, id = "", idx = "", questionId="", motivationId="", motviationScore="", responseText = ""):
+    def __init__(self, id = "", idx = 0, questionId="", motivationId="", motviationScore=0.0, responseText = ""):
         self.id = id
         self.idx = idx
         self.questionId = questionId
@@ -19,19 +19,20 @@ class ResponseData:
 
     def buildFromJson(self, jsonData, localedTextDic):
         self.id = jsonData["id"]
-        self.idx = jsonData["idx"]
+        self.idx = int(jsonData["idx"])
         self.questionId = jsonData["questionId"]
         self.motivationId = jsonData["motivationId"]
-        self.motivationScore = jsonData["motivationScore"]
+        self.motivationScore = float(jsonData["motivationScore"])
         self.responseText = localedTextDic[jsonData["responseText"]]
 
 class QuestionData:
-    def __init__(self, id="", batchId = "", batchIdx = "", setId = "", setIdx ="", questionText = "", possibleResponses = []):
+    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, questionText = "", userResponsesNo = 0, possibleResponses = []):
         self.id = id
         self.batchId = batchId
         self.batchIdx = batchIdx
         self.setId = setId
         self.setIdx = setIdx
+        self.userResponsesNo = userResponsesNo
         self.questionText = questionText
         self.possibleResponses = possibleResponses.copy()
 
@@ -45,9 +46,10 @@ class QuestionData:
     def buildFromJSON (self, jsonData, localedTextDic):
         self.id = jsonData["id"]
         self.batchId = jsonData["batchId"]
-        self.batchIdx = jsonData["batchIdx"]
+        self.batchIdx = int(jsonData["batchIdx"])
         self.setId = jsonData["setId"]
-        self.setIdx = jsonData["setIdx"]
+        self.setIdx = int(jsonData["setIdx"])
+        self.userResponsesNo = int(jsonData["userResponsesNo"])
         self.questionText = localedTextDic[jsonData["questionText"]]
         self.possibleResponses = []
 

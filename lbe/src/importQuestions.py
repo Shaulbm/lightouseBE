@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1YOdX9KDiPrM21-olNz1Mgl5lfMQPyMz1J4LvVRQ6iow'
-QUESTIONS_RANGE_NAME = 'Questions!A1:H61'
+QUESTIONS_RANGE_NAME = 'Questions!A1:I61'
 RESPONSES_RANGE_NAME = 'Responses!A1:H241'
 
 def main():
@@ -85,9 +85,10 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     newQuestion = QuestionData()
     newQuestion.id = questionsDataDict["id"]
     newQuestion.batchId = questionsDataDict["batchId"]
-    newQuestion.batchIdx = questionsDataDict["batchIdx"]
+    newQuestion.batchIdx = int(questionsDataDict["batchIdx"])
     newQuestion.setId = questionsDataDict["setId"]
-    newQuestion.setIdx = questionsDataDict["setIdx"]
+    newQuestion.setIdx = int(questionsDataDict["setIdx"])
+    newQuestion.userResponsesNo = int (questionsDataDict["userResponsesNo"])
     newQuestion.questionText = newQuestion.id + "_1"
     newQuestion.possibleResponses = []
 
@@ -103,10 +104,10 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     for currResponseData in responsesDataDictArray:
         newReponse = ResponseData()
         newReponse.id = currResponseData["id"]
-        newReponse.idx = currResponseData["idx"]
+        newReponse.idx = int(currResponseData["idx"])
         newReponse.questionId = currResponseData["questionId"]
         newReponse.motivationId = currResponseData["motivationId"]
-        newReponse.motivationScore = currResponseData["motivationScore"]
+        newReponse.motivationScore = float(currResponseData["motivationScore"])
         newReponse.responseText = newReponse.id + "_1"
 
         currentTextData = TextData(newReponse.id, newReponse.responseText, currResponseData["responseText <<en>>"])
