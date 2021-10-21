@@ -1,11 +1,6 @@
 from collections import namedtuple
-from bson import json_util
 import json
 import jsonpickle
-
-def motivationDecoder (motivationDict):
-    return namedtuple('X', motivationDict.keys())(*motivationDict.values())
-
 
 class motivationData:
     def __init__(self):
