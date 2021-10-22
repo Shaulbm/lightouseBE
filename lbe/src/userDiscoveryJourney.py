@@ -1,11 +1,13 @@
+from threading import current_thread
 from pymongo import response
 from pymongo.mongo_client import MongoClient
-from discoveryData import UserDiscoveryJourneyData
-from lbe.src.questionsData import ResponseData
+from discoveryData import UserDiscoveryJourneyData, TailResolutionData
 from mongoDB import moovDBInstance
+from questionsData import QuestionData, ResponseData
 import uuid
 
 SINGLE_JOURNEY_ID = "J001"
+MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE = 1.3
 
 def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     #creates an entry in discovery Journey if one doesn't exists, returns the user journey id
@@ -18,7 +20,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
 
     newDiscoveryJourney = UserDiscoveryJourneyData()
-    newDiscoveryJourney.id = userId + uuid.uuid4()[:8]
+    newDiscoveryJourney.id = userId + "_" + uuid.uuid4()[:8]
     newDiscoveryJourney.userId = userId
     #current we only have one journey
     newDiscoveryJourney.journeyId = journeyTypeId
@@ -45,17 +47,14 @@ def getNextQuestionsBatch (self, userId, locale):
     questionsList = {}
 
     if (nextBatchDetails is None):
-        #no next batches exists
+        #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
         motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails)
 
         motivationsTail = UserScoreBoardTailLength(motivationScoreBoard)
 
-        if (len(motivationsTail) > 0):
-            #process is done!
-            pass
-        else:
+        if (len(motivationsTail.motivationsTail) > 0):
             #the results are not valid - we need atie breaker (resolve the tail)
-            questionsList = createTailResolutionQuestion(motivationScoreBoard)
+            questionsList = createTailResolutionQuestion(motivationsTail, locale)
     else:
         #discovery journey is on going - just get the next batch
 
@@ -111,12 +110,14 @@ def UserScoreBoardTailLength (userMotivationsScoreBoard):
         return motivationsTail
 
     currScoreIndex = 0
+    motivationsToResolveCount = 0
     #check score tail
     while currScoreIndex < len(sortedScoreBoard):
         if (currScoreIndex < 5):
             if (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex < 4):
                 # before the top 5
                 motivationsTail.append(motivationsList[currScoreIndex])
+                motivationsToResolveCount += 1
             elif (scoreList[currScoreIndex == scoreList[4] and currScoreIndex > 4]):
                 # after the top 5
                 motivationsTail.append(motivationsList[currScoreIndex])
@@ -126,11 +127,39 @@ def UserScoreBoardTailLength (userMotivationsScoreBoard):
       
         currScoreIndex += 1
 
-    return motivationsTail
+
+    tailResult = TailResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTail)
+    return tailResult
 
 def endUserJourney (userId, userMotivationScoreBoard):
     #end the journey and update the user data with the top 5 motivations
-    pass
+    currJourney = moovDBInstance.getUserDiscoveryJourney(userId)
 
-def createTailResolutionQuestion (motivationScoreBoard):
-    pass
+    currJourney.currBatch = ""
+    currJourney.status = "closed"
+
+    moovDBInstance.insertOrUpdateDiscoveryJourney(currJourney)
+    moovDBInstance.setMotivationsToUSer(userMotivationScoreBoard)
+
+def createTailResolutionQuestion (tailResolutionDataInstance, locale):
+    tailResolutionQuestion = moovDBInstance.getQuestion("Q999", locale)
+
+    #now change the <<N>> to state the number of options the user needs to pick
+    tailResolutionQuestion.questionText.replace("<<N>>", str(tailResolutionDataInstance.motivationsToResovleCount))
+
+    tailResolutionQuestion.userResponsesNo = tailResolutionDataInstance.motivationsToResovleCount
+
+    for currResponseIdx, currMotviationId in enumerate(tailResolutionDataInstance.motivationsTail):
+        currMotivation = moovDBInstance.getMotivation(currMotviationId)
+
+        currResponse = ResponseData()
+        currResponse.id = uuid.uuid4()[:8]
+        currResponse.idx = currResponseIdx
+        currResponse.motivationId = currMotviationId
+        currResponse.motivationScore = MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE
+        currResponse.questionId = tailResolutionQuestion.Id
+        currResponse.responseText = currMotivation.tailResolution
+
+        tailResolutionQuestion.possibleResponses.append (currResponse)
+
+    return tailResolutionQuestion
