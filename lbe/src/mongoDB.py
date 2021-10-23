@@ -8,6 +8,7 @@ from motivationsData import motivationData
 from generalData import TextData
 from questionsData import QuestionData
 from singleton import Singleton
+from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -135,6 +136,19 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return newMotivtion 
     
+    def getAllMotivationsIds(self):
+        db = self.getDatabase
+        motivationCollection = db["motivationsTest"]
+
+        motivationsDataJSON = motivationCollection.find()
+
+        if (motivationsDataJSON is None):
+            return None
+
+        motivationsIds = [m["id"] for m in motivationsDataJSON["possibleResponses"]]
+
+        return motivationsIds
+
     def getUser (self, id = "", mail = ""):
         db = self.getDatabase()
         usersCollection = db["users"]
@@ -183,9 +197,11 @@ class moovDBInstance(metaclass=Singleton):
         if (questionsDataJSON is None):
             return None
 
+        # get id's for text quesry
         parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
         parentsIds.append(questionsDataJSON["id"])
 
+        # get localed text
         questionTextsDic = self.getTextDataByParents(parentsIds, locale)
 
         questionDetails = QuestionData()
@@ -193,5 +209,76 @@ class moovDBInstance(metaclass=Singleton):
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return questionDetails
+
+    def getQuestionsFromBatch(self, batchId, locale):
+        db = self.getDatabase
+        questionsCollection = db["questions"]
+
+        questionsDataJSON = questionsCollection.find_one({"batchId" : batchId})
+
+        if (questionsDataJSON is None):
+            return None        
+
+        questionsInBatch = []
+
+        for currQuestion in questionsDataJSON:
+            questionsInBatch.append (self.getQuestion(currQuestion["id"], locale))
+
+        return questionsInBatch
+
+    def getUserDiscoveryJourney(self, userId):
+        db = self.getDatabase()
+        discoveryJourneyCollection = db["userDiscoveryJourney"]
+
+        userFilter = {"id":id}
+
+        discoveryJourneyDataJSON = discoveryJourneyCollection.find_one(userFilter)
+
+        if (discoveryJourneyDataJSON is None):
+            #no discovery journey data found
+            return None
+
+        userDiscoveryDetails = UserDiscoveryJourneyData()
+        userDiscoveryDetails.fromJSON(discoveryJourneyDataJSON)
+
+        return userDiscoveryDetails
+
+    def insertOrUpdateDiscoveryJourney(self, discoveryJourneyData):
+        db = self.getDatabase()
+        discoveryJourneyCollection = db["userDiscoveryJourney"]
+
+        foundDiscoveryJourney = discoveryJourneyCollection.find_one({"id":discoveryJourneyData.id})
+
+        if (foundDiscoveryJourney is not None):
+            #the user already exists - update the user
+            questionDataFilter = {"id" : discoveryJourneyData.id}
+            discoveryJourneyCollection.replace_one(questionDataFilter, discoveryJourneyData.toJSON())
+        else:
+            #this is a new user
+            discoveryJourneyCollection.insert_one(discoveryJourneyData.toJSON())
+
+    def getDiscvoeryBatch(self, batchId = "", journeyId = "", batchIdx = ""):
+        db = self.getDatabase()
+        discoveryJourneyCollection = db["discoveryData"]
+
+        userFilter = {}
+
+        if (batchId != ""):
+            userFilter = {"batchId" : batchId}
+        else:
+            userFilter = {"journeyId":journeyId, "batchIdx":batchIdx}
+
+        discoveryBatchDataJSON = discoveryJourneyCollection.find_one(userFilter)
+
+        if (discoveryBatchDataJSON is None):
+            #no discovery journey data found
+            return None
+
+        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"])
+
+        discoveryBatchDetails = DiscoveryBatchData()
+        discoveryBatchDetails.fromJSON(discoveryBatchDataJSON, localedTextDict)
+
+        return discoveryBatchDetails   
 #insertMotivation()
 #getMotivation("M001", LOCALE_HEB_MA)

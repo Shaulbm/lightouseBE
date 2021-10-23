@@ -36,7 +36,7 @@ def getNextQuestionsBatch (self, userId, locale):
     # if there are - return the next questions batch and update the user journey data 
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
     dbInstance = moovDBInstance()
-    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId, locale)
+    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
     if discoveryJourneyDetails is None:
         return None
@@ -50,11 +50,14 @@ def getNextQuestionsBatch (self, userId, locale):
         #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
         motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails)
 
-        motivationsTail = UserScoreBoardTailLength(motivationScoreBoard)
+        motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
 
         if (len(motivationsTail.motivationsTail) > 0):
             #the results are not valid - we need atie breaker (resolve the tail)
             questionsList = createTailResolutionQuestion(motivationsTail, locale)
+        else:
+            # no tail and no more batches - process is done
+            endUserJourney(userId, motivationScoreBoard)
     else:
         #discovery journey is on going - just get the next batch
 
@@ -68,7 +71,15 @@ def getNextQuestionsBatch (self, userId, locale):
     return questionsList
 
 def setUserResponse (userId, questionId, responseId):
-    pass
+    dbInstance = moovDBInstance()
+    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+
+    if discoveryJourneyDetails is None:
+        return None
+
+    discoveryJourneyDetails.userResponses[questionId] = responseId
+
+    dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
 def summerizeUserResults (userDiscoveryJourney, locale):
     # get the disvcovery journey data for the user
@@ -97,7 +108,7 @@ def summerizeUserResults (userDiscoveryJourney, locale):
 
     return motivationsScoreBoard
 
-def UserScoreBoardTailLength (userMotivationsScoreBoard):
+def getUserScoreBoardTail (userMotivationsScoreBoard):
     #returns true if there are clear top 5 motivations, false other wise
     sortedScoreBoard = dict(sorted(userMotivationsScoreBoard.items(), key=lambda item: item[1], reverse= True))
     scoreList = list(sortedScoreBoard.values())
@@ -110,7 +121,8 @@ def UserScoreBoardTailLength (userMotivationsScoreBoard):
         return motivationsTail
 
     currScoreIndex = 0
-    motivationsToResolveCount = 0
+    #start from 1 as we have at least one to resolve
+    motivationsToResolveCount = 1
     #check score tail
     while currScoreIndex < len(sortedScoreBoard):
         if (currScoreIndex < 5):

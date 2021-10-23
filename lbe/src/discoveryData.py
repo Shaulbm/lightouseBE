@@ -66,3 +66,9 @@ class DiscoveryBatchData:
         jsonObject = json.loads (userDiscoveryDataJSON)
 
         return jsonObject
+
+class TailResolutionData:
+    def __init__(self, motivationsToResolveCount = 0, motivationsList = []):
+        self.motivationsToResovleCount = motivationsToResolveCount
+        self.motivationsList = motivationsList.copy()
+
