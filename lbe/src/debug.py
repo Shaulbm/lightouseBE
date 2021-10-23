@@ -45,10 +45,15 @@ while index > 0:
 #gateway.get_user(id="U001",mail="")
 
 # newUser = QuestionData (id = "U002", mailAddress="smadar@hotmail.com")
-dbInstance = moovDBInstance()
+# dbInstance = moovDBInstance()
 # dbInstance.insertOrUpdateUser(newUser)
 
 #gateway.get_user(id="U002", mail="")
 
 # dbInstance.setMotivationsToUSer(id="U002", motivations=userMotivations)
-dbInstance.getQuestion("Q002", 2)
+# dbInstance.getQuestion("Q002", 2)
+
+# gateway.start_user_journey(userId="U001")
+# questions = gateway.get_next_questions_batch(userId="U001", locale=1)
+# print (questions)
+gateway.set_journey_question_response(userId="U001", questionId="Q002", responseId="R006")

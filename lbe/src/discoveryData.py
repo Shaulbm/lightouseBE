@@ -20,7 +20,7 @@ class UserDiscoveryJourneyData:
             self.status = jsonData["status"]
             self.currBatch = jsonData["currBatch"]
             self.lastAnsweredQuestion = jsonData["lastAnsweredQuestion"]
-            self.userResponses = json.loads(jsonData["userResponses"])
+            self.userResponses = jsonData["userResponses"]
 
         except Exception as err:
             #log this

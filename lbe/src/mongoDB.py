@@ -211,10 +211,10 @@ class moovDBInstance(metaclass=Singleton):
         return questionDetails
 
     def getQuestionsFromBatch(self, batchId, locale):
-        db = self.getDatabase
+        db = self.getDatabase()
         questionsCollection = db["questions"]
 
-        questionsDataJSON = questionsCollection.find_one({"batchId" : batchId})
+        questionsDataJSON = questionsCollection.find({"batchId" : batchId})
 
         if (questionsDataJSON is None):
             return None        
@@ -230,7 +230,7 @@ class moovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         discoveryJourneyCollection = db["userDiscoveryJourney"]
 
-        userFilter = {"id":id}
+        userFilter = {"userId":userId}
 
         discoveryJourneyDataJSON = discoveryJourneyCollection.find_one(userFilter)
 
@@ -239,7 +239,7 @@ class moovDBInstance(metaclass=Singleton):
             return None
 
         userDiscoveryDetails = UserDiscoveryJourneyData()
-        userDiscoveryDetails.fromJSON(discoveryJourneyDataJSON)
+        userDiscoveryDetails.buildFromJSON(discoveryJourneyDataJSON)
 
         return userDiscoveryDetails
 
@@ -257,7 +257,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             discoveryJourneyCollection.insert_one(discoveryJourneyData.toJSON())
 
-    def getDiscvoeryBatch(self, batchId = "", journeyId = "", batchIdx = ""):
+    def getDiscvoeryBatch(self, batchId = "", journeyId = "", batchIdx = "", locale = 0):
         db = self.getDatabase()
         discoveryJourneyCollection = db["discoveryData"]
 
@@ -274,10 +274,10 @@ class moovDBInstance(metaclass=Singleton):
             #no discovery journey data found
             return None
 
-        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"])
+        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"], locale)
 
         discoveryBatchDetails = DiscoveryBatchData()
-        discoveryBatchDetails.fromJSON(discoveryBatchDataJSON, localedTextDict)
+        discoveryBatchDetails.buildFromJSON(discoveryBatchDataJSON, localedTextDict)
 
         return discoveryBatchDetails   
 #insertMotivation()

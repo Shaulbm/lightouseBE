@@ -1,7 +1,6 @@
 from fastapi import Header, APIRouter
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
-from lbe.src.objectsData import questionData
 from users import UsersLogic
 from mongoDB import moovDBInstance
 import userDiscoveryJourney
@@ -45,7 +44,7 @@ def get_question(id, locale):
     return questionDetails
     
 @router.get("/startUserJourney")
-def get_user_id(userId):
+def start_user_journey(userId):
     journeyId = userDiscoveryJourney.startUserJourney(userId)
     
     return journeyId
@@ -58,7 +57,7 @@ def get_next_questions_batch(userId, locale):
 
 @router.get("/journeySetQuestionResponse", status_code=200)
 def set_journey_question_response(userId, questionId, responseId):
-    userDiscoveryJourney.setUserResponse (userId = userId, questionI = questionId, responseId = responseId)
+    userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId)
 
     return "reposne was set"
 

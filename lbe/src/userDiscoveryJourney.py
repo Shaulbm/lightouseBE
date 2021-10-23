@@ -20,7 +20,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
 
     newDiscoveryJourney = UserDiscoveryJourneyData()
-    newDiscoveryJourney.id = userId + "_" + uuid.uuid4()[:8]
+    newDiscoveryJourney.id = userId + "_" + str(uuid.uuid4())[:8]
     newDiscoveryJourney.userId = userId
     #current we only have one journey
     newDiscoveryJourney.journeyId = journeyTypeId
@@ -30,7 +30,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
     return newDiscoveryJourney.id
 
-def getNextQuestionsBatch (self, userId, locale):
+def getNextQuestionsBatch (userId, locale):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 
@@ -41,8 +41,15 @@ def getNextQuestionsBatch (self, userId, locale):
     if discoveryJourneyDetails is None:
         return None
 
-    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch)
-    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx = currBatchDetails.batchIdx + 1)
+    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, locale=locale)
+
+    currBatchIdx = 0
+
+    # it might be that we still don't have a current batch as we just started
+    if (currBatchDetails is not None):
+        currBatchIdx = currBatchDetails.batchIdx
+
+    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1)
 
     questionsList = {}
 
@@ -66,7 +73,7 @@ def getNextQuestionsBatch (self, userId, locale):
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         
         #getting the list of questions in the next batch
-        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.id, locale)
+        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.batchId, locale)
 
     return questionsList
 
@@ -78,6 +85,7 @@ def setUserResponse (userId, questionId, responseId):
         return None
 
     discoveryJourneyDetails.userResponses[questionId] = responseId
+    discoveryJourneyDetails.lastAnsweredQuestion = questionId
 
     dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
