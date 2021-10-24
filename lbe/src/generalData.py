@@ -23,7 +23,7 @@ class TextData:
             #log this
             raise TypeError(str.format("failed to load text data from JSON, data is {0}, error is {1}", jsonData, err))
 
-class QuestionData:
+class UserData:
     def __init__(self, id = "", parentId = "", mailAddress = "", motivations = None):
         self.id = id
         self.parentId = parentId

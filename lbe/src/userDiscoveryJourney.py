@@ -7,6 +7,7 @@ from questionsData import QuestionData, ResponseData
 import uuid
 
 SINGLE_JOURNEY_ID = "J001"
+TAIL_QUESTION_ID = "Q999"
 MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE = 1.3
 
 def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
@@ -89,6 +90,22 @@ def setUserResponse (userId, questionId, responseId):
 
     dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
+def setUserMultipleResponses (userId, questionId, responsesIds):
+    if (questionId == TAIL_QUESTION_ID):
+        dbInstance = moovDBInstance()
+        discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+
+        if discoveryJourneyDetails is None:
+            return None
+
+        # add the responses for questions keys Q999_1, Q999_2 etc.
+        for currResponseIndex, currResponse in enumerate(responsesIds):
+            currQuestionId = questionId + "_" + str(currResponseIndex)
+            discoveryJourneyDetails.userResponses[currQuestionId] = currResponse
+            
+        discoveryJourneyDetails.lastAnsweredQuestion = questionId
+        dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)    
+
 def summerizeUserResults (userDiscoveryJourney, locale):
     # get the disvcovery journey data for the user
     # create a dictionaray from all the different motivations ids as keys, and 0.0 score as value - userMotivationsScoreBoard
@@ -100,13 +117,19 @@ def summerizeUserResults (userDiscoveryJourney, locale):
     # create a dict of {MotivationId, Score}
     motivationsScoreBoard = dict.fromkeys(motivationsIds, 0)
 
-    for key, value in userDiscoveryJourney.userResponses:
-        #iterate over all the responses of the user - key = questionIs, value = resoponseId
-        currQuestion = moovDBInstance.getQuestion(key)
+    for currQuestionId, currResponseId in userDiscoveryJourney.userResponses:
 
+        actualCurrQuestionId = currQuestionId
+        #check if this is a tail question 
+        if TAIL_QUESTION_ID in currQuestionId:
+             #we need to extract the question from the list remove the suffix _1 / _2 etc.
+            actualCurrQuestionId = currQuestionId[:currQuestionId.rfind('_')]
+
+        currQuestion = moovDBInstance.getQuestion(actualCurrQuestionId)
+        
         foundResponseData = None
         for currResponse in currQuestion.possibleResponses:
-            if currResponse.id == value:
+            if currResponse.id == currResponseId:
                 foundResponseData = currResponse
                 break
 
@@ -147,7 +170,6 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
       
         currScoreIndex += 1
 
-
     tailResult = TailResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTail)
     return tailResult
 
@@ -162,7 +184,9 @@ def endUserJourney (userId, userMotivationScoreBoard):
     moovDBInstance.setMotivationsToUSer(userMotivationScoreBoard)
 
 def createTailResolutionQuestion (tailResolutionDataInstance, locale):
-    tailResolutionQuestion = moovDBInstance.getQuestion("Q999", locale)
+    tailResolutionQuestion = moovDBInstance.getQuestion(TAIL_QUESTION_ID, locale)
+
+    tailResolutionQuestion.id = TAIL_QUESTION_ID + "_" + str(uuid.uuid4())[:8]
 
     #now change the <<N>> to state the number of options the user needs to pick
     tailResolutionQuestion.questionText.replace("<<N>>", str(tailResolutionDataInstance.motivationsToResovleCount))
@@ -173,7 +197,8 @@ def createTailResolutionQuestion (tailResolutionDataInstance, locale):
         currMotivation = moovDBInstance.getMotivation(currMotviationId)
 
         currResponse = ResponseData()
-        currResponse.id = uuid.uuid4()[:8]
+        # setting the motivation id as response id, as we can't access this response when calculating score 
+        currResponse.id = str(uuid.uuid4())[:8] 
         currResponse.idx = currResponseIdx
         currResponse.motivationId = currMotviationId
         currResponse.motivationScore = MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE
@@ -181,5 +206,7 @@ def createTailResolutionQuestion (tailResolutionDataInstance, locale):
         currResponse.responseText = currMotivation.tailResolution
 
         tailResolutionQuestion.possibleResponses.append (currResponse)
+
+    moovDBInstance.insertOrUpdateQuestion(tailResolutionQuestion)
 
     return tailResolutionQuestion

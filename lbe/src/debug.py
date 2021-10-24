@@ -1,6 +1,8 @@
+from re import A
 import main
 import gateway
 import time
+import uuid
 from mongoDB import moovDBInstance
 from generalData import QuestionData
 
@@ -56,4 +58,11 @@ while index > 0:
 # gateway.start_user_journey(userId="U001")
 # questions = gateway.get_next_questions_batch(userId="U001", locale=1)
 # print (questions)
-gateway.set_journey_question_response(userId="U001", questionId="Q002", responseId="R006")
+#gateway.set_journey_question_response(userId="U001", questionId="Q002", responseId="R006")
+
+dbgId = "Q999" + "_" + str(uuid.uuid4())[:8] + "_10"
+print ("dbgId is {0}", dbgId)
+
+if "Q999" in dbgId:
+    actualCurrQuestionId = dbgId[:dbgId.rfind('_')]
+    print ("actual is {0}",actualCurrQuestionId)
