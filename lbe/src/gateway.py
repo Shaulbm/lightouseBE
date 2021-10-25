@@ -16,7 +16,7 @@ def get_motivation(id, locale):
     return motivationDetails
 
 @router.get("/user")
-def get_user(id, mail):
+def get_user(id, mail = ""):
     dbActions = moovDBInstance()
     userDetails = dbActions.getUser (id, mail)
 
@@ -60,6 +60,14 @@ def set_journey_question_response(userId, questionId, responseId):
     userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId)
 
     return "reposne was set"
+
+@router.get("/journeySetQuestionMultipleResponse", status_code=200)
+def set_journey_multiple_question_responses(userId, questionId, responses):
+    userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responses = responses)
+
+    return "reposnes were set"
+
+
 
 # @router.post("/registerUser")
 # def register_user(user):

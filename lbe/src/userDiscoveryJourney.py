@@ -52,23 +52,37 @@ def getNextQuestionsBatch (userId, locale):
 
     nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1)
 
-    questionsList = {}
+    questionsList = []
 
     if (nextBatchDetails is None):
         #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
-        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails)
+        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, locale)
 
         motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
 
-        if (len(motivationsTail.motivationsTail) > 0):
+        if motivationsTail.motivationsToResovleCount > 0:
             #the results are not valid - we need atie breaker (resolve the tail)
-            questionsList = createTailResolutionQuestion(motivationsTail, locale)
+            tailResQuestion = createTailResolutionQuestion(motivationsTail, locale)
+
+            questionsList.append(tailResQuestion) 
         else:
             # no tail and no more batches - process is done
-            endUserJourney(userId, motivationScoreBoard)
+
+            sortedScoreBoard = dict(sorted(motivationScoreBoard.items(), key=lambda item: item[1], reverse= True))
+
+            topFiveMotivations = {}
+            motivationIdx = 0
+            for key,value in sortedScoreBoard.items():
+                topFiveMotivations[key] = value
+                motivationIdx +=1
+
+                if motivationIdx > 4:
+                    break
+            
+            endUserJourney(userId, topFiveMotivations)
     else:
         #discovery journey is on going - just get the next batch
-
+ 
         discoveryJourneyDetails.currBatch = nextBatchDetails.batchId
         #updaing user discovery journey
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
@@ -90,8 +104,8 @@ def setUserResponse (userId, questionId, responseId):
 
     dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
-def setUserMultipleResponses (userId, questionId, responsesIds):
-    if (questionId == TAIL_QUESTION_ID):
+def setUserMultipleResponses (userId, questionId, responses):
+    if (TAIL_QUESTION_ID in questionId):
         dbInstance = moovDBInstance()
         discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
@@ -99,9 +113,9 @@ def setUserMultipleResponses (userId, questionId, responsesIds):
             return None
 
         # add the responses for questions keys Q999_1, Q999_2 etc.
-        for currResponseIndex, currResponse in enumerate(responsesIds):
+        for currResponseIndex, currResponse in enumerate(responses):
             currQuestionId = questionId + "_" + str(currResponseIndex)
-            discoveryJourneyDetails.userResponses[currQuestionId] = currResponse
+            discoveryJourneyDetails.userResponses[currQuestionId] = currResponse.id
             
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)    
@@ -111,13 +125,14 @@ def summerizeUserResults (userDiscoveryJourney, locale):
     # create a dictionaray from all the different motivations ids as keys, and 0.0 score as value - userMotivationsScoreBoard
     # get the responses array and for eachquestion, find the response motivation score and update the userMotivationsScoreBoard
     # return the score board
-
-    motivationsIds = moovDBInstance.getAllMotivationsIds()
+    dbInstance = moovDBInstance()
+    motivationsIds = dbInstance.getAllMotivationsIds()
 
     # create a dict of {MotivationId, Score}
     motivationsScoreBoard = dict.fromkeys(motivationsIds, 0)
 
-    for currQuestionId, currResponseId in userDiscoveryJourney.userResponses:
+    for currQuestionId in userDiscoveryJourney.userResponses:
+        currResponseId = userDiscoveryJourney.userResponses[currQuestionId]
 
         actualCurrQuestionId = currQuestionId
         #check if this is a tail question 
@@ -125,7 +140,7 @@ def summerizeUserResults (userDiscoveryJourney, locale):
              #we need to extract the question from the list remove the suffix _1 / _2 etc.
             actualCurrQuestionId = currQuestionId[:currQuestionId.rfind('_')]
 
-        currQuestion = moovDBInstance.getQuestion(actualCurrQuestionId)
+        currQuestion = dbInstance.getQuestion(actualCurrQuestionId)
         
         foundResponseData = None
         for currResponse in currQuestion.possibleResponses:
@@ -135,7 +150,7 @@ def summerizeUserResults (userDiscoveryJourney, locale):
 
         if foundResponseData is not None:
             #add score to the score board
-            motivationsScoreBoard[currResponse.motivationId] += currResponse.motivationScore
+            motivationsScoreBoard[foundResponseData.motivationId] += foundResponseData.motivationScore
 
     return motivationsScoreBoard
 
@@ -145,28 +160,29 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
     scoreList = list(sortedScoreBoard.values())
     motivationsList = list(sortedScoreBoard)
 
-    motivationsTail = []
+    
 
     if (scoreList[4] > scoreList[5]):
-        #no tail
-        return motivationsTail
+        #no tail - return empty object
+        return TailResolutionData()
 
+    motivationsTail = []
     currScoreIndex = 0
     #start from 1 as we have at least one to resolve
     motivationsToResolveCount = 1
+    motivationsTail.append(motivationsList[4])
     #check score tail
     while currScoreIndex < len(sortedScoreBoard):
-        if (currScoreIndex < 5):
-            if (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex < 4):
-                # before the top 5
-                motivationsTail.append(motivationsList[currScoreIndex])
-                motivationsToResolveCount += 1
-            elif (scoreList[currScoreIndex == scoreList[4] and currScoreIndex > 4]):
-                # after the top 5
-                motivationsTail.append(motivationsList[currScoreIndex])
-            elif (scoreList[4] > scoreList[currScoreIndex] and currScoreIndex > 4):
-                # we are out of the tail
-                break
+        if (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex < 4):
+            # before the top 5
+            motivationsTail.append(motivationsList[currScoreIndex])
+            motivationsToResolveCount += 1
+        elif (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex > 4):
+            # after the top 5
+            motivationsTail.append(motivationsList[currScoreIndex])
+        elif (scoreList[4] > scoreList[currScoreIndex] and currScoreIndex > 4):
+            # we are out of the tail
+            break
       
         currScoreIndex += 1
 
@@ -175,26 +191,28 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
 
 def endUserJourney (userId, userMotivationScoreBoard):
     #end the journey and update the user data with the top 5 motivations
-    currJourney = moovDBInstance.getUserDiscoveryJourney(userId)
+    dbInstance = moovDBInstance()
+    currJourney = dbInstance.getUserDiscoveryJourney(userId)
 
     currJourney.currBatch = ""
     currJourney.status = "closed"
 
-    moovDBInstance.insertOrUpdateDiscoveryJourney(currJourney)
-    moovDBInstance.setMotivationsToUSer(userMotivationScoreBoard)
+    dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
+    dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
 
 def createTailResolutionQuestion (tailResolutionDataInstance, locale):
-    tailResolutionQuestion = moovDBInstance.getQuestion(TAIL_QUESTION_ID, locale)
+    dbInstance = moovDBInstance()
+    tailResolutionQuestion = dbInstance.getQuestion(TAIL_QUESTION_ID, locale)
 
     tailResolutionQuestion.id = TAIL_QUESTION_ID + "_" + str(uuid.uuid4())[:8]
 
     #now change the <<N>> to state the number of options the user needs to pick
-    tailResolutionQuestion.questionText.replace("<<N>>", str(tailResolutionDataInstance.motivationsToResovleCount))
+    tailResolutionQuestion.questionText = tailResolutionQuestion.questionText.replace("<<N>>", str(tailResolutionDataInstance.motivationsToResovleCount))
 
     tailResolutionQuestion.userResponsesNo = tailResolutionDataInstance.motivationsToResovleCount
 
-    for currResponseIdx, currMotviationId in enumerate(tailResolutionDataInstance.motivationsTail):
-        currMotivation = moovDBInstance.getMotivation(currMotviationId)
+    for currResponseIdx, currMotviationId in enumerate(tailResolutionDataInstance.motivationsList):
+        currMotivation = dbInstance.getMotivation(currMotviationId, locale)
 
         currResponse = ResponseData()
         # setting the motivation id as response id, as we can't access this response when calculating score 
@@ -202,11 +220,11 @@ def createTailResolutionQuestion (tailResolutionDataInstance, locale):
         currResponse.idx = currResponseIdx
         currResponse.motivationId = currMotviationId
         currResponse.motivationScore = MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE
-        currResponse.questionId = tailResolutionQuestion.Id
+        currResponse.questionId = tailResolutionQuestion.id
         currResponse.responseText = currMotivation.tailResolution
 
         tailResolutionQuestion.possibleResponses.append (currResponse)
 
-    moovDBInstance.insertOrUpdateQuestion(tailResolutionQuestion)
+    dbInstance.insertOrUpdateQuestion(tailResolutionQuestion)
 
     return tailResolutionQuestion

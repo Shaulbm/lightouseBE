@@ -126,7 +126,7 @@ class moovDBInstance(metaclass=Singleton):
         if (motivationDataJSON is None):
             return None
 
-        print ("motivation data is {0}", motivationDataJSON)
+        # print ("motivation data is {0}", motivationDataJSON)
 
         motivationTextsDic = self.getTextDataByParent(id, locale)
 
@@ -137,15 +137,15 @@ class moovDBInstance(metaclass=Singleton):
         return newMotivtion 
     
     def getAllMotivationsIds(self):
-        db = self.getDatabase
+        db = self.getDatabase()
         motivationCollection = db["motivationsTest"]
 
-        motivationsDataJSON = motivationCollection.find()
+        foundMotivations = motivationCollection.find({})
 
-        if (motivationsDataJSON is None):
-            return None
-
-        motivationsIds = [m["id"] for m in motivationsDataJSON["possibleResponses"]]
+        motivationsIds = []
+    
+        if (foundMotivations is not None):
+            motivationsIds = [m["id"] for m in foundMotivations]
 
         return motivationsIds
 
@@ -188,7 +188,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             questionsCollection.insert_one(currQuestionData.toJSON())
 
-    def getQuestion(self, id, locale):
+    def getQuestion(self, id, locale=0):
         db = self.getDatabase()
         questionsCollection = db["questions"]
 
@@ -201,8 +201,11 @@ class moovDBInstance(metaclass=Singleton):
         parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
         parentsIds.append(questionsDataJSON["id"])
 
-        # get localed text
-        questionTextsDic = self.getTextDataByParents(parentsIds, locale)
+        questionTextsDic = None
+        
+        if (locale != 0):
+            # get localed text
+            questionTextsDic = self.getTextDataByParents(parentsIds, locale)
 
         questionDetails = QuestionData()
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
@@ -265,8 +268,11 @@ class moovDBInstance(metaclass=Singleton):
 
         if (batchId != ""):
             userFilter = {"batchId" : batchId}
-        else:
+        elif (batchIdx != ""):
             userFilter = {"journeyId":journeyId, "batchIdx":batchIdx}
+        else:
+            #both bathId and BatchIdx are empty - this is the first Batch
+            userFilter = {"journeyId":journeyId, "batchIdx":1}
 
         discoveryBatchDataJSON = discoveryJourneyCollection.find_one(userFilter)
 

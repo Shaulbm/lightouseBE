@@ -14,8 +14,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1YOdX9KDiPrM21-olNz1Mgl5lfMQPyMz1J4LvVRQ6iow'
-QUESTIONS_RANGE_NAME = 'Questions!A1:I61'
-RESPONSES_RANGE_NAME = 'Responses!A1:H241'
+QUESTIONS_RANGE_NAME = 'Questions!A1:I62'
+RESPONSES_RANGE_NAME = 'Responses!A1:I241'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -102,24 +102,25 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     for currResponseData in responsesDataDictArray:
-        newReponse = ResponseData()
-        newReponse.id = currResponseData["id"]
-        newReponse.idx = int(currResponseData["idx"])
-        newReponse.questionId = currResponseData["questionId"]
-        newReponse.motivationId = currResponseData["motivationId"]
-        newReponse.motivationScore = float(currResponseData["motivationScore"])
-        newReponse.responseText = newReponse.id + "_1"
+        newResponse = ResponseData()
+        newResponse.id = currResponseData["id"]
+        newResponse.idx = int(currResponseData["idx"])
+        newResponse.dependency = currResponseData["dependency"]
+        newResponse.questionId = currResponseData["questionId"]
+        newResponse.motivationId = currResponseData["motivationId"]
+        newResponse.motivationScore = float(currResponseData["motivationScore"])
+        newResponse.responseText = newResponse.id + "_1"
 
-        currentTextData = TextData(newReponse.id, newReponse.responseText, currResponseData["responseText <<en>>"])
+        currentTextData = TextData(newResponse.id, newResponse.responseText, currResponseData["responseText <<en>>"])
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-        currentTextData = TextData(newReponse.id, newReponse.responseText, currResponseData["responseText <<he_fe>>"])
+        currentTextData = TextData(newResponse.id, newResponse.responseText, currResponseData["responseText <<he_fe>>"])
         dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-        currentTextData = TextData(newReponse.id, newReponse.responseText, currResponseData["responseText <<he_ma>>"])
+        currentTextData = TextData(newResponse.id, newResponse.responseText, currResponseData["responseText <<he_ma>>"])
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-        newQuestion.possibleResponses.append(newReponse)
+        newQuestion.possibleResponses.append(newResponse)
 
     dbInstance.insertOrUpdateQuestion(newQuestion)
 
