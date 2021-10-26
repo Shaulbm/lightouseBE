@@ -4,3 +4,4 @@ mongoimport --collection=locale_he_ma --db=moov --file="c:\\dev\\data\\MoovDB\\l
 mongoimport --collection=locale_he_fe --db=moov --file="c:\\dev\\data\\MoovDB\\locale_he_fe.json"
 mongoimport --collection=users --db=moov --file="c:\\dev\\data\\MoovDB\\users.json"
 mongoimport --collection=questions --db=moov --file="c:\\dev\\data\\MoovDB\\questions.json"
+mongoimport --collection=discoveryData --db=moov --file="c:\\dev\\data\\MoovDB\\discoveryData.json"
