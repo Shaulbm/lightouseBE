@@ -4,9 +4,9 @@ import gateway
 import time
 import uuid
 from mongoDB import moovDBInstance
-from generalData import QuestionData
+import ExportJourney
 
-main.startup()
+# main.startup()
 '''
 stocks.register_stock("MSFT")
 
@@ -60,9 +60,25 @@ while index > 0:
 # print (questions)
 #gateway.set_journey_question_response(userId="U001", questionId="Q002", responseId="R006")
 
-dbgId = "Q999" + "_" + str(uuid.uuid4())[:8] + "_10"
-print ("dbgId is {0}", dbgId)
+# dbgId = "Q999" + "_" + str(uuid.uuid4())[:8] + "_10"
+# print ("dbgId is {0}", dbgId)
 
-if "Q999" in dbgId:
-    actualCurrQuestionId = dbgId[:dbgId.rfind('_')]
-    print ("actual is {0}",actualCurrQuestionId)
+# if "Q999" in dbgId:
+#     actualCurrQuestionId = dbgId[:dbgId.rfind('_')]
+#     print ("actual is {0}",actualCurrQuestionId)
+
+# jid = gateway.start_user_journey("U001")
+# questionsList = gateway.get_next_questions_batch("U001", 1)
+# print (questionsList)
+
+# ExportJourney.writeJourneyTestReport([])
+
+
+# A = "Q999_e9957af6"
+
+# if "Q999" not in A:
+#     print ("bla")
+# else:
+#     print ("blu")
+
+gateway.get_user("U0001")

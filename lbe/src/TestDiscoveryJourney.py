@@ -4,9 +4,12 @@
 import random
 import gateway
 import uuid
+import jsonpickle
+import json
 from generalData import UserData
+import ExportJourney
 
-TESTS_NUMBER = 10
+TESTS_NUMBER = 250
 
 class reportResponseData:
     def __init__(self, id = "", idx = 0, questionId = "", motivationId = ""):
@@ -18,9 +21,17 @@ class reportResponseData:
 
 class userJourneyData:
     def __init__(self, id = "", userResponses = [], motivations = []):
-        self.id = ""
-        self.userResponses = userResponses
-        self.motivations = motivations
+        self.id = id
+        self.userResponses = userResponses.copy()
+        self.motivations = motivations.copy()
+
+    def toJSON(self):
+        responseDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (responseDataJSON)
+
+        return jsonObject
+
 
 def getQuestionByIdx (questions, questionIdx):
     returnQuestion = None
@@ -33,6 +44,7 @@ def getQuestionByIdx (questions, questionIdx):
 def main():
     
     currTest = 0
+    usersJourneysReport = []
     while currTest < TESTS_NUMBER:
         #1. insert new user
         testPrefix = "T_" + str(uuid.uuid4())[:8] 
@@ -40,12 +52,12 @@ def main():
         userMail = userId + "@gmail.com"
         gateway.add_or_update_user(userId, userMail)
 
-        currUserJourney = userJourneyData(id = userId)
+        currUserJourneyReport = userJourneyData(id = userId)
         
         #2. start journey
         gateway.start_user_journey(userId)
         
-        #3. get next batch
+        #3. get next ba    headlineRow = ["userId"]tch
         questionsBatch = gateway.get_next_questions_batch(userId, 1) 
         
         questionsSetDict = {}
@@ -61,7 +73,6 @@ def main():
                 currQuestion = getQuestionByIdx(questionsBatch, currQuestionIdx)
 
                 currQuestionPossibleResponses = []
-                currUserResponseReport = reportResponseData()
                 for currResponse in currQuestion.possibleResponses:
                     if currQuestion.setId != lastSetId or (currQuestion.setId == lastSetId and currResponse.dependency != lastResponseId):
                         #this is a part of a set, we need to consider the last answer
@@ -79,32 +90,48 @@ def main():
                         lastSetId = currQuestion.setId
 
                     gateway.set_journey_question_response(userId=userId, questionId=currQuestion.id, responseId=selectedResponse.id)
+                    currUserResponseReport = reportResponseData()
                     currUserResponseReport.questionId = currQuestion.id
                     currUserResponseReport.id = selectedResponse.id
                     currUserResponseReport.idx = selectedResponse.idx
                     currUserResponseReport.motivationId = selectedResponse.motivationId
 
-                    currUserJourney.userResponses.append (currUserResponseReport)
+                    currUserJourneyReport.userResponses.append (currUserResponseReport)
                 else:
                     responsesList = random.sample(currQuestion.possibleResponses, currQuestion.userResponsesNo)
                     
                     gateway.set_journey_multiple_question_responses(userId=userId, questionId=currQuestion.id, responses=responsesList)
 
                     for currResponseData in responsesList:
+                        currUserResponseReport = reportResponseData()
                         currUserResponseReport.questionId = currQuestion.id
                         currUserResponseReport.id = currResponseData.id
                         currUserResponseReport.idx = currResponseData.idx
                         currUserResponseReport.motivationId = currResponseData.motivationId
 
-                        currUserJourney.userResponses.append (currUserResponseReport)
+                        currUserJourneyReport.userResponses.append (currUserResponseReport)
 
                 currQuestionIdx +=1
 
             questionsBatch = gateway.get_next_questions_batch(userId, 1)
             
         currentUser = gateway.get_user(userId, "")
-        currUserJourney.motivations = currentUser.motivations
+        currUserJourneyReport.motivations = currentUser.motivations
+        usersJourneysReport.append(currUserJourneyReport)
         currTest +=1
+
+        print ("Current text Iteration ", currTest)
+    
+    exportDataToExcel(usersJourneysReport)
+
+def exportDataToExcel(usersJourneysReport):
+    #Open Excel File
+
+    ExportJourney.writeJourneyTestReport(usersJourneysReport)
+
+    # #Write Data
+    # for currJourneyReport in usersJourneysReport:
+    #     print (currJourneyReport)
 
 if __name__ == '__main__':
     main()
