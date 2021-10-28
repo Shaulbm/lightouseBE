@@ -9,6 +9,7 @@ from generalData import TextData, UserData, UserRoles
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
+from loguru import logger
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -205,6 +206,7 @@ class moovDBInstance(metaclass=Singleton):
         
         if (locale != 0):
             # get localed text
+            logger.debug ("retrieving texts data")
             questionTextsDic = self.getTextDataByParents(parentsIds, locale)
 
         questionDetails = QuestionData()

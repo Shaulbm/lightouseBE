@@ -89,3 +89,4 @@ while index > 0:
 gateway.start_user_journey("U001")
 
 questionsList = gateway.get_next_questions_batch("U001", 1)
+print (questionsList)

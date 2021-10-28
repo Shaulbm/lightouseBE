@@ -5,6 +5,7 @@ from discoveryData import UserDiscoveryJourneyData, TailResolutionData
 from mongoDB import moovDBInstance
 from questionsData import QuestionData, ResponseData
 import uuid
+from loguru import logger
 
 SINGLE_JOURNEY_ID = "J001"
 TAIL_QUESTION_ID = "Q999"
@@ -38,6 +39,8 @@ def getNextQuestionsBatch (userId, locale):
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
     dbInstance = moovDBInstance()
     discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+
+    logger.debug("get next question batch, journey is \n {}", discoveryJourneyDetails.toJSON())
 
     if discoveryJourneyDetails is None:
         return None
