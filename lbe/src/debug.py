@@ -5,6 +5,7 @@ import time
 import uuid
 from mongoDB import moovDBInstance
 import ExportJourney
+from generalData import UserRoles
 
 # main.startup()
 '''
@@ -81,4 +82,10 @@ while index > 0:
 # else:
 #     print ("blu")
 
-gateway.get_user("U0001")
+# db = moovDBInstance()
+# db.insertOrUpdateUserDetails(id="U001", mail = "shaul@hotmail.com", firstName = "Shaul", familyName = "Ben Maor", role = UserRoles.MANAGER)
+# user = gateway.get_user("U001")
+# print (user.toJSON())
+gateway.start_user_journey("U001")
+
+questionsList = gateway.get_next_questions_batch("U001", 1)

@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import pymongo
 import json
 from motivationsData import motivationData
-from generalData import TextData, UserData
+from generalData import TextData, UserData, UserRoles
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -82,8 +82,8 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new motivation
             dataCollection.insert_one(textDataObj.toJSON())
     
-    def insertOrUpdateUserDetails (self, id, mail, parentId = "", motivations = None):
-        newUser = UserData(id=id, parentId=parentId, mailAddress=mail, motivations=motivations)
+    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
