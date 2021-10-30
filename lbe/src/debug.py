@@ -76,7 +76,7 @@ while index > 0:
 
 
 # A = "Q999_e9957af6"
-
+ 
 # if "Q999" not in A:
 #     print ("bla")
 # else:
@@ -86,7 +86,31 @@ while index > 0:
 # db.insertOrUpdateUserDetails(id="U001", mail = "shaul@hotmail.com", firstName = "Shaul", familyName = "Ben Maor", role = UserRoles.MANAGER)
 # user = gateway.get_user("U001")
 # print (user.toJSON())
-gateway.start_user_journey("U001")
+# gateway.start_user_journey("U001")
 
-questionsList = gateway.get_next_questions_batch("U001", 1)
-print (questionsList)
+# questionsList = gateway.get_next_questions_batch("U001", 1)
+# print (questionsList)
+# motivations = gateway.get_all_motivations(1)
+# print (motivations)
+
+def createUsers():
+    #   U001
+    # UA02              UA03            UA04
+    # UA05 UA06 UA07    UA08 UA09
+    #
+    #
+    # UA01 - HR
+    gateway.add_or_update_user(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", orgId="O001", role=UserRoles.HR, mailAddress="")
+    gateway.add_or_update_user(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA04", parentId= "U001" ,firstName="Riki", familyName="Class", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA05", parentId= "UA02" ,firstName="Alex", familyName="Tatarski", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA06", parentId= "UA02" ,firstName="Bessi", familyName="Dean", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+
+# createUsers()
+
+usersCircle = gateway.get_user_circle("U001")
+print (usersCircle)

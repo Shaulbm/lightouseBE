@@ -1,15 +1,14 @@
 from threading import current_thread
 from typing import Text
-from google.auth import app_engine
 from pymongo import MongoClient
-import pymongo
-import json
 from motivationsData import motivationData
-from generalData import TextData, UserData, UserRoles
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
+import anytree
+from anytree import Node
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -83,8 +82,8 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new motivation
             dataCollection.insert_one(textDataObj.toJSON())
     
-    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
-        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
+    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, orgId=orgId, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
@@ -137,6 +136,25 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return newMotivtion 
     
+    def getAllMotivations(self,locale):
+        db = self.getDatabase()
+        motivationCollection = db["motivationsTest"]
+
+        motivationsDataJSONList = motivationCollection.find()
+
+        if (motivationsDataJSONList is None):
+            return None
+
+        foundMotivations = []
+        for currMotivationJSONData in motivationsDataJSONList:
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], locale)
+            newMotivation = motivationData()
+            newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
+            foundMotivations.append(newMotivation)
+
+        # print ("motivation object is {0}", newMotivtion.toJSON())
+        return foundMotivations 
+
     def getAllMotivationsIds(self):
         db = self.getDatabase()
         motivationCollection = db["motivationsTest"]
@@ -288,5 +306,97 @@ class moovDBInstance(metaclass=Singleton):
         discoveryBatchDetails.buildFromJSON(discoveryBatchDataJSON, localedTextDict)
 
         return discoveryBatchDetails   
-#insertMotivation()
-#getMotivation("M001", LOCALE_HEB_MA)
+
+    def getUserCircle(self, userId):
+        db = self.getDatabase()
+
+        userCircleDetails = UserCircleData()
+        userCircleDetails.teamMembersList = self.getUsersUnder(userId)
+        userCircleDetails.peopleOfInterest = self.getUserPeopleOfInterest(userId)
+
+        return userCircleDetails
+
+    def getUsersUnder (self, userId):
+        requestingUser = self.getUser(id=userId)
+
+        foundSubordinatesDataList = []
+
+        if (requestingUser is None):
+            return None
+
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        if (requestingUser.orgId is None or requestingUser.orgId == ""):
+            return None
+
+        # get all users in the user organization
+        foundUsers = usersCollection.find({"orgId":requestingUser.orgId})
+
+        if (foundUsers is None):
+            # no users in the organization
+            return foundSubordinatesDataList
+
+        # if the currentUser is HR return all org
+        if (requestingUser.role == UserRoles.HR):
+            # this is the HR of the organization - return a list of all the employees in the organization
+            for currentFoundUser in foundUsers:
+                currentUserDetails = UserData()
+                currentUserDetails.fromJSON(currentFoundUser)
+
+                if (currentUserDetails.id != requestingUser.id):
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+
+            return foundSubordinatesDataList
+
+        # the requesting user is not the HR, find all the users under this user
+        rootNode = Node('root')
+        requestingUserNode = None
+
+        # for each user in the organization
+        for currentFoundUser in foundUsers:
+            currentUserDetails = UserData()
+            currentUserDetails.fromJSON(currentFoundUser)
+            
+            currentUserNode = anytree.search.find_by_attr(rootNode, currentUserDetails.id)
+            currentUserParentNode = anytree.search.find_by_attr(rootNode, currentUserDetails.parentId)
+
+            if (currentUserParentNode is None):
+                #this is the first time we find this Id
+                currentUserParentNode = Node(currentUserDetails.parentId, rootNode)
+            
+            if (currentUserNode is None):
+                #this is the first time we find this Id
+                currentUserNode = Node (currentUserDetails.id, currentUserParentNode)
+            else:
+                # this user Id is already in the tree
+                currentUserNode.parent = currentUserParentNode
+
+            if (currentUserDetails.id == userId):
+                #this is the user that we want to get all his subordinates
+                requestingUserNode = currentUserNode
+
+        # now we have the organization hierarchy, get the list of all this managers subordinates
+        foundSubordinates = anytree.search.findall(requestingUserNode)
+
+        if (foundSubordinates is not None):
+            foundSubordinatesList = list(foundSubordinates)
+            for currentSubordinate in foundSubordinatesList:
+                if (currentSubordinate.name != requestingUser.id):
+                    #the manager is also part of the nodes list and should be ignored
+                    currentUserDetails = self.getUser(id=currentSubordinate.name)
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+
+        return foundSubordinatesDataList
+
+    def getUserPeopleOfInterest(self, userId):
+        peopleOfInterestList = []
+
+        requestingUser = self.getUser(id=userId)
+        poiIdList = requestingUser.personsOfInterest 
+
+        for currPOI in poiIdList:
+            currentUserDetails = self.getUser(id=currPOI)
+            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+
+        return peopleOfInterestList

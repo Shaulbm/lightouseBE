@@ -401,7 +401,7 @@ class usersDB:
         for currentFoundUser in foundUsers:
             currentUserDetails = UserData(userDetails = currentFoundUser)
             
-            currentUserNode = 3.search.find_by_attr(rootNode, currentUserDetails.id)
+            currentUserNode = anytree.search.find_by_attr(rootNode, currentUserDetails.id)
             currentUserParentNode = anytree.search.find_by_attr(rootNode, currentUserDetails.managerId)
 
             if (currentUserParentNode is None):

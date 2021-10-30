@@ -15,6 +15,13 @@ def get_motivation(id, locale):
 
     return motivationDetails
 
+@router.get("/allMotivations")
+def get_all_motivations(locale):
+    dbActions = moovDBInstance()
+    motivationsDetails = dbActions.getAllMotivations (int(locale))
+
+    return motivationsDetails
+
 @router.get("/user")
 def get_user(id, mail = ""):
     dbActions = moovDBInstance()
@@ -23,9 +30,9 @@ def get_user(id, mail = ""):
     return userDetails
 
 @router.post("/addUser")
-def add_or_update_user(id, parentId = "", firstName = "", familyName = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
+def add_or_update_user(id, parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = moovDBInstance()
-    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
+    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
     return 
 
@@ -66,3 +73,9 @@ def set_journey_multiple_question_responses(userId, questionId, responses):
     userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responses = responses)
 
     return "reposnes were set"
+
+@router.get("/getUserCircle", status_code=200)
+def get_user_circle(userId):
+    dbActions = moovDBInstance()
+    userCircleDetails = dbActions.getUserCircle(userId=userId)
+    return userCircleDetails
