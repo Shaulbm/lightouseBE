@@ -32,20 +32,21 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
     return newDiscoveryJourney.id
 
-def getNextQuestionsBatch (userId, locale):
+def getNextQuestionsBatch (userId):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
     dbInstance = moovDBInstance()
-    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)   
+    userDetails = dbInstance.getUser(userId)
 
     logger.debug("get next question batch, journey is \n {}", discoveryJourneyDetails.toJSON())
 
     if discoveryJourneyDetails is None:
         return None
 
-    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, locale=locale)
+    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, locale=userDetails.locale)
 
     currBatchIdx = 0
 
@@ -59,13 +60,13 @@ def getNextQuestionsBatch (userId, locale):
 
     if (nextBatchDetails is None):
         #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
-        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, locale)
+        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userDetails.locale)
 
         motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
 
         if motivationsTail.motivationsToResovleCount > 0:
             #the results are not valid - we need atie breaker (resolve the tail)
-            tailResQuestion = createTailResolutionQuestion(motivationsTail, locale)
+            tailResQuestion = createTailResolutionQuestion(motivationsTail, userDetails.locale)
 
             questionsList.append(tailResQuestion) 
         else:
@@ -91,7 +92,7 @@ def getNextQuestionsBatch (userId, locale):
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         
         #getting the list of questions in the next batch
-        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.batchId, locale)
+        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.batchId, userDetails.locale)
 
     return questionsList
 

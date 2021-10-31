@@ -57,8 +57,8 @@ def start_user_journey(userId):
     return journeyId
 
 @router.get("/journeyGetNextBatch")
-def get_next_questions_batch(userId, locale):
-    questionsBatch = userDiscoveryJourney.getNextQuestionsBatch(userId, int(locale))
+def get_next_questions_batch(userId):
+    questionsBatch = userDiscoveryJourney.getNextQuestionsBatch(userId)
     
     return questionsBatch
 
