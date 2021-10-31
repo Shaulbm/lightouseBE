@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
 from mongoDB import moovDBInstance
 import userDiscoveryJourney
-from generalData import UserRoles
+from generalData import UserRoles, Gender, Locale
 from loguru import logger
 
 router = APIRouter()
@@ -30,9 +30,9 @@ def get_user(id, mail = ""):
     return userDetails
 
 @router.post("/addUser")
-def add_or_update_user(id, parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
+def add_or_update_user(id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = moovDBInstance()
-    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
+    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
     return 
 

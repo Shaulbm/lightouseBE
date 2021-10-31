@@ -2,7 +2,7 @@ from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
 from motivationsData import motivationData
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -82,8 +82,8 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new motivation
             dataCollection.insert_one(textDataObj.toJSON())
     
-    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
-        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, orgId=orgId, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
+    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
@@ -345,7 +345,7 @@ class moovDBInstance(metaclass=Singleton):
                 currentUserDetails.fromJSON(currentFoundUser)
 
                 if (currentUserDetails.id != requestingUser.id):
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
             return foundSubordinatesDataList
 
@@ -385,7 +385,7 @@ class moovDBInstance(metaclass=Singleton):
                 if (currentSubordinate.name != requestingUser.id):
                     #the manager is also part of the nodes list and should be ignored
                     currentUserDetails = self.getUser(id=currentSubordinate.name)
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
         return foundSubordinatesDataList
 

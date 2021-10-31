@@ -5,7 +5,7 @@ import time
 import uuid
 from mongoDB import moovDBInstance
 import ExportJourney
-from generalData import UserRoles
+from generalData import UserRoles, Locale, Gender
 
 # main.startup()
 '''
@@ -100,17 +100,18 @@ def createUsers():
     #
     #
     # UA01 - HR
-    gateway.add_or_update_user(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", orgId="O001", role=UserRoles.HR, mailAddress="")
-    gateway.add_or_update_user(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA04", parentId= "U001" ,firstName="Riki", familyName="Class", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA05", parentId= "UA02" ,firstName="Alex", familyName="Tatarski", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA06", parentId= "UA02" ,firstName="Bessi", familyName="Dean", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="U001", parentId= "" ,firstName="Shaul", familyName="Ben Maor", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="shaul@hotmail.com")
+    gateway.add_or_update_user(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HEB_FE, orgId="O001", role=UserRoles.HR, mailAddress="")
+    gateway.add_or_update_user(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", gender=Gender.FEMALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA04", parentId= "U001" ,firstName="Riki", familyName="Class", gender=Gender.FEMALE, locale=Locale.LOCALE_HEB_FE, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA05", parentId= "UA02" ,firstName="Alex", familyName="Tatarski", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA06", parentId= "UA02" ,firstName="Bessi", familyName="Dean", gender=Gender.FEMALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
 
-# createUsers()
+createUsers()
 
-usersCircle = gateway.get_user_circle("U001")
-print (usersCircle)
+# usersCircle = gateway.get_user_circle("U001")
+# print (usersCircle)
