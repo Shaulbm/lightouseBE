@@ -3,7 +3,7 @@ from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, TailResolutionData
 from mongoDB import moovDBInstance
-from questionsData import QuestionData, ResponseData
+from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
 from loguru import logger
 
@@ -103,10 +103,13 @@ def setUserResponse (userId, questionId, responseId):
     if discoveryJourneyDetails is None:
         return None
 
-    discoveryJourneyDetails.userResponses[questionId] = responseId
-    discoveryJourneyDetails.lastAnsweredQuestion = questionId
+    currQuestionDetails = dbInstance.getQuestion(questionId)
 
-    dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
+    if (currQuestionDetails.type == QuestionsType.REGULAR):
+        discoveryJourneyDetails.userResponses[questionId] = responseId
+        discoveryJourneyDetails.lastAnsweredQuestion = questionId
+
+        dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
 def setUserMultipleResponses (userId, questionId, responses):
     if (TAIL_QUESTION_ID in questionId):

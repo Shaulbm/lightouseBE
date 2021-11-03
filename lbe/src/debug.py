@@ -111,7 +111,10 @@ def createUsers():
     gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
     gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
 
-createUsers()
+# createUsers()
 
 # usersCircle = gateway.get_user_circle("U001")
 # print (usersCircle)
+
+motivationsList = gateway.get_all_motivations(1)
+print (motivationsList)

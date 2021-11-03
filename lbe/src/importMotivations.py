@@ -5,7 +5,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 import mongoDB
-from motivationsData import motivationData
+from motivationsData import MotivationData
 from generalData import TextData
 
 # If modifying these scopes, delete the file token.json.
@@ -67,7 +67,7 @@ def insertMotivation(motivationDataDict):
     heb_fe_LocaleCollection = db["locale_he_fe"]
     eng_LocaleCollection = db["locale_en"]
 
-    newMotivation = motivationData()
+    newMotivation = MotivationData()
     newMotivation.id = motivationDataDict["id"]
     newMotivation.name = newMotivation.id + "_1"
     newMotivation.shortDescription = newMotivation.id + "_2"

@@ -1,6 +1,10 @@
 import jsonpickle
 import json
 
+class QuestionsType:
+    REGULAR = 1
+    TEXT_ONLY = 2
+
 class ResponseData:
     def __init__(self, id = "", idx = 0, dependency = "", questionId="", motivationId="", motviationScore=0.0, responseText = ""):
         self.id = id
@@ -32,13 +36,15 @@ class ResponseData:
             self.responseText = jsonData["responseText"]
 
 class QuestionData:
-    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, questionText = "", userResponsesNo = 0, possibleResponses = []):
+    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, type = QuestionsType.REGULAR, questionText = "", userResponsesNo = 0, imageUrl = "", possibleResponses = []):
         self.id = id
         self.batchId = batchId
         self.batchIdx = batchIdx
         self.setId = setId
         self.setIdx = setIdx
+        self.type = type
         self.userResponsesNo = userResponsesNo
+        self.imgaeURL = imageUrl
         self.questionText = questionText
         self.possibleResponses = possibleResponses.copy()
 
@@ -55,7 +61,9 @@ class QuestionData:
         self.batchIdx = int(jsonData["batchIdx"])
         self.setId = jsonData["setId"]
         self.setIdx = int(jsonData["setIdx"])
+        self.type = int (jsonData["type"]) 
         self.userResponsesNo = int(jsonData["userResponsesNo"])
+        self.imgaeURL = jsonData["imageURL"]
 
         if (localedTextDic is not None):
             self.questionText = localedTextDic[jsonData["questionText"]]

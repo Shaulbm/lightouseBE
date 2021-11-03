@@ -1,7 +1,7 @@
 from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
-from motivationsData import motivationData
+from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale
 from questionsData import QuestionData
 from singleton import Singleton
@@ -130,7 +130,7 @@ class moovDBInstance(metaclass=Singleton):
 
         motivationTextsDic = self.getTextDataByParent(id, locale)
 
-        newMotivtion = motivationData()
+        newMotivtion = MotivationData()
         newMotivtion.buildFromJSON(motivationDataJSON, motivationTextsDic)
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
@@ -148,7 +148,7 @@ class moovDBInstance(metaclass=Singleton):
         foundMotivations = []
         for currMotivationJSONData in motivationsDataJSONList:
             motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], locale)
-            newMotivation = motivationData()
+            newMotivation = MotivationPartialData()
             newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
             foundMotivations.append(newMotivation)
 

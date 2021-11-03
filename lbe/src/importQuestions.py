@@ -15,7 +15,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1YOdX9KDiPrM21-olNz1Mgl5lfMQPyMz1J4LvVRQ6iow'
-QUESTIONS_RANGE_NAME = 'Questions!A1:I62'
+QUESTIONS_RANGE_NAME = 'Questions!A1:K68'
 RESPONSES_RANGE_NAME = 'Responses!A1:I241'
 
 def main():
@@ -89,8 +89,10 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     newQuestion.batchIdx = int(questionsDataDict["batchIdx"])
     newQuestion.setId = questionsDataDict["setId"]
     newQuestion.setIdx = int(questionsDataDict["setIdx"])
+    newQuestion.type = int(questionsDataDict["type"])
     newQuestion.userResponsesNo = int (questionsDataDict["userResponsesNo"])
     newQuestion.questionText = newQuestion.id + "_1"
+    newQuestion.imgaeURL = questionsDataDict["imageURL"]
     newQuestion.possibleResponses = []
 
     currentTextData = TextData(newQuestion.id, newQuestion.questionText, questionsDataDict["question_text <<en>>"])

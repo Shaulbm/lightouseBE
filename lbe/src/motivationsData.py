@@ -2,7 +2,7 @@ from collections import namedtuple
 import json
 import jsonpickle
 
-class motivationData:
+class MotivationData:
     def __init__(self):
         self.id = ""
         self.name = ""
@@ -36,3 +36,31 @@ class motivationData:
         jsonObject = json.loads (motivationDataJSON)
 
         return jsonObject
+
+
+class MotivationPartialData:
+    def __init__(self):
+        self.id = ""
+        self.name = ""
+        self.shortDescription = ""
+        self.imageUrl = ""
+
+    def buildFromJSON (self, jsonData, localedTextDic):
+        try:
+            self.id = jsonData["id"]
+            self.name =  localedTextDic[jsonData["name"]]
+            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            self.imageUrl = jsonData["imageUrl"]
+        except Exception as err:
+            #log this
+            raise TypeError(str.format("failed to load motivation data from JSON, data is {0}, error is {1}", jsonData, err))
+       
+        return
+
+    def toJSON(self):
+        motivationDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (motivationDataJSON)
+
+        return jsonObject
+
