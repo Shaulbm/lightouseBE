@@ -18,6 +18,10 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     existingDiscoveryJourney = dbInstance.getUserDiscoveryJourney(userId)
     
     if (existingDiscoveryJourney is not None and existingDiscoveryJourney.status != "close"):
+        #reset current journey
+        existingDiscoveryJourney.currBatch = ""
+
+        dbInstance.insertOrUpdateDiscoveryJourney(existingDiscoveryJourney)
         return existingDiscoveryJourney.id
 
 
@@ -27,6 +31,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     #current we only have one journey
     newDiscoveryJourney.journeyId = journeyTypeId
     newDiscoveryJourney.status = "new"
+    newDiscoveryJourney.currBatch = ""
 
     dbInstance.insertOrUpdateDiscoveryJourney(newDiscoveryJourney)
 

@@ -223,6 +223,7 @@ class moovDBInstance(metaclass=Singleton):
         questionTextsDic = None
         
         if (locale != 0):
+            
             # get localed text
             logger.debug ("retrieving texts data")
             questionTextsDic = self.getTextDataByParents(parentsIds, locale)
