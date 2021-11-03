@@ -20,6 +20,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     if (existingDiscoveryJourney is not None and existingDiscoveryJourney.status != "close"):
         #reset current journey
         existingDiscoveryJourney.currBatch = ""
+        existingDiscoveryJourney.userResponses = [].copy
 
         dbInstance.insertOrUpdateDiscoveryJourney(existingDiscoveryJourney)
         return existingDiscoveryJourney.id
