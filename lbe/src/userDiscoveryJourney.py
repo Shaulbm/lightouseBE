@@ -11,6 +11,7 @@ SINGLE_JOURNEY_ID = "J001"
 TAIL_QUESTION_ID = "Q999"
 MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE = 1.3
 
+
 def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     #creates an entry in discovery Journey if one doesn't exists, returns the user journey id
     
