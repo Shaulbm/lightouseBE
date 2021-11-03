@@ -92,7 +92,7 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     newQuestion.type = int(questionsDataDict["type"])
     newQuestion.userResponsesNo = int (questionsDataDict["userResponsesNo"])
     newQuestion.questionText = newQuestion.id + "_1"
-    newQuestion.imgaeURL = questionsDataDict["imageURL"]
+    newQuestion.imageURL = questionsDataDict["imageURL"]
     newQuestion.possibleResponses = []
 
     currentTextData = TextData(newQuestion.id, newQuestion.questionText, questionsDataDict["question_text <<en>>"])

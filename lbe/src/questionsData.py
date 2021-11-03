@@ -44,7 +44,7 @@ class QuestionData:
         self.setIdx = setIdx
         self.type = type
         self.userResponsesNo = userResponsesNo
-        self.imgaeURL = imageUrl
+        self.imageURL = imageUrl
         self.questionText = questionText
         self.possibleResponses = possibleResponses.copy()
 
@@ -63,7 +63,7 @@ class QuestionData:
         self.setIdx = int(jsonData["setIdx"])
         self.type = int (jsonData["type"]) 
         self.userResponsesNo = int(jsonData["userResponsesNo"])
-        self.imgaeURL = jsonData["imageURL"]
+        self.imageURL = jsonData["imageURL"]
 
         if (localedTextDic is not None):
             self.questionText = localedTextDic[jsonData["questionText"]]

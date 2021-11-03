@@ -116,5 +116,14 @@ def createUsers():
 # usersCircle = gateway.get_user_circle("U001")
 # print (usersCircle)
 
-motivationsList = gateway.get_all_motivations(1)
-print (motivationsList)
+# motivationsList = gateway.get_all_motivations(1)
+# print (motivationsList)
+
+journeyId = gateway.start_user_journey('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
+questionsList = gateway.get_next_questions_batch('U001')
