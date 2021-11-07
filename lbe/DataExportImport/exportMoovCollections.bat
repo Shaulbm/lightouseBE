@@ -1,4 +1,4 @@
-mongoexport --collection=motivationsTest --db=moov --out="c:\\dev\\data\\MoovDB\\motivationsTest.json"
+mongoexport --collection=motivations --db=moov --out="c:\\dev\\data\\MoovDB\\motivations.json"
 mongoexport --collection=locale_en --db=moov --out="c:\\dev\\data\\MoovDB\\locale_en.json"
 mongoexport --collection=locale_he_ma --db=moov --out="c:\\dev\\data\\MoovDB\\locale_he_ma.json"
 mongoexport --collection=locale_he_fe --db=moov --out="c:\\dev\\data\\MoovDB\\locale_he_fe.json"

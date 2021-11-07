@@ -1,4 +1,4 @@
-mongoimport --mode=upsert --collection=motivationsTest --db=moov --file="c:\\dev\\data\\MoovDB\\motivationsTest.json"
+mongoimport --mode=upsert --collection=motivations --db=moov --file="c:\\dev\\data\\MoovDB\\motivations.json"
 mongoimport --mode=upsert --collection=locale_en --db=moov --file="c:\\dev\\data\\MoovDB\\locale_en.json"
 mongoimport --mode=upsert --collection=locale_he_ma --db=moov --file="c:\\dev\\data\\MoovDB\\locale_he_ma.json"
 mongoimport --mode=upsert --collection=locale_he_fe --db=moov --file="c:\\dev\\data\\MoovDB\\locale_he_fe.json"
