@@ -120,6 +120,7 @@ def createUsers():
 # print (motivationsList)
 
 journeyId = gateway.start_user_journey('U001')
+gateway.set_journey_question_response('U001', 'Q001', 'R001')
 questionsList = gateway.get_next_questions_batch('U001')
 questionsList = gateway.get_next_questions_batch('U001')
 questionsList = gateway.get_next_questions_batch('U001')

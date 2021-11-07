@@ -61,7 +61,7 @@ def main():
 def insertMotivation(motivationDataDict):
     dbInstance = mongoDB.moovDBInstance()
     db = dbInstance.getDatabase()
-    motivationsCollection = db["motivationsTest"]
+    motivationsCollection = db["motivations"]
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]

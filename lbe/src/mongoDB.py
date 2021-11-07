@@ -119,7 +119,7 @@ class moovDBInstance(metaclass=Singleton):
 
     def getMotivation (self, id, locale):
         db = self.getDatabase()
-        motivationCollection = db["motivationsTest"]
+        motivationCollection = db["motivations"]
 
         motivationDataJSON = motivationCollection.find_one({"id" : id})
 
@@ -138,7 +138,7 @@ class moovDBInstance(metaclass=Singleton):
     
     def getAllMotivations(self,locale):
         db = self.getDatabase()
-        motivationCollection = db["motivationsTest"]
+        motivationCollection = db["motivations"]
 
         motivationsDataJSONList = motivationCollection.find()
 
@@ -157,7 +157,7 @@ class moovDBInstance(metaclass=Singleton):
 
     def getAllMotivationsIds(self):
         db = self.getDatabase()
-        motivationCollection = db["motivationsTest"]
+        motivationCollection = db["motivations"]
 
         foundMotivations = motivationCollection.find({})
 
@@ -223,7 +223,7 @@ class moovDBInstance(metaclass=Singleton):
         questionTextsDic = None
         
         if (locale != 0):
-            
+
             # get localed text
             logger.debug ("retrieving texts data")
             questionTextsDic = self.getTextDataByParents(parentsIds, locale)
@@ -307,6 +307,21 @@ class moovDBInstance(metaclass=Singleton):
         discoveryBatchDetails.buildFromJSON(discoveryBatchDataJSON, localedTextDict)
 
         return discoveryBatchDetails   
+
+    def insertOrUpdateIssue(self, currIssueData):
+        db = self.getDatabase()
+        questionsCollection = db["issues"]
+
+        foundIssue = questionsCollection.find_one({"id":currIssueData.id})
+
+        if (foundIssue is not None):
+            #the issue already exists - update the issue
+            questionDataFilter = {"id" : currIssueData.id}
+            questionsCollection.replace_one(questionDataFilter, currIssueData.toJSON())
+        else:
+            #this is a new user
+            questionsCollection.insert_one(currIssueData.toJSON())
+
 
     def getUserCircle(self, userId):
         db = self.getDatabase()
