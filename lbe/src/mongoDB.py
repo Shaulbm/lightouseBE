@@ -9,6 +9,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
+from issuesData import IssueData, SubjectData
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -310,18 +311,53 @@ class moovDBInstance(metaclass=Singleton):
 
     def insertOrUpdateIssue(self, currIssueData):
         db = self.getDatabase()
-        questionsCollection = db["issues"]
+        issuesCollection = db["issues"]
 
-        foundIssue = questionsCollection.find_one({"id":currIssueData.id})
+        foundIssue = issuesCollection.find_one({"id":currIssueData.id})
 
         if (foundIssue is not None):
             #the issue already exists - update the issue
             questionDataFilter = {"id" : currIssueData.id}
-            questionsCollection.replace_one(questionDataFilter, currIssueData.toJSON())
+            issuesCollection.replace_one(questionDataFilter, currIssueData.toJSON())
         else:
             #this is a new user
-            questionsCollection.insert_one(currIssueData.toJSON())
+            issuesCollection.insert_one(currIssueData.toJSON())
 
+    def getIssue(self, id, locale=0):
+        db = self.getDatabase()
+        issuesCollection = db["issues"]
+
+        issueDataJSON = issuesCollection.find_one({"id" : id})
+
+        if (issueDataJSON is None):
+            return None
+
+        questionTextsDic = None
+        
+        if (locale != 0):
+
+            # get localed text
+            logger.debug ("retrieving texts data")
+            questionTextsDic = self.getTextDataByParent(parentId = id, Locale=locale)
+
+        issueDetails = IssueData()
+        issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=questionTextsDic)
+
+        return issueDetails
+
+    def insertOrUpdateSubject(self, currSubjectData):
+        db = self.getDatabase()
+        subjectsCollection = db["subjects"]
+
+        foundIssue = subjectsCollection.find_one({"id":currSubjectData.id})
+
+        if (foundIssue is not None):
+            #the issue already exists - update the issue
+            questionDataFilter = {"id" : currSubjectData.id}
+            subjectsCollection.replace_one(questionDataFilter, currSubjectData.toJSON())
+        else:
+            #this is a new user
+            subjectsCollection.insert_one(currSubjectData.toJSON())
 
     def getUserCircle(self, userId):
         db = self.getDatabase()

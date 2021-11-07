@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from issuesData import IssueData, RelatedMotivationData
+from issuesData import IssueData, RelatedMotivationData, SubjectData
 import mongoDB
 from generalData import TextData
 
@@ -14,10 +14,11 @@ from generalData import TextData
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1YOdX9KDiPrM21-olNz1Mgl5lfMQPyMz1J4LvVRQ6iow'
-ISSUES_RANGE_NAME = 'Issues!A1:K68'
-RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:I247'
-CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:I247'
+SAMPLE_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
+ISSUES_RANGE_NAME = 'Issues!A1:K2'
+SUBJECTS_RANGE_NAME = 'Subjects!A1:G2'
+RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:G3'
+CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G2'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -54,6 +55,20 @@ def main():
     result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                 range=CONTRIBUTING_MOTIVATIONS_RANGE_NAME).execute()
     conributingMotivationsValues = result.get('values', [])
+    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                range=SUBJECTS_RANGE_NAME).execute()
+    subjectsValues = result.get('values', [])
+
+    if not subjectsValues:
+        print ('No subjects Data Found')
+    else:
+        keysRow = subjectsValues[0]
+        for currRow in subjectsValues[1:]:
+            zip_iterator = zip (keysRow, currRow)
+            currSubject = dict(zip_iterator)
+
+            #create motivations
+            insertSubject(subjectDataDict=currSubject)        
 
     if not issuesValues or not resolvingMotivationsValues or not conributingMotivationsValues:
         print('No data found.')
@@ -87,6 +102,39 @@ def main():
             #create motivations
             insertIssue(issueDataDict=currIssue, resolvingMotivationsDictArray=currResolvingMotivations, contributingMotivationsDictArray=currContributingMotivations)
 
+def insertSubject(subjectDataDict):
+    dbInstance = mongoDB.moovDBInstance()
+    db = dbInstance.getDatabase()
+
+    heb_ma_LocaleCollection = db["locale_he_ma"]
+    heb_fe_LocaleCollection = db["locale_he_fe"]
+    eng_LocaleCollection = db["locale_en"]
+
+    newSubject = SubjectData()
+    newSubject.id = subjectDataDict["id"]
+    newSubject.name = newSubject.id + "_1"
+    newSubject.description = newSubject.id + "_2"
+ 
+    currentTextData = TextData(newSubject.id, newSubject.name, subjectDataDict["name <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newSubject.id, newSubject.name, subjectDataDict["name <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newSubject.id, newSubject.name, subjectDataDict["name <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newSubject.id, newSubject.description, subjectDataDict["description <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(newSubject.id, newSubject.description, subjectDataDict["description <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newSubject.id, newSubject.description, subjectDataDict["description <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    dbInstance.insertOrUpdateSubject(newSubject)
+
 def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotivationsDictArray):
     dbInstance = mongoDB.moovDBInstance()
     db = dbInstance.getDatabase()
@@ -97,6 +145,7 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
 
     newIssue = IssueData()
     newIssue.id = issueDataDict["id"]
+    newIssue.subjectId = issueDataDict["subjectId"]
     newIssue.name = newIssue.id + "_1"
     newIssue.shortDescription = newIssue.id + "_2"
     newIssue.longDescription = newIssue.id + "_3"
@@ -124,10 +173,10 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
     currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<en>> <<he_fe>>"])
+    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<en>> <<he_ma>>"])
+    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     for currResolvingMotivations in resolvingMotivationsDictArray:
@@ -149,13 +198,13 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
 
         newIssue.resolvingMotivations.append(newResolvingMotivation)
 
-    for currContributingMotivations in resolvingMotivationsDictArray:
+    for currContributingMotivations in contributingMotivationsDictArray:
         newContributingMotivation = RelatedMotivationData()
         newContributingMotivation.id = currContributingMotivations["id"]
         newContributingMotivation.issueId = currContributingMotivations["issueId"]
         newContributingMotivation.motivationId = currContributingMotivations["motivationId"]
         newContributingMotivation.impact = int(currContributingMotivations["impact"])
-        newContributingMotivation.text = newResolvingMotivation.id + "_1"
+        newContributingMotivation.text = newContributingMotivation.id + "_1"
 
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<en>>"])
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)

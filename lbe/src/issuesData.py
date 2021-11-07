@@ -1,7 +1,7 @@
 import jsonpickle
 import json
 
-class SubjectsData:
+class SubjectData:
     def __init__(self, id = "", name = "", description = ""):
         self.id = id
         self.name = name
