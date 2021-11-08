@@ -129,4 +129,4 @@ def createUsers():
 # questionsList = gateway.get_next_questions_batch('U001')
 # questionsList = gateway.get_next_questions_batch('U001')
 
-gateway.get_issue(id="IS001", locale=Locale.LOCALE_HEB_FE)
+gateway.get_issue(id="IS001", locale=Locale.UNKNOWN)

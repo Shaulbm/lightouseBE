@@ -220,7 +220,7 @@ class moovDBInstance(metaclass=Singleton):
 
         questionTextsDic = None
         
-        if (locale != 0):
+        if (locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
             parentsIds.append(questionsDataJSON["id"])
@@ -322,7 +322,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             issuesCollection.insert_one(currIssueData.toJSON())
 
-    def getIssue(self, id, locale=0):
+    def getIssue(self, id, locale=Locale.UNKNOWN):
         db = self.getDatabase()
         issuesCollection = db["issues"]
 
@@ -333,9 +333,8 @@ class moovDBInstance(metaclass=Singleton):
 
         issuesTextsDic = None
         
-        if (locale != 0):
-
-        # get id's for text quesry
+        if (locale != Locale.UNKNOWN):
+            # get id's for text quesry
             parentsIds = []
             parentsIds.append(issueDataJSON["id"])
             parentsIds = parentsIds + ([p["id"] for p in issueDataJSON["contributingMotivations"]])
