@@ -87,12 +87,12 @@ class IssueData:
 
         for currContributingMotivation in jsonData["contributingMotivations"]:
             contributingMotivation = RelatedMotivationData()
-            contributingMotivation.buildFromJson(currContributingMotivation, localedTextDic)
+            contributingMotivation.buildFromJSON(currContributingMotivation, localedTextDic)
 
             self.contributingMotivations.append(contributingMotivation)
 
-        for currResolvingMotivation in jsonData["contributingMotivations"]:
+        for currResolvingMotivation in jsonData["resolvingMotivations"]:
             resolvingMotivation = RelatedMotivationData()
-            resolvingMotivation.buildFromJson(currResolvingMotivation, localedTextDic)
+            resolvingMotivation.buildFromJSON(currResolvingMotivation, localedTextDic)
 
-            self.contributingMotivations.append(resolvingMotivation)
+            self.resolvingMotivations.append(resolvingMotivation)

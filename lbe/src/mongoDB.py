@@ -1,6 +1,7 @@
 from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
+from pymongo.common import partition_node
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale
 from questionsData import QuestionData
@@ -217,16 +218,14 @@ class moovDBInstance(metaclass=Singleton):
         if (questionsDataJSON is None):
             return None
 
-        # get id's for text quesry
-        parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
-        parentsIds.append(questionsDataJSON["id"])
-
         questionTextsDic = None
         
         if (locale != 0):
-
+            # get id's for text quesry
+            parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
+            parentsIds.append(questionsDataJSON["id"])
+            
             # get localed text
-            logger.debug ("retrieving texts data")
             questionTextsDic = self.getTextDataByParents(parentsIds, locale)
 
         questionDetails = QuestionData()
@@ -332,16 +331,22 @@ class moovDBInstance(metaclass=Singleton):
         if (issueDataJSON is None):
             return None
 
-        questionTextsDic = None
+        issuesTextsDic = None
         
         if (locale != 0):
 
+        # get id's for text quesry
+            parentsIds = []
+            parentsIds.append(issueDataJSON["id"])
+            parentsIds = parentsIds + ([p["id"] for p in issueDataJSON["contributingMotivations"]])
+            parentsIds = parentsIds + ([p["id"] for p in issueDataJSON["resolvingMotivations"]]) 
+            
+
             # get localed text
-            logger.debug ("retrieving texts data")
-            questionTextsDic = self.getTextDataByParent(parentId = id, Locale=locale)
+            issuesTextsDic = self.getTextDataByParents(parentsIds, locale)
 
         issueDetails = IssueData()
-        issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=questionTextsDic)
+        issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
 
         return issueDetails
 
