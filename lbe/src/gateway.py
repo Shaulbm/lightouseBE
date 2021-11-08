@@ -87,3 +87,11 @@ def get_issue(id, locale = Locale.UNKNOWN):
     issuesDetails = dbActions.getIssue(id, int(locale))
     
     return issuesDetails
+
+@router.get("/issueForUser")
+def get_issue_for_user(id, userId, locale = Locale.UNKNOWN):
+    dbActions = moovDBInstance()
+    
+    issuesDetails = dbActions.getIssueForUser(id, userId, int(locale))
+    
+    return issuesDetails

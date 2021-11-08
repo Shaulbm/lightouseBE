@@ -349,6 +349,20 @@ class moovDBInstance(metaclass=Singleton):
 
         return issueDetails
 
+    def getIssueForUser(self, id, userId, locale=Locale.UNKNOWN):
+
+        issueDetails = self.getIssue (id=id, locale=Locale)
+        userDetails = self.getUser(id=userId)
+
+        # filter all the resolving motivations that are in the user motivations
+        filteredResolvingMotivatios = [rm for rm in issueDetails.resolvingMotivations if rm.motivationId in userDetails.motivations]
+        filteredContributingMotivatios = [cm for cm in issueDetails.contributingMotivations if cm.motivationId in userDetails.motivations]
+
+        issueDetails.resolvingMotivations = filteredResolvingMotivatios.copy()
+        issueDetails.contributingMotivations = filteredContributingMotivatios.copy()
+
+        return issueDetails
+
     def insertOrUpdateSubject(self, currSubjectData):
         db = self.getDatabase()
         subjectsCollection = db["subjects"]

@@ -129,4 +129,10 @@ def createUsers():
 # questionsList = gateway.get_next_questions_batch('U001')
 # questionsList = gateway.get_next_questions_batch('U001')
 
-gateway.get_issue(id="IS001", locale=Locale.UNKNOWN)
+# gateway.get_issue(id="IS001", locale=Locale.UNKNOWN)
+dbInstance = moovDBInstance()
+# dbInstance.setMotivationsToUSer("U001", ['M001', 'M002', 'M003', 'M004', 'M005'])
+issueDetails = gateway.get_issue("IS001", Locale.LOCALE_HEB_FE)
+issueByUser = gateway.get_issue_for_user("IS001", "U001", Locale.LOCALE_HEB_FE)
+
+print ('done')
