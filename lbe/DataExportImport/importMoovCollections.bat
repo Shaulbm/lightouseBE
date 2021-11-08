@@ -5,3 +5,5 @@ mongoimport --mode=upsert --collection=locale_he_fe --db=moov --file="c:\\dev\\d
 mongoimport --mode=upsert --collection=users --db=moov --file="c:\\dev\\data\\MoovDB\\users.json"
 mongoimport --mode=upsert --collection=questions --db=moov --file="c:\\dev\\data\\MoovDB\\questions.json"
 mongoimport --mode=upsert --collection=discoveryData --db=moov --file="c:\\dev\\data\\MoovDB\\discoveryData.json"
+mongoimport --mode=upsert --collection=subjects --db=moov --file="c:\\dev\\data\\MoovDB\\subjects.json"
+mongoimport --mode=upsert --collection=issues --db=moov --file="c:\\dev\\data\\MoovDB\\issues.json"

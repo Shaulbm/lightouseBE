@@ -5,3 +5,5 @@ mongoexport --collection=locale_he_fe --db=moov --out="c:\\dev\\data\\MoovDB\\lo
 mongoexport --collection=users --db=moov --out="c:\\dev\\data\\MoovDB\\users.json"
 mongoexport --collection=questions --db=moov --out="c:\\dev\\data\\MoovDB\\questions.json"
 mongoexport --collection=discoveryData --db=moov --out="c:\\dev\\data\\MoovDB\\discoveryData.json"
+mongoexport --collection=subjects --db=moov --out="c:\\dev\\data\\MoovDB\\subjects.json"
+mongoexport --collection=issues --db=moov --out="c:\\dev\\data\\MoovDB\\issues.json"
