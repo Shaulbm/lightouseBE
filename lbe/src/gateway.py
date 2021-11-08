@@ -32,7 +32,7 @@ def get_user(id, mail = ""):
 @router.post("/addUser")
 def add_or_update_user(id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = moovDBInstance()
-    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
+    dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=int(locale), gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
     return 
 
@@ -84,6 +84,6 @@ def get_user_circle(userId):
 def get_issue(id, locale = Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getIssue(id, locale)
+    issuesDetails = dbActions.getIssue(id, int(locale))
     
     return issuesDetails
