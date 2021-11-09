@@ -467,6 +467,6 @@ class moovDBInstance(metaclass=Singleton):
 
         for currPOI in poiIdList:
             currentUserDetails = self.getUser(id=currPOI)
-            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, motivations=currentUserDetails.motivations))
 
         return peopleOfInterestList
