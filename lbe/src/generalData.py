@@ -108,7 +108,23 @@ class UserPartialData:
             self.motivations = jsonData["motivations"].copy()
         else:
             self.motivations = {}
-        
+
+class UserImageData:
+    def __init__(self, userId ="", image = ""):
+        self.userId = userId
+        self.image = image
+    
+    def toJSON (self):
+        userDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (userDataJSON)
+
+        return jsonObject 
+
+    def fromJSON (self, jsonData):
+        self.userId = jsonData["userId"]
+        self.image = jsonData["image"]
+
 class OrgData:
     def __init__(self, id = "", name = "", url = ""):
         self.id = id

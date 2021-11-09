@@ -5,28 +5,10 @@ import time
 import uuid
 from mongoDB import moovDBInstance
 import ExportJourney
-from generalData import UserRoles, Locale, Gender
+from generalData import UserRoles, Locale, Gender, UserImageData
+from os import path
+import base64
 
-# main.startup()
-'''
-stocks.register_stock("MSFT")
-
-index = 5
-
-while index > 0:
-    result = ""
-    try:
-        result = stocks.read_default()
-    except Exception as e:
-        print (e)
-
-    print (result)
-    time.sleep(5)
-    index -= 1
-'''
-#stocks.register_user('Test4')
-#stocks.create_training_data()
-#stocks.get_course_lesson('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '1')
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
 #gateway.set_user_issue_id ('Test2', 'ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
@@ -94,13 +76,14 @@ while index > 0:
 # print (motivations)
 
 def createUsers():
-    #   U001
-    # UA02              UA03            UA04
+    #               U001
+    #       UA02           UA03         UA04
     # UA05 UA06 UA07    UA08 UA09
     #
-    #
+    #      UA10
+    #   UA11 UA12
     # UA01 - HR
-    gateway.add_or_update_user(id="U001", parentId= "" ,firstName="Shaul", familyName="Ben Maor", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="shaul@hotmail.com")
+    gateway.add_or_update_user(id="U001", parentId= "" ,firstName="Shaul", familyName="Ben Maor", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="shaul@hotmail.com", personsOfInterest=["UA11", "UA12"])
     gateway.add_or_update_user(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HEB_FE, orgId="O001", role=UserRoles.HR, mailAddress="")
     gateway.add_or_update_user(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", gender=Gender.FEMALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
     gateway.add_or_update_user(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
@@ -110,6 +93,9 @@ def createUsers():
     gateway.add_or_update_user(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
     gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", gender=Gender.MALE, locale=Locale.LOCALE_EN, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
     gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA10", parentId= "" ,firstName="Shimshon", familyName="Levi", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA11", parentId= "UA10" ,firstName="Shani", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HEB_FE, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    gateway.add_or_update_user(id="UA12", parentId= "UA10" ,firstName="Raz", familyName="Birenbaum", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
 
 # createUsers()
 
@@ -129,10 +115,41 @@ def createUsers():
 # questionsList = gateway.get_next_questions_batch('U001')
 # questionsList = gateway.get_next_questions_batch('U001')
 
-# gateway.get_issue(id="IS001", locale=Locale.UNKNOWN)
-dbInstance = moovDBInstance()
-# dbInstance.setMotivationsToUSer("U001", ['M001', 'M002', 'M003', 'M004', 'M005'])
-issueDetails = gateway.get_issue("IS001", Locale.LOCALE_HEB_FE)
-issueByUser = gateway.get_issue_for_user("IS001", "U001", Locale.LOCALE_HEB_FE)
+# # gateway.get_issue(id="IS001", locale=Locale.UNKNOWN)
+# dbInstance = moovDBInstance()
+# # dbInstance.setMotivationsToUSer("U001", ['M001', 'M002', 'M003', 'M004', 'M005'])
+# issueDetails = gateway.get_issue("IS001", Locale.LOCALE_HEB_FE)
+# issueByUser = gateway.get_issue_for_user("IS001", "U001", Locale.LOCALE_HEB_FE)
 
-print ('done')
+#file_used = 'C:/Users/shaul/Downloads/Persons/F1.jfif'
+# my_file = path(file_used)
+# if my_file.is_file():
+#     print("File Exists") #prints successfully
+
+# with open(file_used, 'rb') as fout:
+#     userImage = base64.b64encode(fout.read())
+#     dbInstance = moovDBInstance()
+#     imageData = UserImageData("U001", userImage)
+#     dbInstance.insertOrUpdateUserImage(imageData)
+
+dbInstance = moovDBInstance()
+newImageFile = 'c:/Temp/Images/U001.jfif'
+# userImageDetails = dbInstance.getUserImage("U001")
+
+file_used = 'C:/Users/shaul/Downloads/Persons/F1.jfif'
+# with open(file_used, 'rb') as fout:
+origFile = open(file_used, 'rb')
+userImage = base64.b64encode(origFile.read())
+#     dbInstance = moovDBInstance()
+imageData = UserImageData("U001", userImage)
+    #  dbInstance.insertOrUpdateUserImage(imageData)
+
+# ImageDecodedData = base64.b64decode(imageData.image['py/b64'])
+ImageDecodedData = base64.b64decode(imageData.image)
+
+fout = open(newImageFile, 'wb')
+fout.write(ImageDecodedData)
+# fout.write(struct.pack('>i', 42))
+# fout.write(struct.pack('>f', 2.71828182846))
+
+fout.close()

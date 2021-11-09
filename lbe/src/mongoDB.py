@@ -3,7 +3,7 @@ from typing import Text
 from pymongo import MongoClient
 from pymongo.common import partition_node
 from motivationsData import MotivationData, MotivationPartialData
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -470,3 +470,34 @@ class moovDBInstance(metaclass=Singleton):
             peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, motivations=currentUserDetails.motivations))
 
         return peopleOfInterestList
+
+    def insertOrUpdateUserImage(self, imageData):
+        db = self.getDatabase()
+        usersImagesCollection = db["usersImages"]
+
+        foundImage = usersImagesCollection.find_one({"userId":imageData.userId})
+
+        if (foundImage is not None):
+            #the issue already exists - update the issue
+            imageDataFilter = {"id" : imageData.userId}
+            usersImagesCollection.replace_one(imageDataFilter, imageData.toJSON())
+        else:
+            #this is a new user
+            usersImagesCollection.insert_one(imageData.toJSON())
+
+    def getUserImage(self, userId):
+        db = self.getDatabase()
+        usersImagesCollection = db["usersImages"]
+
+        userFilter = {"userId":userId}
+
+        userImageDataJSON = usersImagesCollection.find_one(userFilter)
+
+        if (userImageDataJSON is None):
+            #no discovery journey data found
+            return None
+
+        userImageDetails = UserImageData()
+        userImageDetails.fromJSON(userImageDataJSON)
+
+        return userImageDetails    
