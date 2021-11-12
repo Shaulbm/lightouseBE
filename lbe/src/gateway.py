@@ -5,6 +5,7 @@ from mongoDB import moovDBInstance
 import userDiscoveryJourney
 from generalData import UserRoles, Gender, Locale
 from loguru import logger
+import ast
 
 router = APIRouter()
 
@@ -21,6 +22,14 @@ def get_all_motivations(locale):
     motivationsDetails = dbActions.getAllMotivations (int(locale))
 
     return motivationsDetails
+
+@router.get("/userMotivations")
+def get_user_motivations(userId, locale):
+    dbActions = moovDBInstance()
+    motivationsDetails = dbActions.getUserMotivations (userId, int(locale))
+
+    return motivationsDetails
+
 
 @router.get("/user")
 def get_user(id, mail = ""):
@@ -39,7 +48,7 @@ def add_or_update_user(id, parentId = "", firstName = "", familyName = "", gende
 @router.post("/setMotivations")
 def set_motivations_to_user(id, motivations):
     dbActions = moovDBInstance()
-    userDetails = dbActions.setMotivationsToUSer (id, motivations)
+    userDetails = dbActions.setMotivationsToUSer (id, ast.literal_eval(motivations))
 
     return userDetails
 
