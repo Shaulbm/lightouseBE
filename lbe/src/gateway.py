@@ -16,6 +16,12 @@ def get_motivation(id, locale):
 
     return motivationDetails
 
+@router.post("/login")
+def user_log_in(id, password):
+    dbActions = moovDBInstance()
+    userDetails = dbActions.userLogin(id, password)
+    return userDetails
+
 @router.get("/allMotivations")
 def get_all_motivations(locale):
     dbActions = moovDBInstance()

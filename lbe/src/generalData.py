@@ -110,6 +110,19 @@ class UserPartialData:
         else:
             self.motivations = {}
 
+    def fromFullDetails (self, fullUserDetails):
+        self.id = fullUserDetails.id
+        self.firstName = fullUserDetails.firstName
+        self.familyName = fullUserDetails.familyName
+        self.gender = fullUserDetails.gender
+        self.orgId = fullUserDetails.orgId
+
+        if len(fullUserDetails.motivations) > 0:
+            self.motivations = fullUserDetails.motivations.copy()
+        else:
+            self.motivations = {}
+
+
 class UserImageData:
     def __init__(self, userId ="", image = ""):
         self.userId = userId

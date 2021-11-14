@@ -197,6 +197,18 @@ class moovDBInstance(metaclass=Singleton):
 
         return motivationsIds
 
+    def userLogin(self, id, password):
+        userDetails = self.getUser(id)
+
+        # TBD verify password
+        # for now password is always true
+
+        if (userDetails is not None):
+            partialUserDetails = UserPartialData()
+            partialUserDetails.fromFullDetails(userDetails)
+        
+        return partialUserDetails
+
     def getUser (self, id = "", mail = ""):
         db = self.getDatabase()
         usersCollection = db["users"]
