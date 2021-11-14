@@ -6,8 +6,13 @@ import userDiscoveryJourney
 from generalData import UserRoles, Gender, Locale
 from loguru import logger
 import ast
+from pydantic import BaseModel
 
 router = APIRouter()
+
+class LoginData(BaseModel):
+    userId: str
+    password: str
 
 @router.get("/motivation")
 def get_motivation(id, locale):
@@ -17,9 +22,9 @@ def get_motivation(id, locale):
     return motivationDetails
 
 @router.post("/login")
-def user_log_in(id, password):
+def user_log_in(loginData : LoginData):
     dbActions = moovDBInstance()
-    userDetails = dbActions.userLogin(id, password)
+    userDetails = dbActions.userLogin(loginData.userId, loginData.password)
     return userDetails
 
 @router.get("/allMotivations")
