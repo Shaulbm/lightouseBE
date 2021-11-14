@@ -1,0 +1,1 @@
+mongoimport --collection=motivations --mode=upsert --db=moov --file="c:\\dev\\data\\MoovDB\\motivations.json"

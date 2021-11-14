@@ -1,0 +1,1 @@
+mongoimport --collection=locale_en --mode=upsert --db=moov --file="c:\\dev\\data\\MoovDB\\locale_en.json"
