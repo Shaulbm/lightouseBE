@@ -132,24 +132,36 @@ def createUsers():
 #     imageData = UserImageData("U001", userImage)
 #     dbInstance.insertOrUpdateUserImage(imageData)
 
-dbInstance = moovDBInstance()
-newImageFile = 'c:/Temp/Images/U001.jfif'
+
+# #Image - start
+# dbInstance = moovDBInstance()
+# newImageFile = 'c:/Temp/Images/U001.jfif'
+# # userImageDetails = dbInstance.getUserImage("U001")
+
+# file_used = 'C:/Users/shaul/Downloads/Persons/F1.jfif'
+# # with open(file_used, 'rb') as fout:
+# origFile = open(file_used, 'rb')
+
+# # userImage = base64.b64encode(origFile.read())
+# userImage = origFile.read()
+# #     dbInstance = moovDBInstance()
+# imageData = UserImageData("U001", userImage)
+# dbInstance.insertOrUpdateUserImage(imageData)
+
+# # ImageDecodedData = base64.b64decode(imageData.image['py/b64'])
+# # ImageDecodedData = base64.b64decode(imageData.image)
+
 # userImageDetails = dbInstance.getUserImage("U001")
 
-file_used = 'C:/Users/shaul/Downloads/Persons/F1.jfif'
-# with open(file_used, 'rb') as fout:
-origFile = open(file_used, 'rb')
-userImage = base64.b64encode(origFile.read())
-#     dbInstance = moovDBInstance()
-imageData = UserImageData("U001", userImage)
-    #  dbInstance.insertOrUpdateUserImage(imageData)
+# fout = open(newImageFile, 'wb')
+# # fout.write(ImageDecodedData)
+# fout.write(userImageDetails.image)
+# # fout.write(struct.pack('>i', 42))
+# # fout.write(struct.pack('>f', 2.71828182846))
 
-# ImageDecodedData = base64.b64decode(imageData.image['py/b64'])
-ImageDecodedData = base64.b64decode(imageData.image)
-
-fout = open(newImageFile, 'wb')
-fout.write(ImageDecodedData)
-# fout.write(struct.pack('>i', 42))
-# fout.write(struct.pack('>f', 2.71828182846))
-
-fout.close()
+# fout.close()
+#Image - End
+dbInstance = moovDBInstance()
+# dbInstance.setMotivationsToUSer ("U001", {"M001":3.5, "M002": 3.3, "M003": 3.1, "M004": 2, "M005": 1.7})
+motivations = dbInstance.getUserMotivations("U001", 1)
+print (motivations)

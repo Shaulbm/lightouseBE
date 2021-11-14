@@ -1,4 +1,5 @@
 import json
+import bson
 import jsonpickle
 
 class UserRoles:
@@ -119,11 +120,14 @@ class UserImageData:
 
         jsonObject = json.loads (userDataJSON)
 
-        return jsonObject 
+        # resData = {"userId": self.userId, "image": bson.Binary(jsonpickle.dumps(self.image))}
+
+        resData = {"userId": self.userId, "image": bson.Binary(self.image)}
+        return resData 
 
     def fromJSON (self, jsonData):
         self.userId = jsonData["userId"]
-        self.image = jsonData["image"]
+        self.image = jsonpickle.loads(jsonData["image"])
 
 class OrgData:
     def __init__(self, id = "", name = "", url = ""):

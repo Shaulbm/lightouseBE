@@ -157,6 +157,33 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return foundMotivations 
 
+    def getUserMotivations (self, userId, locale):
+        db = self.getDatabase()
+        motivationCollection = db["motivations"]
+        requestedUser = self.getUser(userId)
+
+        if (requestedUser.motivations is None or requestedUser.motivations.__len__ == 0):
+            return {}
+
+        motivationsIds = list(requestedUser.motivations.keys())
+
+        motivationsFilter = {"id": {"$in":motivationsIds}}
+        motivationsDataJSONList = motivationCollection.find(motivationsFilter)
+
+        if (motivationsDataJSONList is None):
+            return None
+
+        foundMotivations = []
+        for currMotivationJSONData in motivationsDataJSONList:
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], locale)
+            newMotivation = MotivationPartialData()
+            newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
+            foundMotivations.append(newMotivation)
+
+        # print ("motivation object is {0}", newMotivtion.toJSON())
+        return foundMotivations 
+
+
     def getAllMotivationsIds(self):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
