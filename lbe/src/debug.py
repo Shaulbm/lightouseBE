@@ -162,8 +162,8 @@ def createUsers():
 # fout.close()
 #Image - End
 dbInstance = moovDBInstance()
-# dbInstance.setMotivationsToUSer ("UA01", {"M001":3.5, "M002": 3.3, "M003": 3.1, "M004": 2, "M005": 1.7})
+dbInstance.setMotivationsToUSer ("UA06", {"M001":3.5, "M002": 3.3, "M003": 3.1, "M004": 2, "M005": 1.7})
 # motivations = dbInstance.getUserMotivations("U001", 1)
 # print (motivations)
-userDetails = gateway.user_log_in("U001", "VVV")
-print (userDetails)
+# userDetails = gateway.user_log_in("U001", "VVV")
+# print (userDetails)

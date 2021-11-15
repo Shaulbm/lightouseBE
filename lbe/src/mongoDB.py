@@ -2,6 +2,7 @@ from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
 from pymongo.common import partition_node
+from lbe.src.issuesData import IssuePartialData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData
 from questionsData import QuestionData
@@ -388,6 +389,24 @@ class moovDBInstance(metaclass=Singleton):
 
         return issueDetails
 
+    def getIssuesForSubject (self, subjectId, locale):
+        db = self.getDatabase()
+        subjectsCollection = db["subjects"]
+
+        dataFilter = {"subjectId": subjectId}
+
+        issuesDataJSONList = subjectsCollection.find(dataFilter)
+
+        issuesDetailsList = []
+
+        for currIssueJSONData in issuesDataJSONList:
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], locale)
+            newIssue = IssuePartialData()
+            newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
+            issuesDetailsList.append(newIssue)        
+
+        return issuesDetailsList
+    
     def getIssueForUser(self, id, userId, locale=Locale.UNKNOWN):
 
         issueDetails = self.getIssue (id=id, locale=Locale)
@@ -415,6 +434,24 @@ class moovDBInstance(metaclass=Singleton):
         else:
             #this is a new user
             subjectsCollection.insert_one(currSubjectData.toJSON())
+
+    def getAllSubjects(self, locale):
+        db = self.getDatabase()
+        subjectsCollection = db["subjects"]
+
+        subjectsDataJSONList = subjectsCollection.find()
+
+        if (subjectsDataJSONList is None):
+            return None
+
+        foundSubjects = []
+        for currSubjectJSONData in subjectsDataJSONList:
+            subjectTextsDic = self.getTextDataByParent(currSubjectJSONData["id"], locale)
+            newSubject = SubjectData()
+            newSubject.buildFromJSON(currSubjectJSONData, subjectTextsDic)
+            foundSubjects.append(newSubject)
+
+        return foundSubjects
 
     def getUserCircle(self, userId):
         db = self.getDatabase()

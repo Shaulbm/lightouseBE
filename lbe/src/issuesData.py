@@ -96,3 +96,33 @@ class IssueData:
             resolvingMotivation.buildFromJSON(currResolvingMotivation, localedTextDic)
 
             self.resolvingMotivations.append(resolvingMotivation)
+
+class IssuePartialData:
+    def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0):
+        self.id = id
+        self.subjectId = subjectId
+        self.name = name
+        self.shortDescription = shortDescription
+        self.longDescription = longDescription
+        
+    def toJSON (self):
+        questionDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (questionDataJSON)
+
+        return jsonObject
+
+    def buildFromJSON (self, jsonData, localedTextDic = None):
+        self.id = jsonData["id"]
+        self.subjectId = jsonData["subjectId"]
+
+        if (localedTextDic is not None):
+            self.name = localedTextDic[jsonData["name"]]
+            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            self.longDescription = localedTextDic[jsonData["longDescription"]]
+        else:
+            # create as is
+            self.name = jsonData["name"]
+            self.shortDescription = jsonData["shortDescription"]
+            self.longDescription = jsonData["longDescription"]
+        
