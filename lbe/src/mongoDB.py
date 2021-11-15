@@ -390,7 +390,7 @@ class moovDBInstance(metaclass=Singleton):
 
     def getIssuesForSubject (self, subjectId, locale):
         db = self.getDatabase()
-        subjectsCollection = db["subjects"]
+        subjectsCollection = db["issues"]
 
         dataFilter = {"subjectId": subjectId}
 
