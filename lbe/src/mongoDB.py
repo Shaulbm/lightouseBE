@@ -2,7 +2,6 @@ from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from lbe.src.issuesData import IssuePartialData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData
 from questionsData import QuestionData
@@ -11,7 +10,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData
+from issuesData import IssueData, SubjectData, IssuePartialData
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
