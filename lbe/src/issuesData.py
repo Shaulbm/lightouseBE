@@ -103,7 +103,6 @@ class IssuePartialData:
         self.subjectId = subjectId
         self.name = name
         self.shortDescription = shortDescription
-        self.longDescription = longDescription
         
     def toJSON (self):
         questionDataJSON = jsonpickle.encode(self, unpicklable=False)
@@ -119,10 +118,7 @@ class IssuePartialData:
         if (localedTextDic is not None):
             self.name = localedTextDic[jsonData["name"]]
             self.shortDescription = localedTextDic[jsonData["shortDescription"]]
-            self.longDescription = localedTextDic[jsonData["longDescription"]]
         else:
             # create as is
             self.name = jsonData["name"]
-            self.shortDescription = jsonData["shortDescription"]
-            self.longDescription = jsonData["longDescription"]
-        
+            self.shortDescription = jsonData["shortDescription"]        
