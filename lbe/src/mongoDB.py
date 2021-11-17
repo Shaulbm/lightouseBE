@@ -406,6 +406,22 @@ class moovDBInstance(metaclass=Singleton):
 
         return issuesDetailsList
     
+    def getAllIssues (self, locale):
+        db = self.getDatabase()
+        subjectsCollection = db["issues"]
+
+        issuesDataJSONList = subjectsCollection.find()
+
+        issuesDetailsList = []
+
+        for currIssueJSONData in issuesDataJSONList:
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], locale)
+            newIssue = IssuePartialData()
+            newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
+            issuesDetailsList.append(newIssue)        
+
+        return issuesDetailsList
+    
     def getIssueForUser(self, id, userId, locale=Locale.UNKNOWN):
 
         issueDetails = self.getIssue (id=id, locale=Locale)
