@@ -100,7 +100,7 @@ def get_user_circle(userId):
     userCircleDetails = dbActions.getUserCircle(userId=userId)
     return userCircleDetails
 
-@router.get("/subjects")
+@router.get("/allSubjects")
 def get_all_subjects(locale = Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
