@@ -125,10 +125,10 @@ def get_issue(id, locale = Locale.UNKNOWN):
     return issueDetails
 
 @router.get("/allIssues")
-def get_all_issues(id, locale):
+def get_all_issues(locale):
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getAllIssues(id, int(locale))
+    issuesDetails = dbActions.getAllIssues(int(locale))
     
     return issuesDetails
 
