@@ -424,7 +424,7 @@ class moovDBInstance(metaclass=Singleton):
     
     def getIssueForUser(self, id, userId, locale=Locale.UNKNOWN):
 
-        issueDetails = self.getIssue (id=id, locale=Locale)
+        issueDetails = self.getIssue (id=id, locale=locale)
         userDetails = self.getUser(id=userId)
 
         # filter all the resolving motivations that are in the user motivations
