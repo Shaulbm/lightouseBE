@@ -133,9 +133,9 @@ def get_all_issues(locale):
     return issuesDetails
 
 @router.get("/issueForUser")
-def get_issue_for_user(id, userId, locale = Locale.UNKNOWN):
+def get_issue_for_user(issueId, userId, locale = Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getIssueForUser(id, userId, int(locale))
+    issuesDetails = dbActions.getIssueForUser(issueId, userId, int(locale))
     
     return issuesDetails
