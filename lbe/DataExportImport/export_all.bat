@@ -7,3 +7,4 @@ mongoexport --collection=questions --db=moov --out="c:\\dev\\data\\MoovDB\\quest
 mongoexport --collection=discoveryData --db=moov --out="c:\\dev\\data\\MoovDB\\discoveryData.json"
 mongoexport --collection=subjects --db=moov --out="c:\\dev\\data\\MoovDB\\subjects.json"
 mongoexport --collection=issues --db=moov --out="c:\\dev\\data\\MoovDB\\issues.json"
+mongoexport --collection=moovs --db=moov --out="c:\\dev\\data\\MoovDB\\moovs.json"

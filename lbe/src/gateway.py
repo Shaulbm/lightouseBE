@@ -139,3 +139,19 @@ def get_issue_for_user(issueId, userId, locale = Locale.UNKNOWN):
     issuesDetails = dbActions.getIssueForUser(issueId, userId, int(locale))
     
     return issuesDetails
+
+@router.get("/moov")
+def get_moov(id, locale = Locale.UNKNOWN):
+    dbActions = moovDBInstance()
+    
+    moovDetails = dbActions.getMoov(id, int(locale))
+    
+    return moovDetails
+
+@router.get("/moovsForIssueAndMotivation")
+def get_moovs_for_issue_and_user(issueId, userId, locale = Locale.UNKNOWN):
+    dbActions = moovDBInstance()
+    
+    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, locale=int(locale))
+    
+    return moovsDetails

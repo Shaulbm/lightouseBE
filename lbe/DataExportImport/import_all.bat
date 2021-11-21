@@ -7,3 +7,4 @@ mongoimport --mode=upsert --collection=questions --db=moov --file="c:\\dev\\data
 mongoimport --mode=upsert --collection=discoveryData --db=moov --file="c:\\dev\\data\\MoovDB\\discoveryData.json"
 mongoimport --mode=upsert --collection=subjects --db=moov --file="c:\\dev\\data\\MoovDB\\subjects.json"
 mongoimport --mode=upsert --collection=issues --db=moov --file="c:\\dev\\data\\MoovDB\\issues.json"
+mongoimport --mode=upsert --collection=moovs --db=moov --file="c:\\dev\\data\\MoovDB\\moovs.json"

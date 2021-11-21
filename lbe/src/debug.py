@@ -162,9 +162,17 @@ def createUsers():
 # fout.close()
 #Image - End
 dbInstance = moovDBInstance()
-# dbInstance.setMotivationsToUSer ("UA06", {"M001":3.5, "M002": 3.3, "M003": 3.1, "M004": 2, "M005": 1.7})
+# dbInstance.setMotivationsToUSer ("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
 # motivations = dbInstance.getUserMotivations("U001", 1)
 # print (motivations)
 # userDetails = gateway.user_log_in("U001", "VVV")
 # print (userDetails)
-foundSubjects = gateway.get_all_subjects(1)
+# foundSubjects = gateway.get_all_subjects(1)
+# issue = gateway.get_issue_for_user('IS001', 'UA06', 1)
+# print (issue)
+
+moovDetails = gateway.get_moov("MO0001", 1)
+print (moovDetails)
+
+possibleMoovs = gateway.get_moovs_for_issue_and_user ("IS001", "UA06", 1)
+print (possibleMoovs)

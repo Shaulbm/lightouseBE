@@ -2,6 +2,7 @@ from threading import current_thread
 from typing import Text
 from pymongo import MongoClient
 from pymongo.common import partition_node
+from moovData import MoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData
 from questionsData import QuestionData
@@ -72,6 +73,60 @@ class moovDBInstance(metaclass=Singleton):
         else:
             # this is a new motivation
             dataCollection.insert_one(motivationDataObj.toJSON())
+
+    def insertOrUpdateMoov (self, moovDataObj):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+        moovDataJSON = moovsCollection.find_one({"id" : moovDataObj.id})
+
+        if (moovDataJSON is not None):
+            #object found
+            moovFilter = {'id':moovDataObj.id}
+            moovsCollection.replace_one (moovFilter, moovDataObj.toJSON())
+        else:
+            # this is a new moov
+            moovsCollection.insert_one(moovDataObj.toJSON())
+
+    def getMoov (self, id, locale):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+
+        moovDataJSON = moovsCollection.find_one({"id" : id})
+
+        if (moovDataJSON is None):
+            return None
+
+        moovTextsDic = self.getTextDataByParent(id, locale)
+
+        newMoov = MoovData()
+        newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
+
+        return newMoov 
+
+    def getMoovsForIssueAndUser (self, userId, issueId, locale):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+        requestedUser = self.getUser(userId)
+
+        if (requestedUser.motivations is None or requestedUser.motivations.__len__ == 0):
+            return {}
+
+        userMotivationsIds = list(requestedUser.motivations.keys())
+
+        moovFilter = {"issueId":issueId,"motivationId": {"$in":userMotivationsIds}}
+        motivationsDataJSONList = moovsCollection.find(moovFilter)
+
+        if (motivationsDataJSONList is None):
+            return None
+
+        foundMoovs = []
+        for currMoovJSONData in motivationsDataJSONList:
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], locale)
+            newMoov = MoovData()
+            newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
+            foundMoovs.append(newMoov)
+
+        return foundMoovs
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
         textDataJSON = dataCollection.find_one({"id" : textDataObj.id})
