@@ -72,7 +72,7 @@ def insertMoov(moovDataDict):
     newMoov.id = moovDataDict["id"]
     newMoov.issueId = moovDataDict["issueId"]
     newMoov.motivationId = moovDataDict["motivationId"]
-    newMoov.score = moovDataDict["score"]
+    newMoov.score = int(moovDataDict["score"])
     newMoov.image = moovDataDict["image"]
     newMoov.name = newMoov.id + "_1"
     newMoov.description = newMoov.id + "_2"

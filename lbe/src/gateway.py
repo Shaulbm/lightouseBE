@@ -148,7 +148,7 @@ def get_moov(id, locale = Locale.UNKNOWN):
     
     return moovDetails
 
-@router.get("/moovsForIssueAndMotivation")
+@router.get("/moovsForIssueAndUser")
 def get_moovs_for_issue_and_user(issueId, userId, locale = Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
