@@ -26,12 +26,13 @@ class SubjectData:
             self.description = jsonData["description"]
 
 class RelatedMotivationData:
-    def __init__(self, id = "", issueId = "", motivationId = "", impact = "", text = ""):
+    def __init__(self, id = "", issueId = "", motivationId = "", impact = "", text = "", moovExplanation = ""):
         self.id = id
         self.issueId = issueId
         self.motivationId = motivationId
         self.impact = impact
         self.text = text
+        self.moovExplanation = moovExplanation
 
     def toJSON(self):
         responseDataJSON = jsonpickle.encode(self, unpicklable=False)
@@ -48,9 +49,11 @@ class RelatedMotivationData:
         
         if (localedTextDic is not None):
             self.text = localedTextDic[jsonData["text"]]
+            self.moovExplanation = localedTextDic[jsonData["moovExplanation"]]
         else:
             # build as is
             self.text = jsonData["text"]
+            self.moovExplanation = jsonData["moovExplanation"]
 
 class IssueData:
     def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0, contributingMotivations = [], resolvingMotivations = []):

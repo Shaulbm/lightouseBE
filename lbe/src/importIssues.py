@@ -17,8 +17,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 SAMPLE_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
 ISSUES_RANGE_NAME = 'Issues!A1:K4'
 SUBJECTS_RANGE_NAME = 'Subjects!A1:G4'
-RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:G22'
-CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G19'
+RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:J22'
+CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:J19'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -28,8 +28,8 @@ def main():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # if os.path.exists('token.json'):
+    #     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -186,6 +186,7 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         newResolvingMotivation.motivationId = currResolvingMotivations["motivationId"]
         newResolvingMotivation.impact = int(currResolvingMotivations["impact"])
         newResolvingMotivation.text = newResolvingMotivation.id + "_1"
+        newResolvingMotivation.moovExplanation = newResolvingMotivation.id + "_2"
 
         currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.text, currResolvingMotivations["text <<en>>"])
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
@@ -194,6 +195,15 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
         currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.text, currResolvingMotivations["text <<he_ma>>"])
+        dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<en>>"])
+        dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<he_fe>>"])
+        dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<he_ma>>"])
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
         newIssue.resolvingMotivations.append(newResolvingMotivation)
@@ -205,6 +215,7 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         newContributingMotivation.motivationId = currContributingMotivations["motivationId"]
         newContributingMotivation.impact = int(currContributingMotivations["impact"])
         newContributingMotivation.text = newContributingMotivation.id + "_1"
+        newContributingMotivation.moovExplanation = newContributingMotivation.id + "_2"
 
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<en>>"])
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
@@ -215,6 +226,14 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<he_ma>>"])
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
+        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<en>>"])
+        dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<he_fe>>"])
+        dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<he_ma>>"])
+        dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
         newIssue.contributingMotivations.append(newContributingMotivation)
 
     dbInstance.insertOrUpdateIssue(newIssue)
