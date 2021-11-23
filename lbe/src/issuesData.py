@@ -55,6 +55,33 @@ class RelatedMotivationData:
             self.text = jsonData["text"]
             self.moovExplanation = jsonData["moovExplanation"]
 
+class ExtendedRelatedMotivationData(RelatedMotivationData):
+    def __init__(self, id = "", issueId = "", motivationId = "", motivationName= "", impact = "", text = "", moovExplanation = ""):
+        super().__init__(id=id, issueId=issueId, motivationId=motivationId, impact=impact, text=text,moovExplanation=moovExplanation)
+        self.motivationName = motivationName
+
+    def toJSON(self):
+        superJsonData = super().toJSON()
+        responseDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        extendedJsonObject = json.loads (responseDataJSON)
+
+        jointJSONObject = {key: value for (key, value) in (extendedJsonObject.items() + superJsonData.items())}
+
+    def buildFromJSON(self, jsonData, localedTextDic = None):
+        super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
+
+        # motivation name is set externally and not from JSON
+        self.motivationName = ""
+
+    def buildFromBaseClass(self, relatedMotivationDetails):
+        self.id = relatedMotivationDetails.id
+        self.issueId = relatedMotivationDetails.issueId
+        self.motivationId = relatedMotivationDetails.motivationId
+        self.impact = relatedMotivationDetails.impact
+        self.text = relatedMotivationDetails.text
+        self.moovExplanation = relatedMotivationDetails.moovExplanation
+
 class IssueData:
     def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0, contributingMotivations = [], resolvingMotivations = []):
         self.id = id
@@ -86,6 +113,10 @@ class IssueData:
             self.shortDescription = jsonData["shortDescription"]
             self.longDescription = jsonData["longDescription"]
         
+        self.buildRelatedMotivations(jsonData=jsonData, localedTextDic=localedTextDic)
+
+
+    def buildRelatedMotivations (self, jsonData, localedTextDic = None):
         self.contributingMotivations = []
 
         for currContributingMotivation in jsonData["contributingMotivations"]:
@@ -94,11 +125,54 @@ class IssueData:
 
             self.contributingMotivations.append(contributingMotivation)
 
+        self.resolvingMotivations = []
+
         for currResolvingMotivation in jsonData["resolvingMotivations"]:
             resolvingMotivation = RelatedMotivationData()
             resolvingMotivation.buildFromJSON(currResolvingMotivation, localedTextDic)
 
             self.resolvingMotivations.append(resolvingMotivation)
+
+class IssueExtendedData(IssueData):
+    def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0, contributingMotivations = [], resolvingMotivations = []):
+        super().__init__(id=id, subjectId=subjectId,name=name, shortDescription=shortDescription, longDescription=longDescription, contributingMotivations=contributingMotivations, resolvingMotivations=resolvingMotivations)
+
+    def buildRelatedMotivations (self, jsonData, localedTextDic = None):
+        self.contributingMotivations = []
+
+        for currContributingMotivation in jsonData["contributingMotivations"]:
+            contributingMotivation = ExtendedRelatedMotivationData()
+            contributingMotivation.buildFromJSON(currContributingMotivation, localedTextDic)
+
+            self.contributingMotivations.append(contributingMotivation)
+
+        self.resolvingMotivations = []
+
+        for currResolvingMotivation in jsonData["resolvingMotivations"]:
+            resolvingMotivation = ExtendedRelatedMotivationData()
+            resolvingMotivation.buildFromJSON(currResolvingMotivation, localedTextDic)
+
+            self.resolvingMotivations.append(resolvingMotivation)
+
+    def copyFromBaseClass (self, issueDetails):
+        self.id = issueDetails.id
+        self.subjectId = issueDetails.subjectId
+        self.name = issueDetails.name
+        self.shortDescription = issueDetails.shortDescription
+        self.longDescription = issueDetails.longDescription
+
+        self.contributingMotivations = []
+        self.resolvingMotivations = []
+
+        for currRelatedMotivation in issueDetails.contributingMotivations:
+            currExtendedRelatedMotivation = ExtendedRelatedMotivationData()
+            currExtendedRelatedMotivation.buildFromBaseClass(currRelatedMotivation)
+            self.contributingMotivations.append(currExtendedRelatedMotivation)
+
+        for currRelatedMotivation in issueDetails.resolvingMotivations:
+            currExtendedRelatedMotivation = ExtendedRelatedMotivationData()
+            currExtendedRelatedMotivation.buildFromBaseClass(currRelatedMotivation)
+            self.resolvingMotivations.append(currExtendedRelatedMotivation)
 
 class IssuePartialData:
     def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0):

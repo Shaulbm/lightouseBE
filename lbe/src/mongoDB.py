@@ -11,7 +11,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -489,7 +489,21 @@ class moovDBInstance(metaclass=Singleton):
         issueDetails.resolvingMotivations = filteredResolvingMotivatios.copy()
         issueDetails.contributingMotivations = filteredContributingMotivatios.copy()
 
-        return issueDetails
+        issueExtendedDetails = IssueExtendedData()
+        issueExtendedDetails.copyFromBaseClass(issueDetails)
+
+        #prepare motviations names
+        allMotivations = self.getAllMotivations(locale)
+        motivationsNameDict = {x.id:x.name for x in allMotivations}
+
+        #copy Motivations names
+        for currRelatedMotivation in issueExtendedDetails.contributingMotivations:
+            currRelatedMotivation.motivationName = motivationsNameDict[currRelatedMotivation.motivationId]
+
+        for currRelatedMotivation in issueExtendedDetails.resolvingMotivations:
+            currRelatedMotivation.motivationName = motivationsNameDict[currRelatedMotivation.motivationId]
+
+        return issueExtendedDetails
 
     def insertOrUpdateSubject(self, currSubjectData):
         db = self.getDatabase()
