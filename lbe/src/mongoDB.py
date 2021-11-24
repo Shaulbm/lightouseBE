@@ -2,6 +2,7 @@ from hashlib import new
 from threading import current_thread
 import threading
 from typing import Text
+from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
 from moovData import MoovData
@@ -26,6 +27,13 @@ class moovDBInstance(metaclass=Singleton):
         self.dataBaseInstance = None
         self.counterLock = threading.Lock()
 
+    def lock(self):
+        self.counterLock.acquire()
+
+    def release(self):
+        self.counterLock.release()
+
+
     def getDatabase(self):
 
         if (self.dataBaseInstance is None):
@@ -36,22 +44,21 @@ class moovDBInstance(metaclass=Singleton):
         return self.dataBaseInstance
 
     def getNextCount(self):
-        db = self.getDatabase
+        db = self.getDatabase()
         counterCollection = db["counter"]
 
         counterValue = 0
         self.counterLock.acquire()
 
-        counterFilter = {"id" : "COUNTER"}
-
         try:
+            counterFilter = {"id" : "COUNTER"}
+            #find Counter, if not exist create new. if exist get value and update.
             counterData = counterCollection.find_one(counterFilter)
             if (counterData is None):
-                counterCollection.insert_one({"id": "COUNTER", "val": 0})
-            #find Counter, if not exist create new. if exist get value and update.
+                counterCollection.insert_one({"id": "COUNTER", "val": counterValue+1})
             else:
                 counterValue = int(counterData["Val"])
-                counterCollection.replace_one (counterFilter, {"id": "COUNTER","val":counterValue+1})
+                counterCollection.replace_one (counterFilter, {"id": "COUNTER","val": counterValue+1})
         finally:
             self.counterLock.release()
 
@@ -113,7 +120,7 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new moov
             moovsCollection.insert_one(moovDataObj.toJSON())
 
-    def getMoov (self, id, locale):
+    def getMoov (self, id, locale=None):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
 
@@ -122,7 +129,9 @@ class moovDBInstance(metaclass=Singleton):
         if (moovDataJSON is None):
             return None
 
-        moovTextsDic = self.getTextDataByParent(id, locale)
+        moovTextsDic = None
+        if (locale is not None):
+            moovTextsDic = self.getTextDataByParent(id, locale)
 
         newMoov = MoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
@@ -688,25 +697,33 @@ class moovDBInstance(metaclass=Singleton):
 
         return userImageDetails    
 
-    def activateMoov (self, moovId, userId, teamMemberId):
+    def activateMoov (self, moovId, userId, counterpartId):
         db = self.getDatabase();
         activeMoovsCollection = db["activeMoovs"]
 
         moovData = self.getMoov(moovId)
 
         #Check if there is an already moovId with userId and teamMember Id that is active
+        existingMoov = self.getActiveMoovByMoovUserAndCounterpart(userId=userId, moovId=moovId, counterpartId=counterpartId)
+
+        if existingMoov is not None:
+            #rasie error active Moov already exists
+            return existingMoov
+
         newActiveMoov = ActiveMoov()
         newActiveMoov.id = "AM_" + str(self.getNextCount())
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
-        newActiveMoov.counterpartId = teamMemberId
+        newActiveMoov.counterpartId = counterpartId
         newActiveMoov.issueId = moovData.issueId
         newActiveMoov.startDate = datetime.datetime.now()
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
+        return newActiveMoov
+
     def getActiveMoovsToCounterpart (self, counterpartUserId):
-        db = self.getDatabase();
+        db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
         activeMoovFilter = {"counterpartId": counterpartUserId}
@@ -725,7 +742,7 @@ class moovDBInstance(metaclass=Singleton):
         return foundActiveMoovs
 
     def getActiveMoovsForUser (self, userId):
-        db = self.getDatabase();
+        db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
         activeMoovFilter = {"userId": userId}
@@ -743,13 +760,28 @@ class moovDBInstance(metaclass=Singleton):
    
         return foundActiveMoovs
 
+    def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
 
-    def endMoov (self, id, feedbackScore, feedbackText):
+        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartId": counterpartId}
+
+        activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
+
+        if (activeMoovJSONData is None):
+            return None
+
+        foundActiveMoov = ActiveMoov()
+        foundActiveMoov.buildFromJSON(activeMoovJSONData)
+   
+        return foundActiveMoov
+
+    def endMoov (self, activeMoovId, feedbackScore, feedbackText):
         db = self.getDatabase();
         activeMoovsCollection = db["activeMoovs"]
         historicMoovsCollections=db["historicMoovs"]
 
-        activeMoovFilter = {"id":id}
+        activeMoovFilter = {"id":activeMoovId}
         activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter) 
         
         if (activeMoovJSONData is not None):
@@ -763,5 +795,3 @@ class moovDBInstance(metaclass=Singleton):
             # create a record in the historic data and delete from active moovs
             historicMoovsCollections.insert_one(activeMoovDetails.toJSON())
             activeMoovsCollection.delete_one(activeMoovFilter)
-
-        

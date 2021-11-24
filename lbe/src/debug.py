@@ -168,11 +168,18 @@ dbInstance = moovDBInstance()
 # userDetails = gateway.user_log_in("U001", "VVV")
 # print (userDetails)
 # foundSubjects = gateway.get_all_subjects(1)
-issue = gateway.get_issue_for_user('IS001', 'UA06', 1)
-print (issue)
+# issue = gateway.get_issue_for_user('IS001', 'UA06', 1)
+# print (issue)
 
 # moovDetails = gateway.get_moov("MO0001", 1)
 # print (moovDetails)
 
 # possibleMoovs = gateway.get_moovs_for_issue_and_user ("IS001", "UA06", 1)
 # print (possibleMoovs)
+
+activeMooveDetails = gateway.activate_moov("MO0001", "U001", "UA06")
+foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("UA06")
+foundActiveMoobForUser = gateway.get_active_moov_for_user("U001")
+gateway.end_moov(activeMooveDetails.id, 2, "no real feedback")
+
+print ("Done")

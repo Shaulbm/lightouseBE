@@ -8,3 +8,5 @@ mongoimport --mode=upsert --collection=discoveryData --db=moov --file="c:\\dev\\
 mongoimport --mode=upsert --collection=subjects --db=moov --file="c:\\dev\\data\\MoovDB\\subjects.json"
 mongoimport --mode=upsert --collection=issues --db=moov --file="c:\\dev\\data\\MoovDB\\issues.json"
 mongoimport --mode=upsert --collection=moovs --db=moov --file="c:\\dev\\data\\MoovDB\\moovs.json"
+mongoimport --mode=upsert --collection=activeMoovs --db=moov --file="c:\\dev\\data\\MoovDB\\activeMoovs.json"
+mongoimport --mode=upsert --collection=counter --db=moov --file="c:\\dev\\data\\MoovDB\\counter.json"

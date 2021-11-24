@@ -1,0 +1,1 @@
+mongoimport --mode=upsert --collection=counter --db=moov --file="c:\\dev\\data\\MoovDB\\counter.json"

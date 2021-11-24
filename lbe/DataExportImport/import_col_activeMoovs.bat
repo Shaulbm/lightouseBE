@@ -1,0 +1,1 @@
+mongoimport --mode=upsert --collection=activeMoovs --db=moov --file="c:\\dev\\data\\MoovDB\\activeMoovs.json"

@@ -155,3 +155,35 @@ def get_moovs_for_issue_and_user(issueId, userId, locale = Locale.UNKNOWN):
     moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, locale=int(locale))
     
     return moovsDetails
+
+@router.get("/activateMoov")
+def activate_moov(moovId, userId, counterpartId):
+    dbActions = moovDBInstance()
+    
+    returnValue = dbActions.activateMoov(moovId=moovId, userId=userId, counterpartId=counterpartId)
+    
+    return returnValue
+
+@router.get("/endMoov")
+def end_moov (activeMoovId, feedbackScore, feedbackText):
+    dbActions = moovDBInstance()
+    
+    returnValue = dbActions.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    
+    return returnValue
+
+@router.get("/activeMoovsForCounterpart")
+def get_active_moovs_to_counterpart (counterpartUserId):
+    dbActions = moovDBInstance()
+    
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(counterpartUserId=counterpartUserId)
+    
+    return activeMoovs
+
+@router.get("/activeMoovsForUser")
+def get_active_moov_for_user (userId):
+    dbActions = moovDBInstance()
+    
+    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId)
+    
+    return activeMoovs

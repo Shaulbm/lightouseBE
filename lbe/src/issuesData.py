@@ -220,7 +220,7 @@ class ActiveMoov:
         return jsonObject
 
     def buildFromJSON (self, jsonData):
-        self.id - jsonData["id"]
+        self.id = jsonData["id"]
         self.userId = jsonData["userId"]
         self.counterpartId = jsonData["counterpartId"]
         self.moovId = jsonData["moovId"]
