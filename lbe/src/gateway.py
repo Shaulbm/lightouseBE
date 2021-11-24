@@ -173,10 +173,10 @@ def end_moov (activeMoovId, feedbackScore, feedbackText):
     return returnValue
 
 @router.get("/activeMoovsForCounterpart")
-def get_active_moovs_to_counterpart (userId, counterpartUserId):
+def get_active_moovs_to_counterpart (userId, counterpartId):
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartUserId=counterpartUserId)
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId)
     
     return activeMoovs
 
