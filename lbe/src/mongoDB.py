@@ -722,11 +722,11 @@ class moovDBInstance(metaclass=Singleton):
 
         return newActiveMoov
 
-    def getActiveMoovsToCounterpart (self, counterpartUserId):
+    def getActiveMoovsToCounterpart (self, userId, counterpartUserId):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"counterpartId": counterpartUserId}
+        activeMoovFilter = {"userId":userId, "counterpartId": counterpartUserId}
 
         activeMoovsDataJSONList = activeMoovsCollection.find(activeMoovFilter)
 
