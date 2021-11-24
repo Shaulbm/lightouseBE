@@ -57,7 +57,7 @@ class moovDBInstance(metaclass=Singleton):
             if (counterData is None):
                 counterCollection.insert_one({"id": "COUNTER", "val": counterValue+1})
             else:
-                counterValue = int(counterData["Val"])
+                counterValue = int(counterData["val"])
                 counterCollection.replace_one (counterFilter, {"id": "COUNTER","val": counterValue+1})
         finally:
             self.counterLock.release()
