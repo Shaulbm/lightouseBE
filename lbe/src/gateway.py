@@ -176,7 +176,7 @@ def end_moov (activeMoovId, feedbackScore, feedbackText):
 def get_active_moovs_to_counterpart (userId, counterpartId, locale=Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, locale=locale)
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, locale=int(locale))
     
     return activeMoovs
 
