@@ -14,7 +14,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ActiveMoov
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ActiveMoov, ExtendedActiveMoov
 import datetime
 
 LOCALE_HEB_MA = 1
@@ -722,7 +722,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return newActiveMoov
 
-    def getActiveMoovsToCounterpart (self, userId, counterpartId):
+    def getActiveMoovsToCounterpart (self, userId, counterpartId, locale):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -735,13 +735,14 @@ class moovDBInstance(metaclass=Singleton):
 
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
-            foundAcvtiveMoov = ActiveMoov()
+            foundAcvtiveMoov = ExtendedActiveMoov()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
+            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, locale=locale)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
 
-    def getActiveMoovsForUser (self, userId):
+    def getActiveMoovsForUser (self, userId, locale):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -754,8 +755,9 @@ class moovDBInstance(metaclass=Singleton):
 
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
-            foundAcvtiveMoov = ActiveMoov()
+            foundAcvtiveMoov = ExtendedActiveMoov()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
+            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, locale=locale)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs

@@ -1,6 +1,7 @@
 import jsonpickle
 import json
 
+
 class MoovData:
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", contributorId = ""):
         self.id = id

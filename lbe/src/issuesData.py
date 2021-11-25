@@ -219,7 +219,7 @@ class ActiveMoov:
 
         return jsonObject
 
-    def buildFromJSON (self, jsonData):
+    def buildFromJSON (self, jsonData, localedTextDic=None):
         self.id = jsonData["id"]
         self.userId = jsonData["userId"]
         self.counterpartId = jsonData["counterpartId"]
@@ -229,3 +229,8 @@ class ActiveMoov:
         self.endDate = jsonData["endDate"]
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
+
+class ExtendedActiveMoov(ActiveMoov):
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
+        super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
+        self.moovData = moovData
