@@ -184,6 +184,6 @@ def get_active_moovs_to_counterpart (userId, counterpartId, locale=Locale.UNKNOW
 def get_active_moov_for_user (userId, locale = Locale.UNKNOWN):
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, locale=locale)
+    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, locale=int(locale))
     
     return activeMoovs
