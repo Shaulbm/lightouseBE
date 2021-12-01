@@ -176,7 +176,7 @@ def get_moovs_for_issue_and_user(request: Request, issueId, userId):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, userContext= userContextDetails))
+    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, userContext= userContextDetails)
     
     return moovsDetails
 
@@ -201,7 +201,7 @@ def get_active_moovs_to_counterpart (request: Request, userId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContextDetails)
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return activeMoovs
 
