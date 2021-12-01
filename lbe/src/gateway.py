@@ -1,4 +1,4 @@
-from fastapi import Header, APIRouter
+from fastapi import Header, APIRouter, Request
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
 from mongoDB import moovDBInstance
@@ -14,8 +14,17 @@ class LoginData(BaseModel):
     userId: str
     password: str
 
+@app.middleware('http')
+async def get_user_details_from_header(request: Request, call_next):
+    userId = request.headers["X-USER-ID"]
+    print ("server request user id is {}", userId)
+    response = await call_next(request)
+    return response
+
 @router.get("/motivation")
-def get_motivation(id, locale):
+def get_motivation(request: Request, id, locale):
+    userId = request.headers['X-USER-ID']
+    print ('user id is {}', userId)
     dbActions = moovDBInstance()
     motivationDetails = dbActions.getMotivation (id,int(locale))
 
