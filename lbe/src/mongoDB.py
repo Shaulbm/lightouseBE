@@ -26,7 +26,7 @@ class moovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
         self.counterLock = threading.Lock()
-        self.usersContext = []
+        self.usersContext = {}
 
     def lock(self):
         self.counterLock.acquire()
