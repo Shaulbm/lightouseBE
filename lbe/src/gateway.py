@@ -1,6 +1,7 @@
 from fastapi import Header, APIRouter, Request
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
+from lbe.src.generalData import UserContextData
 from mongoDB import moovDBInstance
 import userDiscoveryJourney
 from generalData import UserRoles, Gender, Locale
@@ -14,10 +15,17 @@ class LoginData(BaseModel):
     userId: str
     password: str
 
+def set_user_context(userId):
+    dbActions = moovDBInstance()
+    return dbActions.setUserContextData(userId)
+
 @router.get("/motivation")
 def get_motivation(request: Request, id, locale):
-    userId = request.headers['X-USER-ID']
-    print ('user id is {}', userId)
+    userContextDetails = UserContextData()
+    userContextDetails.fromJSON(request.headers["X-USER-CONTEXT"])
+
+    print ('user Context is {}', userContextDetails.toJSON)
+
     dbActions = moovDBInstance()
     motivationDetails = dbActions.getMotivation (id,int(locale))
 

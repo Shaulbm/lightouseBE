@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from pymongo.common import partition_node
 from moovData import MoovData
 from motivationsData import MotivationData, MotivationPartialData
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -26,6 +26,7 @@ class moovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
         self.counterLock = threading.Lock()
+        self.usersContext = []
 
     def lock(self):
         self.counterLock.acquire()
@@ -33,6 +34,22 @@ class moovDBInstance(metaclass=Singleton):
     def release(self):
         self.counterLock.release()
 
+    def setUserContextData(self, userId):
+        if (userId in self.usersContext):
+            userContextDetails = self.usersContext[userId]
+            if (userContextDetails.timeStamp - datetime.utcnow() > datetime.timedelta(hours=12)):
+                self.usersContext.pop(userId)
+            else: 
+                return userContextDetails
+        
+        # userId is not found / found and removed
+        userDetails = self.getUser(userId)
+        userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
+
+        userContextDetails.timeStamp = datetime.utcnow()
+        self.usersContext[userId] = userContextDetails
+
+        return userContextDetails
 
     def getDatabase(self):
 

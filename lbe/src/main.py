@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi import HTTPException
 from typing import List
 from gateway import router
+import gateway
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -25,15 +26,17 @@ app.include_router(router)
 
 @app.middleware('http')
 async def get_user_details_from_header(request: Request, call_next):
-    response = None
+    userContext = None
     
     if "X-USER-ID" in request.headers:
         userId = request.headers["X-USER-ID"]
-        print ("server request user id is {userId}")
+        print ("server request user id is {0}", userId)
+        userContext = gateway.set_user_context(userId)
+        request.headers['X-USER-CONTEXT'] = userContext.toJSON()
     else:
         print ('request called with no user context')
 
-    response = await call_next(request)
+    response = await call_next(userContext, request)
     
     return response
 

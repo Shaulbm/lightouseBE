@@ -164,3 +164,27 @@ class UserCircleData:
     def __init__(self):
         self.teamMembersList = []
         self.peopleOfInterest = []
+
+class UserContextData:
+    def __init__(self, userId = "", firstName = "", lastName = "", locale = Locale.UNKNOWN, isRTL = False):
+        self.userId = userId
+        self.firstName = firstName
+        self.lastName = lastName
+        self.locale = locale
+        self.isRTL = isRTL
+        self.timeStamp = None
+
+    def toJSON (self):
+        userDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (userDataJSON)
+
+        return jsonObject 
+
+    def fromJSON (self, jsonData):
+        self.userId = jsonData["userId"]
+        self.firstName = jsonData["firstName"]
+        self.lastName = jsonData["lastName"]
+        self.locale = jsonData["locale"]
+        self.isRTL = jsonData["isRTL"]
+        self.timeStamp = jsonData["timeStamp"]
