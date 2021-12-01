@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi import HTTPException
 from typing import List
 from gateway import router
@@ -22,6 +22,14 @@ app.add_middleware(
 )
 
 app.include_router(router)
+
+@app.middleware('http')
+async def get_user_details_from_header(request: Request, call_next):
+    userId = request.headers["X-USER-ID"]
+    print ("server request user id is {}", userId)
+    response = await call_next(request)
+    return response
+
 
 @app.on_event("startup")
 def startup():

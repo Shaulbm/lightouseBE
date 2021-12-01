@@ -14,13 +14,6 @@ class LoginData(BaseModel):
     userId: str
     password: str
 
-@app.middleware('http')
-async def get_user_details_from_header(request: Request, call_next):
-    userId = request.headers["X-USER-ID"]
-    print ("server request user id is {}", userId)
-    response = await call_next(request)
-    return response
-
 @router.get("/motivation")
 def get_motivation(request: Request, id, locale):
     userId = request.headers['X-USER-ID']
