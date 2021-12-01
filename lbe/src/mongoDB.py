@@ -37,9 +37,10 @@ class moovDBInstance(metaclass=Singleton):
     def setUserContextData(self, userId):
         if (userId in self.usersContext):
             userContextDetails = self.usersContext[userId]
-            if (userContextDetails.timeStamp - datetime.datetime.utcnow() > datetime.timedelta(hours=12)):
+            if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
                 self.usersContext.pop(userId)
             else: 
+                print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
                 return userContextDetails
         
         # userId is not found / found and removed
@@ -49,6 +50,7 @@ class moovDBInstance(metaclass=Singleton):
         userContextDetails.timeStamp = datetime.datetime.utcnow()
         self.usersContext[userId] = userContextDetails
 
+        print ('in setUserContextData - user Context created and is ', userContextDetails.toJSON())
         return userContextDetails
 
     def getUserContextData(self, userId):
