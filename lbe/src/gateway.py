@@ -30,10 +30,8 @@ def get_user_context(request: Request):
 def get_motivation(request: Request, id, locale):
     userContextDetails = get_user_context(request)
 
-    print ('user Context is {}', userContextDetails.toJSON())
-
     dbActions = moovDBInstance()
-    motivationDetails = dbActions.getMotivation (id,int(locale))
+    motivationDetails = dbActions.getMotivation (id, userContextDetails)
 
     return motivationDetails
 
@@ -44,136 +42,146 @@ def user_log_in(loginData : LoginData):
     return userDetails
 
 @router.get("/allMotivations")
-def get_all_motivations(locale):
+def get_all_motivations(request: Request):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
-    motivationsDetails = dbActions.getAllMotivations (int(locale))
+    motivationsDetails = dbActions.getAllMotivations (userContextDetails)
 
     return motivationsDetails
 
 @router.get("/userMotivations")
-def get_user_motivations(userId, locale):
+def get_user_motivations(request: Request, userId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
-    motivationsDetails = dbActions.getUserMotivations (userId, int(locale))
+    motivationsDetails = dbActions.getUserMotivations (userId, userContextDetails)
 
     return motivationsDetails
 
 
 @router.get("/user")
-def get_user(id, mail = ""):
+def get_user(request: Request, id, mail = ""):
     dbActions = moovDBInstance()
     userDetails = dbActions.getUser (id, mail)
 
     return userDetails
 
 @router.post("/addUser")
-def add_or_update_user(id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
+def add_or_update_user(request: Request, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = moovDBInstance()
     dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=int(locale), gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
     return 
 
 @router.post("/setMotivations")
-def set_motivations_to_user(id, motivations):
+def set_motivations_to_user(request: Request, id, motivations):
     dbActions = moovDBInstance()
     userDetails = dbActions.setMotivationsToUSer (id, ast.literal_eval(motivations))
 
     return userDetails
 
 @router.get("/question")
-def get_question(id, locale):
+def get_question(request: Request, id, locale):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
-    questionDetails = dbActions.getQuestion(id, int(locale))
+    questionDetails = dbActions.getQuestion(id, userContextDetails)
 
     return questionDetails
     
 @router.get("/startUserJourney")
-def start_user_journey(userId):
+def start_user_journey(request: Request, userId):
     journeyId = userDiscoveryJourney.startUserJourney(userId)
     
     return journeyId
 
 @router.get("/journeyGetNextBatch")
-def get_next_questions_batch(userId):
+def get_next_questions_batch(request: Request, userId):
     questionsBatch = userDiscoveryJourney.getNextQuestionsBatch(userId)
     
     return questionsBatch
 
 @router.get("/journeySetQuestionResponse", status_code=200)
-def set_journey_question_response(userId, questionId, responseId):
+def set_journey_question_response(request: Request, userId, questionId, responseId):
     userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId)
 
     return "reposne was set"
 
 @router.get("/journeySetQuestionMultipleResponse", status_code=200)
-def set_journey_multiple_question_responses(userId, questionId, responses):
+def set_journey_multiple_question_responses(request: Request, userId, questionId, responses):
     userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responses = responses)
 
     return "reposnes were set"
 
 @router.get("/getUserCircle", status_code=200)
-def get_user_circle(userId):
+def get_user_circle(request: Request, userId):
     dbActions = moovDBInstance()
     userCircleDetails = dbActions.getUserCircle(userId=userId)
     return userCircleDetails
 
 @router.get("/allSubjects")
-def get_all_subjects(locale = Locale.UNKNOWN):
+def get_all_subjects(request: Request, locale = Locale.UNKNOWN):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    subjectsDetails = dbActions.getAllSubjects(int(locale))
+    subjectsDetails = dbActions.getAllSubjects(userContextDetails)
     
     return subjectsDetails
 
 @router.get("/issuesForSubject")
-def get_issue_for_subjects(subjectId, locale = Locale.UNKNOWN):
+def get_issue_for_subjects(request : Request, subjectId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getIssuesForSubject(subjectId, int(locale))
+    issuesDetails = dbActions.getIssuesForSubject(subjectId, userContextDetails)
     
     return issuesDetails
 
 @router.get("/issue")
-def get_issue(id, locale = Locale.UNKNOWN):
+def get_issue(request: Request, id):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    issueDetails = dbActions.getIssue(id, int(locale))
+    issueDetails = dbActions.getIssue(id, userContextDetails)
     
     return issueDetails
 
 @router.get("/allIssues")
-def get_all_issues(locale):
+def get_all_issues(request: Request):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getAllIssues(int(locale))
+    issuesDetails = dbActions.getAllIssues(userContextDetails)
     
     return issuesDetails
 
 @router.get("/issueForUser")
-def get_issue_for_user(issueId, userId, locale = Locale.UNKNOWN):
+def get_issue_for_user(request: Request, issueId, userId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    issuesDetails = dbActions.getIssueForUser(issueId, userId, int(locale))
+    issuesDetails = dbActions.getIssueForUser(issueId, userId, userContextDetails)
     
     return issuesDetails
 
 @router.get("/moov")
-def get_moov(id, locale = Locale.UNKNOWN):
+def get_moov(request: Request, id):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    moovDetails = dbActions.getMoov(id, int(locale))
+    moovDetails = dbActions.getMoov(id, userContextDetails)
     
     return moovDetails
 
 @router.get("/moovsForIssueAndUser")
-def get_moovs_for_issue_and_user(issueId, userId, locale = Locale.UNKNOWN):
+def get_moovs_for_issue_and_user(request: Request, issueId, userId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, locale=int(locale))
+    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, userContext= userContextDetails))
     
     return moovsDetails
 
 @router.get("/activateMoov")
-def activate_moov(moovId, userId, counterpartId):
+def activate_moov(request: Request, moovId, userId, counterpartId):
     dbActions = moovDBInstance()
     
     returnValue = dbActions.activateMoov(moovId=moovId, userId=userId, counterpartId=counterpartId)
@@ -181,7 +189,7 @@ def activate_moov(moovId, userId, counterpartId):
     return returnValue
 
 @router.get("/endMoov")
-def end_moov (activeMoovId, feedbackScore, feedbackText):
+def end_moov (request: Request, activeMoovId, feedbackScore, feedbackText):
     dbActions = moovDBInstance()
     
     returnValue = dbActions.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText)
@@ -189,17 +197,19 @@ def end_moov (activeMoovId, feedbackScore, feedbackText):
     return returnValue
 
 @router.get("/activeMoovsForCounterpart")
-def get_active_moovs_to_counterpart (userId, counterpartId, locale=Locale.UNKNOWN):
+def get_active_moovs_to_counterpart (request: Request, userId, counterpartId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, locale=int(locale))
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContextDetails)
     
     return activeMoovs
 
 @router.get("/activeMoovsForUser")
-def get_active_moov_for_user (userId, locale = Locale.UNKNOWN):
+def get_active_moov_for_user (request: Request, userId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, locale=int(locale))
+    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, userContext=userContextDetails)
     
     return activeMoovs

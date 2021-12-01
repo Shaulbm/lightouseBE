@@ -170,7 +170,7 @@ class UserContextData:
         self.userId = userId
         self.firstName = firstName
         self.lastName = lastName
-        self.locale = locale
+        self.locale = int(locale)
         self.isRTL = isRTL
         self.timeStamp = None
 
@@ -185,6 +185,6 @@ class UserContextData:
         self.userId = jsonData["userId"]
         self.firstName = jsonData["firstName"]
         self.lastName = jsonData["lastName"]
-        self.locale = jsonData["locale"]
+        self.locale = int(jsonData["locale"])
         self.isRTL = jsonData["isRTL"]
         self.timeStamp = jsonData["timeStamp"]

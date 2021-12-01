@@ -151,7 +151,7 @@ class moovDBInstance(metaclass=Singleton):
             # this is a new moov
             moovsCollection.insert_one(moovDataObj.toJSON())
 
-    def getMoov (self, id, locale=None):
+    def getMoov (self, id, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
 
@@ -161,15 +161,15 @@ class moovDBInstance(metaclass=Singleton):
             return None
 
         moovTextsDic = None
-        if (locale is not None):
-            moovTextsDic = self.getTextDataByParent(id, locale)
+        if (userContext.locale is not None):
+            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
 
         newMoov = MoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
         return newMoov 
 
-    def getMoovsForIssueAndUser (self, userId, issueId, locale):
+    def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
         requestedUser = self.getUser(userId)
@@ -187,7 +187,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], locale)
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale)
             newMoov = MoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -240,7 +240,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return userDetails
 
-    def getMotivation (self, id, locale):
+    def getMotivation (self, id, userContext: UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
 
@@ -251,7 +251,7 @@ class moovDBInstance(metaclass=Singleton):
 
         # print ("motivation data is {0}", motivationDataJSON)
 
-        motivationTextsDic = self.getTextDataByParent(id, locale)
+        motivationTextsDic = self.getTextDataByParent(id, userContext.locale)
 
         newMotivtion = MotivationData()
         newMotivtion.buildFromJSON(motivationDataJSON, motivationTextsDic)
@@ -259,7 +259,7 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return newMotivtion 
     
-    def getAllMotivations(self,locale):
+    def getAllMotivations(self,userContext:UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
 
@@ -270,7 +270,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMotivations = []
         for currMotivationJSONData in motivationsDataJSONList:
-            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], locale)
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale)
             newMotivation = MotivationPartialData()
             newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
             foundMotivations.append(newMotivation)
@@ -278,7 +278,7 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return foundMotivations 
 
-    def getUserMotivations (self, userId, locale):
+    def getUserMotivations (self, userId, userContext:UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
         requestedUser = self.getUser(userId)
@@ -296,7 +296,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMotivations = []
         for currMotivationJSONData in motivationsDataJSONList:
-            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], locale)
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale)
             newMotivation = MotivationPartialData()
             newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
             foundMotivations.append(newMotivation)
@@ -369,7 +369,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             questionsCollection.insert_one(currQuestionData.toJSON())
 
-    def getQuestion(self, id, locale=0):
+    def getQuestion(self, id, userContext: UserContextData):
         db = self.getDatabase()
         questionsCollection = db["questions"]
 
@@ -380,13 +380,13 @@ class moovDBInstance(metaclass=Singleton):
 
         questionTextsDic = None
         
-        if (locale != Locale.UNKNOWN):
+        if (userContext.locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
             parentsIds.append(questionsDataJSON["id"])
             
             # get localed text
-            questionTextsDic = self.getTextDataByParents(parentsIds, locale)
+            questionTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
 
         questionDetails = QuestionData()
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
@@ -482,7 +482,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             issuesCollection.insert_one(currIssueData.toJSON())
 
-    def getIssue(self, id, locale=Locale.UNKNOWN):
+    def getIssue(self, id, userContext: UserContextData):
         db = self.getDatabase()
         issuesCollection = db["issues"]
 
@@ -493,7 +493,7 @@ class moovDBInstance(metaclass=Singleton):
 
         issuesTextsDic = None
         
-        if (locale != Locale.UNKNOWN):
+        if (userContext.locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = []
             parentsIds.append(issueDataJSON["id"])
@@ -502,14 +502,14 @@ class moovDBInstance(metaclass=Singleton):
             
 
             # get localed text
-            issuesTextsDic = self.getTextDataByParents(parentsIds, locale)
+            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
 
         issueDetails = IssueData()
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
 
         return issueDetails
 
-    def getIssuesForSubject (self, subjectId, locale):
+    def getIssuesForSubject (self, subjectId, userContext: UserContextData):
         db = self.getDatabase()
         subjectsCollection = db["issues"]
 
@@ -520,14 +520,14 @@ class moovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], locale)
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale)
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        
 
         return issuesDetailsList
     
-    def getAllIssues (self, locale):
+    def getAllIssues (self, userContext: UserContextData):
         db = self.getDatabase()
         subjectsCollection = db["issues"]
 
@@ -536,16 +536,16 @@ class moovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], locale)
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale)
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        
 
         return issuesDetailsList
     
-    def getIssueForUser(self, issueId, userId, locale=Locale.UNKNOWN):
+    def getIssueForUser(self, issueId, userId, userContext: UserContextData):
 
-        issueDetails = self.getIssue (id=issueId, locale=locale)
+        issueDetails = self.getIssue (id=issueId, userContext=userContext)
         userDetails = self.getUser(id=userId)
 
         # filter all the resolving motivations that are in the user motivations
@@ -559,7 +559,7 @@ class moovDBInstance(metaclass=Singleton):
         issueExtendedDetails.copyFromBaseClass(issueDetails)
 
         #prepare motviations names
-        allMotivations = self.getAllMotivations(locale)
+        allMotivations = self.getAllMotivations(userContext)
         motivationsNameDict = {x.id:x.name for x in allMotivations}
 
         #copy Motivations names
@@ -585,7 +585,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             subjectsCollection.insert_one(currSubjectData.toJSON())
 
-    def getAllSubjects(self, locale):
+    def getAllSubjects(self, userContext: UserContextData):
         db = self.getDatabase()
         subjectsCollection = db["subjects"]
 
@@ -596,7 +596,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundSubjects = []
         for currSubjectJSONData in subjectsDataJSONList:
-            subjectTextsDic = self.getTextDataByParent(currSubjectJSONData["id"], locale)
+            subjectTextsDic = self.getTextDataByParent(currSubjectJSONData["id"], userContext.locale)
             newSubject = SubjectData()
             newSubject.buildFromJSON(currSubjectJSONData, subjectTextsDic)
             foundSubjects.append(newSubject)
@@ -753,7 +753,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return newActiveMoov
 
-    def getActiveMoovsToCounterpart (self, userId, counterpartId, locale):
+    def getActiveMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -768,12 +768,12 @@ class moovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedActiveMoov()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, locale=locale)
+            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
 
-    def getActiveMoovsForUser (self, userId, locale):
+    def getActiveMoovsForUser (self, userId, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -788,7 +788,7 @@ class moovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedActiveMoov()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, locale=locale)
+            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
