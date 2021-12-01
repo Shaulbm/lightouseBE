@@ -27,14 +27,13 @@ app.include_router(router)
 async def get_user_details_from_header(request: Request, call_next):
     response = None
     
-    try:
+    if "X-USER-ID" in request.headers:
         userId = request.headers["X-USER-ID"]
         print ("server request user id is {}", userId)
-    except Exception as err:
-        #log this
-        print ("failed to find X-USER-ID in the request, raw data is {0}, error is {1}", request, err)
-    finally:
-        response = await call_next(request)
+    else:
+        print ('request called with no user context')
+
+    response = await call_next(request)
     
     return response
 
