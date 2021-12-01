@@ -54,9 +54,14 @@ class moovDBInstance(metaclass=Singleton):
         return userContextDetails
 
     def getUserContextData(self, userId):
+        
+        print ('in getUserContextData user id is ', userId)
         userContextDetails = None
+
         if (userId  in self.usersContext):
+            
             userContextDetails = self.usersContext[userId]
+            print ('found user context and is ', userContextDetails.toJSON())
 
         return userContextDetails
 
