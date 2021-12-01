@@ -161,7 +161,7 @@ def createUsers():
 
 # fout.close()
 #Image - End
-dbInstance = moovDBInstance()
+dbInstance_1 = moovDBInstance()
 # dbInstance.setMotivationsToUSer ("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
 # motivations = dbInstance.getUserMotivations("U001", 1)
 # print (motivations)
@@ -178,8 +178,13 @@ dbInstance = moovDBInstance()
 # print (possibleMoovs)
 
 # activeMooveDetails = gateway.activate_moov("MO0001", "U001", "UA06")
-foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("U001","UA06", 1)
+# foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("U001","UA06", 1)
 # foundActiveMoobForUser = gateway.get_active_moov_for_user("U001")
 # gateway.end_moov(activeMooveDetails.id, 2, "no real feedback")
+dbInstance_1.setUserContextData("U001")
+
+dbInstance_2 = moovDBInstance()
+userContextDetails = dbInstance_2.getUserContextData("U001")
+
 
 print ("Done")
