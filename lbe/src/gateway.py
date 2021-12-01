@@ -1,10 +1,9 @@
 from fastapi import Header, APIRouter, Request
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
-from lbe.src.generalData import UserContextData
 from mongoDB import moovDBInstance
 import userDiscoveryJourney
-from generalData import UserRoles, Gender, Locale
+from generalData import UserRoles, Gender, Locale, UserContextData
 from loguru import logger
 import ast
 from pydantic import BaseModel
