@@ -29,7 +29,7 @@ async def get_user_details_from_header(request: Request, call_next):
     
     if "X-USER-ID" in request.headers:
         userId = request.headers["X-USER-ID"]
-        print ("server request user id is {}", userId)
+        print ("server request user id is {userId}")
     else:
         print ('request called with no user context')
 
