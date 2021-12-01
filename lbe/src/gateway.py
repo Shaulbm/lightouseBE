@@ -22,7 +22,7 @@ def get_user_context(request: Request):
     userContextDetails = None
     if ("X-USER-ID" in  request.headers):
         dbActions = moovDBInstance()
-        userContextDetails = dbActions.getuserContextData(request.headers["X-USER-ID"])
+        userContextDetails = dbActions.getUserContextData(request.headers["X-USER-ID"])
 
     return userContextDetails
 
