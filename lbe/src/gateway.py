@@ -18,10 +18,17 @@ def set_user_context(userId):
     dbActions = moovDBInstance()
     return dbActions.setUserContextData(userId)
 
+def get_user_context(request: Request):
+    userContextDetails = None
+    if ("X-USER-ID" in  request.headers):
+        dbActions = moovDBInstance()
+        userContextDetails = dbActions.getuserContextData(request.headers["X-USER-ID"])
+
+    return userContextDetails
+
 @router.get("/motivation")
 def get_motivation(request: Request, id, locale):
-    userContextDetails = UserContextData()
-    userContextDetails.fromJSON(request.headers["X-USER-CONTEXT"])
+    userContextDetails = get_user_context(request)
 
     print ('user Context is {}', userContextDetails.toJSON)
 

@@ -5,6 +5,7 @@ from typing import Text
 from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
+from lbe.src.gateway import user_log_in
 from moovData import MoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
@@ -48,6 +49,13 @@ class moovDBInstance(metaclass=Singleton):
 
         userContextDetails.timeStamp = datetime.datetime.utcnow()
         self.usersContext[userId] = userContextDetails
+
+        return userContextDetails
+
+    def getUserContextData(self, userId):
+        userContextDetails = None
+        if (userId  in self.usersContext):
+            userContextDetails = self.usersContext[userId]
 
         return userContextDetails
 
