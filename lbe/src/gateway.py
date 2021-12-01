@@ -30,7 +30,7 @@ def get_user_context(request: Request):
 def get_motivation(request: Request, id, locale):
     userContextDetails = get_user_context(request)
 
-    print ('user Context is {}', userContextDetails.toJSON)
+    print ('user Context is {}', userContextDetails.toJSON())
 
     dbActions = moovDBInstance()
     motivationDetails = dbActions.getMotivation (id,int(locale))
