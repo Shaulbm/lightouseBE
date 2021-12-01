@@ -5,7 +5,6 @@ from typing import Text
 from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from lbe.src.gateway import user_log_in
 from moovData import MoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
