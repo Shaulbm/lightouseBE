@@ -37,7 +37,7 @@ class moovDBInstance(metaclass=Singleton):
     def setUserContextData(self, userId):
         if (userId in self.usersContext):
             userContextDetails = self.usersContext[userId]
-            if (userContextDetails.timeStamp - datetime.utcnow() > datetime.timedelta(hours=12)):
+            if (userContextDetails.timeStamp - datetime.datetime.utcnow() > datetime.timedelta(hours=12)):
                 self.usersContext.pop(userId)
             else: 
                 return userContextDetails
@@ -46,7 +46,7 @@ class moovDBInstance(metaclass=Singleton):
         userDetails = self.getUser(userId)
         userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
 
-        userContextDetails.timeStamp = datetime.utcnow()
+        userContextDetails.timeStamp = datetime.datetime.utcnow()
         self.usersContext[userId] = userContextDetails
 
         return userContextDetails
