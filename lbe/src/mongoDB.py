@@ -465,7 +465,7 @@ class moovDBInstance(metaclass=Singleton):
             #no discovery journey data found
             return None
 
-        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"], locale)
+        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"], userContext.locale)
 
         discoveryBatchDetails = DiscoveryBatchData()
         discoveryBatchDetails.buildFromJSON(discoveryBatchDataJSON, localedTextDict)
