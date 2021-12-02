@@ -178,7 +178,7 @@ class UserContextData:
         self.userId = userId
         self.firstName = firstName
         self.lastName = lastName
-        self.locale = int(locale)
+        self.locale = locale
         self.isRTL = isRTL
         self.timeStamp = None
 
