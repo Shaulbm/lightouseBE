@@ -5,7 +5,7 @@ import time
 import uuid
 from mongoDB import moovDBInstance
 import ExportJourney
-from generalData import UserRoles, Locale, Gender, UserImageData
+from generalData import UserRoles, Locale, Gender, UserImageData, UserData
 from os import path
 import base64
 
@@ -181,10 +181,19 @@ dbInstance_1 = moovDBInstance()
 # foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("U001","UA06", 1)
 # foundActiveMoobForUser = gateway.get_active_moov_for_user("U001")
 # gateway.end_moov(activeMooveDetails.id, 2, "no real feedback")
-dbInstance_1.setUserContextData("U001")
+db = dbInstance_1.getDatabase()
 
-dbInstance_2 = moovDBInstance()
-userContextDetails = dbInstance_2.getUserContextData("U001")
+# usersCollection = db["users"]
 
+# foundUsers = usersCollection.find()
+
+# for currUserJSON in foundUsers:
+#     currUserDetails = UserData()
+#     currUserDetails.fromJSON(currUserJSON)
+
+#     if (currUserDetails.mailAddress == ""):
+#         currUserDetails.mailAddress = currUserDetails.id + "@testUser.com"
+
+#         dbInstance_1.insertOrUpdateUser(currUserDetails)
 
 print ("Done")

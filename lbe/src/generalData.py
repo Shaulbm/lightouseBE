@@ -41,7 +41,7 @@ class TextData:
             raise TypeError(str.format("failed to load text data from JSON, data is {0}, error is {1}", jsonData, err))
 
 class UserData:
-    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, mailAddress = "", motivations = {}, personsOfInterest = []):
         self.id = id
         self.parentId = parentId
         self.firstName = firstName
@@ -50,6 +50,7 @@ class UserData:
         self.role = role
         self.gender = gender
         self.locale = locale
+        self.isRTL = isRTL
         self.mailAddress = mailAddress
         self.motivations = motivations.copy()
         self.personsOfInterest = personsOfInterest.copy()
@@ -70,6 +71,7 @@ class UserData:
         self.role = jsonData["role"]
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
+        self.isRTL = bool(jsonData["isRTL"])
         self.mailAddress = jsonData["mailAddress"]
 
         if len(jsonData["motivations"]) > 0:
@@ -186,5 +188,5 @@ class UserContextData:
         self.firstName = jsonData["firstName"]
         self.lastName = jsonData["lastName"]
         self.locale = int(jsonData["locale"])
-        self.isRTL = jsonData["isRTL"]
+        self.isRTL = bool(jsonData["isRTL"])
         self.timeStamp = jsonData["timeStamp"]

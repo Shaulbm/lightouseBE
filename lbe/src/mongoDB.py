@@ -318,11 +318,13 @@ class moovDBInstance(metaclass=Singleton):
 
         return motivationsIds
 
-    def userLogin(self, id, password):
-        userDetails = self.getUser(id)
+    def userLogin(self, userMail, password):
+        userDetails = self.getUser(mail=userMail)
 
         # TBD verify password
         # for now password is always true
+
+        partialUserDetails = None
 
         if (userDetails is not None):
             partialUserDetails = UserPartialData()

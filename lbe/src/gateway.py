@@ -11,7 +11,7 @@ from pydantic import BaseModel
 router = APIRouter()
 
 class LoginData(BaseModel):
-    userId: str
+    userMail: str
     password: str
 
 def set_user_context(userId):
@@ -38,7 +38,7 @@ def get_motivation(request: Request, id, locale):
 @router.post("/login")
 def user_log_in(loginData : LoginData):
     dbActions = moovDBInstance()
-    userDetails = dbActions.userLogin(loginData.userId, loginData.password)
+    userDetails = dbActions.userLogin(loginData.userMail, loginData.password)
     return userDetails
 
 @router.get("/allMotivations")
