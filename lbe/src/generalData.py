@@ -90,7 +90,7 @@ class UserPartialData:
         self.firstName = firstName
         self.familyName = familyName
         self.gender = gender
-        self.locale = Locale
+        self.locale = locale
         self.isRTL = isRTL
         self.orgId = orgId
         self.motivations = motivations.copy()

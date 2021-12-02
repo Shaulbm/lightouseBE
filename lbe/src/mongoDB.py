@@ -649,7 +649,7 @@ class moovDBInstance(metaclass=Singleton):
                 currentUserDetails.fromJSON(currentFoundUser)
 
                 if (currentUserDetails.id != requestingUser.id):
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
             return foundSubordinatesDataList
 
@@ -689,7 +689,7 @@ class moovDBInstance(metaclass=Singleton):
                 if (currentSubordinate.name != requestingUser.id):
                     #the manager is also part of the nodes list and should be ignored
                     currentUserDetails = self.getUser(id=currentSubordinate.name)
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
         return foundSubordinatesDataList
 
@@ -701,7 +701,7 @@ class moovDBInstance(metaclass=Singleton):
 
         for currPOI in poiIdList:
             currentUserDetails = self.getUser(id=currPOI)
-            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, motivations=currentUserDetails.motivations))
+            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, motivations=currentUserDetails.motivations))
 
         return peopleOfInterestList
 
