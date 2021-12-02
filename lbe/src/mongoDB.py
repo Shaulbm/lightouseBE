@@ -736,11 +736,11 @@ class moovDBInstance(metaclass=Singleton):
 
         return userImageDetails    
 
-    def activateMoov (self, moovId, userId, counterpartId):
+    def activateMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase();
         activeMoovsCollection = db["activeMoovs"]
 
-        moovData = self.getMoov(moovId)
+        moovData = self.getMoov(moovId, userContext=userContext)
 
         #Check if there is an already moovId with userId and teamMember Id that is active
         existingMoov = self.getActiveMoovByMoovUserAndCounterpart(userId=userId, moovId=moovId, counterpartId=counterpartId)

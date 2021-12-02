@@ -114,7 +114,7 @@ def set_journey_multiple_question_responses(request: Request, userId, questionId
 @router.get("/getUserCircle", status_code=200)
 def get_user_circle(request: Request, userId):
     print ('in get_user_circle, UserID is {0}', userId)
-    
+
     dbActions = moovDBInstance()
     userCircleDetails = dbActions.getUserCircle(userId=userId)
     return userCircleDetails
@@ -184,9 +184,10 @@ def get_moovs_for_issue_and_user(request: Request, issueId, userId):
 
 @router.get("/activateMoov")
 def activate_moov(request: Request, moovId, userId, counterpartId):
+    userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    returnValue = dbActions.activateMoov(moovId=moovId, userId=userId, counterpartId=counterpartId)
+    returnValue = dbActions.activateMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return returnValue
 
