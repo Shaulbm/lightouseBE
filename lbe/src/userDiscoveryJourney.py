@@ -2,6 +2,7 @@ from threading import current_thread
 from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, TailResolutionData
+from generalData import UserContextData
 from mongoDB import moovDBInstance
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
@@ -39,7 +40,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
     return newDiscoveryJourney.id
 
-def getNextQuestionsBatch (userId):
+def getNextQuestionsBatch (userId, userContext : UserContextData):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 
@@ -53,7 +54,7 @@ def getNextQuestionsBatch (userId):
     if discoveryJourneyDetails is None:
         return None
 
-    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, locale=userDetails.locale)
+    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, userContext=userContext)
 
     currBatchIdx = 0
 
@@ -61,19 +62,19 @@ def getNextQuestionsBatch (userId):
     if (currBatchDetails is not None):
         currBatchIdx = currBatchDetails.batchIdx
 
-    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1)
+    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1, userContext=userContext)
 
     questionsList = []
 
     if (nextBatchDetails is None):
         #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
-        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userDetails.locale)
+        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userContext=userContext)
 
         motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
 
         if motivationsTail.motivationsToResovleCount > 0:
             #the results are not valid - we need atie breaker (resolve the tail)
-            tailResQuestion = createTailResolutionQuestion(motivationsTail, userDetails.locale)
+            tailResQuestion = createTailResolutionQuestion(motivationsTail, userContext=userContext)
 
             questionsList.append(tailResQuestion) 
         else:
@@ -99,7 +100,7 @@ def getNextQuestionsBatch (userId):
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         
         #getting the list of questions in the next batch
-        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.batchId, userDetails.locale)
+        questionsList = dbInstance.getQuestionsFromBatch(nextBatchDetails.batchId, userContext=userContext)
 
     return questionsList
 
@@ -134,7 +135,7 @@ def setUserMultipleResponses (userId, questionId, responses):
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)    
 
-def summerizeUserResults (userDiscoveryJourney, locale):
+def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
     # get the disvcovery journey data for the user
     # create a dictionaray from all the different motivations ids as keys, and 0.0 score as value - userMotivationsScoreBoard
     # get the responses array and for eachquestion, find the response motivation score and update the userMotivationsScoreBoard
@@ -154,7 +155,7 @@ def summerizeUserResults (userDiscoveryJourney, locale):
              #we need to extract the question from the list remove the suffix _1 / _2 etc.
             actualCurrQuestionId = currQuestionId[:currQuestionId.rfind('_')]
 
-        currQuestion = dbInstance.getQuestion(actualCurrQuestionId)
+        currQuestion = dbInstance.getQuestion(actualCurrQuestionId, userContext=userContext)
         
         foundResponseData = None
         for currResponse in currQuestion.possibleResponses:
@@ -214,9 +215,9 @@ def endUserJourney (userId, userMotivationScoreBoard):
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
 
-def createTailResolutionQuestion (tailResolutionDataInstance, locale):
+def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserContextData):
     dbInstance = moovDBInstance()
-    tailResolutionQuestion = dbInstance.getQuestion(TAIL_QUESTION_ID, locale)
+    tailResolutionQuestion = dbInstance.getQuestion(TAIL_QUESTION_ID, userContext)
 
     tailResolutionQuestion.id = TAIL_QUESTION_ID + "_" + str(uuid.uuid4())[:8]
 
@@ -226,7 +227,7 @@ def createTailResolutionQuestion (tailResolutionDataInstance, locale):
     tailResolutionQuestion.userResponsesNo = tailResolutionDataInstance.motivationsToResovleCount
 
     for currResponseIdx, currMotviationId in enumerate(tailResolutionDataInstance.motivationsList):
-        currMotivation = dbInstance.getMotivation(currMotviationId, locale)
+        currMotivation = dbInstance.getMotivation(currMotviationId, userContext)
 
         currResponse = ResponseData()
         # setting the motivation id as response id, as we can't access this response when calculating score 

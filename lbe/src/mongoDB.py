@@ -398,7 +398,7 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return questionDetails
 
-    def getQuestionsFromBatch(self, batchId, locale):
+    def getQuestionsFromBatch(self, batchId, userContext:UserContextData):
         db = self.getDatabase()
         questionsCollection = db["questions"]
 
@@ -410,7 +410,7 @@ class moovDBInstance(metaclass=Singleton):
         questionsInBatch = []
 
         for currQuestion in questionsDataJSON:
-            questionsInBatch.append (self.getQuestion(currQuestion["id"], locale))
+            questionsInBatch.append (self.getQuestion(currQuestion["id"], userContext))
 
         return questionsInBatch
 
@@ -445,7 +445,7 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user
             discoveryJourneyCollection.insert_one(discoveryJourneyData.toJSON())
 
-    def getDiscvoeryBatch(self, batchId = "", journeyId = "", batchIdx = "", locale = 0):
+    def getDiscvoeryBatch(self, userContext: UserContextData, batchId = "", journeyId = "", batchIdx = ""):
         db = self.getDatabase()
         discoveryJourneyCollection = db["discoveryData"]
 

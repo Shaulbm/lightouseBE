@@ -80,7 +80,7 @@ def set_motivations_to_user(request: Request, id, motivations):
     return userDetails
 
 @router.get("/question")
-def get_question(request: Request, id, locale):
+def get_question(request: Request, id):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     questionDetails = dbActions.getQuestion(id, userContextDetails)
@@ -95,6 +95,7 @@ def start_user_journey(request: Request, userId):
 
 @router.get("/journeyGetNextBatch")
 def get_next_questions_batch(request: Request, userId):
+    userContextDetails = get_user_context(request)
     questionsBatch = userDiscoveryJourney.getNextQuestionsBatch(userId)
     
     return questionsBatch
