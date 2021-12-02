@@ -382,6 +382,8 @@ class moovDBInstance(metaclass=Singleton):
 
         questionTextsDic = None
         
+        print ('in getQuestion user Context is ', userContext.toJSON())
+
         if (userContext.locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
