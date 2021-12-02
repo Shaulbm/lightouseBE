@@ -85,11 +85,13 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, orgId = "", motivations = []):
+    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, orgId = "", motivations = []):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
         self.gender = gender
+        self.locale = Locale
+        self.isRTL = isRTL
         self.orgId = orgId
         self.motivations = motivations.copy()
 
@@ -105,6 +107,8 @@ class UserPartialData:
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
         self.gender = jsonData["gender"]
+        self.locale = int(jsonData["locale"])
+        self.isRTL = bool(jsonData["isRTL"])
         self.orgId = jsonData["orgId"]
 
         if len(jsonData["motivations"]) > 0:
@@ -112,11 +116,13 @@ class UserPartialData:
         else:
             self.motivations = {}
 
-    def fromFullDetails (self, fullUserDetails):
+    def fromFullDetails (self, fullUserDetails : UserData):
         self.id = fullUserDetails.id
         self.firstName = fullUserDetails.firstName
         self.familyName = fullUserDetails.familyName
         self.gender = fullUserDetails.gender
+        self.locale = fullUserDetails.locale
+        self.isRTL = fullUserDetails.isRTL
         self.orgId = fullUserDetails.orgId
 
         if len(fullUserDetails.motivations) > 0:
