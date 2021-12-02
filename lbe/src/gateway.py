@@ -113,6 +113,8 @@ def set_journey_multiple_question_responses(request: Request, userId, questionId
 
 @router.get("/getUserCircle", status_code=200)
 def get_user_circle(request: Request, userId):
+    print ('in get_user_circle, UserID is {0}', userId)
+    
     dbActions = moovDBInstance()
     userCircleDetails = dbActions.getUserCircle(userId=userId)
     return userCircleDetails
