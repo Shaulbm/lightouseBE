@@ -608,9 +608,15 @@ class moovDBInstance(metaclass=Singleton):
     def getUserCircle(self, userId):
         db = self.getDatabase()
 
+        print ('in getUserCircle, UserID is {0}', userId)
+
         userCircleDetails = UserCircleData()
         userCircleDetails.teamMembersList = self.getUsersUnder(userId)
+
+        print ('in getUserCircle, after team members')
+        
         userCircleDetails.peopleOfInterest = self.getUserPeopleOfInterest(userId)
+        print ('in getUserCircle, after team poi')
 
         return userCircleDetails
 
