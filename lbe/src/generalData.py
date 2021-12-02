@@ -70,7 +70,7 @@ class UserData:
         self.orgId = jsonData["orgId"]
         self.role = jsonData["role"]
         self.gender = jsonData["gender"]
-        self.locale = jsonData["locale"]
+        self.locale = int(jsonData["locale"])
         self.isRTL = bool(jsonData["isRTL"])
         self.mailAddress = jsonData["mailAddress"]
 
