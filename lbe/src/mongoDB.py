@@ -747,12 +747,12 @@ class moovDBInstance(metaclass=Singleton):
 
         file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '.jfif'
 
-        userImage = None
+        # userImage = None
 
-        with open(file_used, 'rb') as fout:
-            userImage = fout.read()
+        # with open(file_used, 'rb') as fout:
+        #     userImage = fout.read()
 
-        return userImage
+        return file_used
 
 
     def activateMoov (self, moovId, userId, counterpartId, userContext: UserContextData):

@@ -1,4 +1,5 @@
 from fastapi import Header, APIRouter, Request
+from fastapi.responses import FileResponse
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
 from mongoDB import moovDBInstance
@@ -219,10 +220,10 @@ def get_active_moov_for_user (request: Request, userId):
     
     return activeMoovs
 
-@router.get("/userImage")
+@router.get("/userImage", response_class=FileResponse)
 def get_user_image (request: Request, userId):
     dbActions = moovDBInstance()
     
-    userImage = dbActions.getUserImageFromFile(userId=userId)
+    userImagePath = dbActions.getUserImageFromFile(userId=userId)
     
-    return userImage
+    return userImagePath
