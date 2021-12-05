@@ -104,14 +104,14 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
 
     return questionsList
 
-def setUserResponse (userId, questionId, responseId):
+def setUserResponse (userId, questionId, responseId, userContext: UserContextData):
     dbInstance = moovDBInstance()
     discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
     if discoveryJourneyDetails is None:
         return None
 
-    currQuestionDetails = dbInstance.getQuestion(questionId)
+    currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=userContext)
 
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
@@ -155,7 +155,7 @@ def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
              #we need to extract the question from the list remove the suffix _1 / _2 etc.
             actualCurrQuestionId = currQuestionId[:currQuestionId.rfind('_')]
 
-        currQuestion = dbInstance.getQuestion(actualCurrQuestionId, userContext=userContext)
+        currQuestion = dbInstance.getQuestion(id=actualCurrQuestionId, userContext=userContext)
         
         foundResponseData = None
         for currResponse in currQuestion.possibleResponses:

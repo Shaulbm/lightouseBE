@@ -102,7 +102,8 @@ def get_next_questions_batch(request: Request, userId):
 
 @router.get("/journeySetQuestionResponse", status_code=200)
 def set_journey_question_response(request: Request, userId, questionId, responseId):
-    userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId)
+    userContextDetails = get_user_context(request)
+    userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId, userContext=userContextDetails)
 
     return "reposne was set"
 

@@ -196,4 +196,6 @@ db = dbInstance_1.getDatabase()
 
 #         dbInstance_1.insertOrUpdateUser(currUserDetails)
 
+useCOI = dbInstance_1.getUserCircle("U001")
+
 print ("Done")
