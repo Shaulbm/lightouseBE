@@ -218,3 +218,11 @@ def get_active_moov_for_user (request: Request, userId):
     activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, userContext=userContextDetails)
     
     return activeMoovs
+
+@router.get("/userImage")
+def get_user_image (request: Request, userId):
+    dbActions = moovDBInstance()
+    
+    userImage = dbActions.getUserImageFromFile(userId=userId)
+    
+    return userImage

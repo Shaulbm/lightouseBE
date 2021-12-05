@@ -196,6 +196,8 @@ db = dbInstance_1.getDatabase()
 
 #         dbInstance_1.insertOrUpdateUser(currUserDetails)
 
-useCOI = dbInstance_1.getUserCircle("U001")
+# useCOI = dbInstance_1.getUserCircle("U001")
+
+userImage = gateway.get_user_image(userId = 'U001', request=None)
 
 print ("Done")

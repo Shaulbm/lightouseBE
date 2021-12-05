@@ -16,11 +16,13 @@ import anytree
 from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ActiveMoov, ExtendedActiveMoov
 import datetime
+from os import path
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
 LOCALE_EN = 3
 
+ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 
 class moovDBInstance(metaclass=Singleton):
     def __init__(self):
@@ -303,7 +305,6 @@ class moovDBInstance(metaclass=Singleton):
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return foundMotivations 
-
 
     def getAllMotivationsIds(self):
         db = self.getDatabase()
@@ -736,7 +737,23 @@ class moovDBInstance(metaclass=Singleton):
         userImageDetails = UserImageData()
         userImageDetails.fromJSON(userImageDataJSON)
 
-        return userImageDetails    
+        return userImageDetails
+
+    def getUserImageFromFile(self, userId):
+        userDetails = self.getUser(id=userId)
+
+        if userDetails is None:
+            return None
+
+        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '.jfif'
+
+        userImage = None
+
+        with open(file_used, 'rb') as fout:
+            userImage = fout.read()
+
+        return userImage
+
 
     def activateMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase();
