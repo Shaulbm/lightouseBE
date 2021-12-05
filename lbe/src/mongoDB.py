@@ -745,7 +745,7 @@ class moovDBInstance(metaclass=Singleton):
         if userDetails is None:
             return None
 
-        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '.jfif'
+        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '_small.png'
 
         # userImage = None
 
