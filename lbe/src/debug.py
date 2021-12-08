@@ -198,6 +198,8 @@ db = dbInstance_1.getDatabase()
 
 # useCOI = dbInstance_1.getUserCircle("U001")
 
-userImage = gateway.get_user_image(userId = 'U001', request=None)
+# userImage = gateway.get_user_image(userId = 'U001', request=None)
 
+# dbInstance_1.setUserPassword("U001", "123456")
+userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
 print ("Done")

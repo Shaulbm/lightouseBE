@@ -17,6 +17,7 @@ from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ActiveMoov, ExtendedActiveMoov
 import datetime
 from os import path
+import hashlib
 
 LOCALE_HEB_MA = 1
 LOCALE_HEB_FE = 2
@@ -320,7 +321,7 @@ class moovDBInstance(metaclass=Singleton):
         return motivationsIds
 
     def userLogin(self, userMail, password):
-        userDetails = self.getUser(mail=userMail)
+        userDetails : UserData = self.getUser(mail=userMail)
 
         # TBD verify password
         # for now password is always true
@@ -328,16 +329,47 @@ class moovDBInstance(metaclass=Singleton):
         partialUserDetails = None
 
         if (userDetails is not None):
-            partialUserDetails = UserPartialData()
-            partialUserDetails.fromFullDetails(userDetails)
+            hashedPassword = hashlib.sha256(password.encode('utf-8'))
+            if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
+                partialUserDetails = UserPartialData()
+                partialUserDetails.fromFullDetails(userDetails)
+            else:
+                # raise error 404
+                pass
         
         return partialUserDetails
 
-    def getUser (self, id = "", mail = ""):
+    def getUserPassword (self, userId):
         db = self.getDatabase()
         usersCollection = db["users"]
 
-        userFilter = {}
+        userFilter = {"id":userId}
+        userDataJSON = usersCollection.find_one(userFilter)
+
+        if (userDataJSON is None):
+            #no user found
+            return ""
+
+        if ("password" not in userDataJSON):
+            return ""
+
+        userPassword = userDataJSON["password"]
+        return userPassword
+
+    def setUserPassword (self, userId, passwordRaw):
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        userFilter = {"id":userId}
+        hashedPassword = hashlib.sha256(passwordRaw.encode('utf-8'))
+
+        usersCollection.update_one(
+            {"id":userId}, {"$set":{"password":hashedPassword.hexdigest()}})
+
+        
+    def getUser (self, id = "", mail = ""):
+        db = self.getDatabase()
+        usersCollection = db["users"]
 
         if (id != ""): 
             userFilter = {"id":id}
