@@ -14,7 +14,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ActiveMoov, ExtendedActiveMoov
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, MoovInstance, ExtendedMoovInstance
 import datetime
 from os import path
 import hashlib
@@ -800,7 +800,7 @@ class moovDBInstance(metaclass=Singleton):
             #rasie error active Moov already exists
             return existingMoov
 
-        newActiveMoov = ActiveMoov()
+        newActiveMoov = MoovInstance()
         newActiveMoov.id = "AM_" + str(self.getNextCount())
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
@@ -825,12 +825,33 @@ class moovDBInstance(metaclass=Singleton):
 
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
-            foundAcvtiveMoov = ExtendedActiveMoov()
+            foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
             foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
+
+    def getPastMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
+        db = self.getDatabase()
+        historicMoovsCollection = db["historicMoovs"]
+
+        historicMoovFilter = {"userId":userId, "counterpartId": counterpartId}
+
+        historicMoovsDataJSONList = historicMoovsCollection.find(historicMoovFilter)
+
+        if (historicMoovsDataJSONList is None):
+            return None
+
+        foundHistoricMoovs = []
+        for currHistoricMoovJSONData in historicMoovsDataJSONList:
+            foundHistoricMoov = ExtendedMoovInstance()
+            foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
+            foundHistoricMoov.moovData = self.getMoov(foundHistoricMoov.moovId, userContext)
+            foundHistoricMoovs.append(foundHistoricMoov)
+   
+        return foundHistoricMoovs
+
 
     def getActiveMoovsForUser (self, userId, userContext: UserContextData):
         db = self.getDatabase()
@@ -845,7 +866,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
-            foundAcvtiveMoov = ExtendedActiveMoov()
+            foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
             foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
@@ -863,7 +884,7 @@ class moovDBInstance(metaclass=Singleton):
         if (activeMoovJSONData is None):
             return None
 
-        foundActiveMoov = ActiveMoov()
+        foundActiveMoov = MoovInstance()
         foundActiveMoov.buildFromJSON(activeMoovJSONData)
    
         return foundActiveMoov
@@ -877,7 +898,7 @@ class moovDBInstance(metaclass=Singleton):
         activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter) 
         
         if (activeMoovJSONData is not None):
-            activeMoovDetails = ActiveMoov()
+            activeMoovDetails = MoovInstance()
             activeMoovDetails.buildFromJSON(activeMoovJSONData)
 
             activeMoovDetails.endDate = datetime.datetime.now()

@@ -200,7 +200,7 @@ class IssuePartialData:
             self.name = jsonData["name"]
             self.shortDescription = jsonData["shortDescription"]        
 
-class ActiveMoov:
+class MoovInstance:
     def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = ""):
         self.id = id
         self.userId = userId
@@ -230,7 +230,7 @@ class ActiveMoov:
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
 
-class ExtendedActiveMoov(ActiveMoov):
+class ExtendedMoovInstance(MoovInstance):
     def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
         super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
         self.moovData = moovData
