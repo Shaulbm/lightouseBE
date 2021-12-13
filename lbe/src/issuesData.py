@@ -1,6 +1,10 @@
 import jsonpickle
 import json
 
+class MotivationsRelationType:
+    CONTRIBUTING_MOTIVATIONS = 0
+    RESOLVING_MOTIVATIONS = 1
+
 class SubjectData:
     def __init__(self, id = "", name = "", description = ""):
         self.id = id
@@ -219,7 +223,7 @@ class MoovInstance:
 
         return jsonObject
 
-    def buildFromJSON (self, jsonData, localedTextDic=None):
+    def buildFromJSON (self, jsonData):
         self.id = jsonData["id"]
         self.userId = jsonData["userId"]
         self.counterpartId = jsonData["counterpartId"]
@@ -230,6 +234,35 @@ class MoovInstance:
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
 
+class ConflictData:
+    def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS) -> None:
+        self.id = id
+        self.motivationId = motivationId
+        self.motivationCounterpartId = motivationCounterpartId
+        self.score = score
+        self.description = description
+        self.relationType = relationType
+
+    def toJSON (self):
+        questionDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (questionDataJSON)
+
+        return jsonObject
+
+    def buildFromJSON (self, jsonData, localedTextDic=None):
+        self.id = jsonData["id"]
+        self.motivationId = jsonData["motivationId"]
+        self.motivationCounterpartId = jsonData["motivationCounterpartId"]
+        self.score = jsonData["score"]
+        self.relationType = jsonData["relationType"]
+        
+        if (localedTextDic is not None):
+            self.description = localedTextDic[jsonData["description"]]
+        else:
+            # create as is
+            self.description = jsonData["description"]     
+    
 class ExtendedMoovInstance(MoovInstance):
     def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
         super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)

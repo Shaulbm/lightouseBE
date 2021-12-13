@@ -14,7 +14,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, MoovInstance, ExtendedMoovInstance
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, MoovInstance, ExtendedMoovInstance, ConflictData
 import datetime
 from os import path
 import hashlib
@@ -513,10 +513,10 @@ class moovDBInstance(metaclass=Singleton):
 
         if (foundIssue is not None):
             #the issue already exists - update the issue
-            questionDataFilter = {"id" : currIssueData.id}
-            issuesCollection.replace_one(questionDataFilter, currIssueData.toJSON())
+            issueDataFilter = {"id" : currIssueData.id}
+            issuesCollection.replace_one(issueDataFilter, currIssueData.toJSON())
         else:
-            #this is a new user
+            #this is a new issue
             issuesCollection.insert_one(currIssueData.toJSON())
 
     def getIssue(self, id, userContext: UserContextData):
@@ -545,6 +545,75 @@ class moovDBInstance(metaclass=Singleton):
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
 
         return issueDetails
+
+    def insertOrUpdateConflict(self, currConflictData):
+        db = self.getDatabase()
+        conflictsCollection = db["conflicts"]
+
+        foundConflict = conflictsCollection.find_one({"id":currConflictData.id})
+
+        if (foundConflict is not None):
+            #the conflict already exists - update the issue
+            conflictDataFilter = {"id" : currConflictData.id}
+            conflictsCollection.replace_one(conflictDataFilter, currConflictData.toJSON())
+        else:
+            #this is a new conflict
+            conflictsCollection.insert_one(currConflictData.toJSON())
+
+    def getConflict(self, id, userContext: UserContextData):
+        db = self.getDatabase()
+        conflictsCollection = db["conflicts"]
+
+        conflictDataJSON = conflictsCollection.find_one({"id" : id})
+
+        if (conflictDataJSON is None):
+            return None
+
+        conflictssTextsDic = None
+        
+        if (userContext.locale != Locale.UNKNOWN):
+            # get id's for text quesry
+            parentsIds = []
+            parentsIds.append(conflictDataJSON["id"])            
+
+            # get localed text
+            conflictssTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
+
+        conflictDetails = ConflictData()
+        conflictDetails.buildFromJSON(jsonData = conflictDataJSON, localedTextDic=conflictssTextsDic)
+
+        return conflictDetails
+
+    def getConflictsForUsers (self, userId, counterpartId, userContext : UserContextData):
+        userMotivations = self.getUserMotivations(userId, userContext)
+        counterpartMotivations = self.getUserMotivations(counterpartId, userContext)
+
+        if (userMotivations.__len__() == 0 or counterpartMotivations.__len__ == 0):
+            return None
+        
+        userMotivationsIds = [m.id for m in userMotivations]
+        counterpartMotivationsIds = [m.id for m in counterpartMotivations]
+        
+        # testFilter = [{'motivationId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}}, {'motivationId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}}
+
+        conflictFilter = {'$or':[{'motivationId': {'$in': userMotivationsIds}, 'motivationCounterpartId': {'$in': counterpartMotivationsIds}}, {'motivationId': {'$in': counterpartMotivationsIds}, 'motivationCounterpartId': {'$in': userMotivationsIds}}]}
+
+        print ('filter is ', str(conflictFilter))
+
+        db = self.getDatabase()
+        conflictsCollection = db["conflicts"]
+
+        foundConflicts = conflictsCollection.find(conflictFilter)
+
+        conflictsDetails = []
+
+        for currFoundConflictJSON in foundConflicts:
+            currConflictDetails = ConflictData()
+            currConflictDetails.buildFromJSON(currFoundConflictJSON)
+            
+            conflictsDetails.append(currConflictDetails)
+
+        return conflictsDetails
 
     def getIssuesForSubject (self, subjectId, userContext: UserContextData):
         db = self.getDatabase()

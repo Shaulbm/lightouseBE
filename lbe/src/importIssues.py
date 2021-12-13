@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from issuesData import IssueData, RelatedMotivationData, SubjectData
+from issuesData import IssueData, RelatedMotivationData, SubjectData, ConflictData
 import mongoDB
 from generalData import TextData
 
@@ -14,11 +14,12 @@ from generalData import TextData
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
-ISSUES_RANGE_NAME = 'Issues!A1:K4'
+ISSUES_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
+ISSUES_RANGE_NAME = 'Issues!A1:K10'
 SUBJECTS_RANGE_NAME = 'Subjects!A1:G4'
 RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:J22'
 CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:J19'
+CONFLICTS_RANGE_NAME='Conflicts!A1:H6'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -46,18 +47,22 @@ def main():
 
     # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+    result = sheet.values().get(spreadsheetId=ISSUES_SPREADSHEET_ID,
                                 range=ISSUES_RANGE_NAME).execute()
     issuesValues = result.get('values', [])
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+    result = sheet.values().get(spreadsheetId=ISSUES_SPREADSHEET_ID,
                                 range=RESOLVING_MOTIVATIONS_RANGE_NAME).execute()
     resolvingMotivationsValues = result.get('values', [])
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+    result = sheet.values().get(spreadsheetId=ISSUES_SPREADSHEET_ID,
                                 range=CONTRIBUTING_MOTIVATIONS_RANGE_NAME).execute()
     conributingMotivationsValues = result.get('values', [])
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+    result = sheet.values().get(spreadsheetId=ISSUES_SPREADSHEET_ID,
                                 range=SUBJECTS_RANGE_NAME).execute()
     subjectsValues = result.get('values', [])
+    result = sheet.values().get(spreadsheetId=ISSUES_SPREADSHEET_ID,
+                                range=CONFLICTS_RANGE_NAME).execute()
+    conflictValues = result.get('values', [])
+   
 
     if not subjectsValues:
         print ('No subjects Data Found')
@@ -69,6 +74,17 @@ def main():
 
             #create motivations
             insertSubject(subjectDataDict=currSubject)        
+
+    if not conflictValues:
+        print ('No subjects Data Found')
+    else:
+        keysRow = conflictValues[0]
+        for currRow in conflictValues[1:]:
+            zip_iterator = zip (keysRow, currRow)
+            currConflict = dict(zip_iterator)
+
+            #create motivations
+            insertConflict(conflictDataDict=currConflict)  
 
     if not issuesValues or not resolvingMotivationsValues or not conributingMotivationsValues:
         print('No data found.')
@@ -134,6 +150,34 @@ def insertSubject(subjectDataDict):
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     dbInstance.insertOrUpdateSubject(newSubject)
+
+def insertConflict (conflictDataDict):
+    dbInstance = mongoDB.moovDBInstance()
+    db = dbInstance.getDatabase()
+
+    heb_ma_LocaleCollection = db["locale_he_ma"]
+    heb_fe_LocaleCollection = db["locale_he_fe"]
+    eng_LocaleCollection = db["locale_en"]
+
+    newConflict = ConflictData()
+    newConflict.id = conflictDataDict["id"]
+    newConflict.motivationId = conflictDataDict["motivationId"]
+    newConflict.motivationCounterpartId = conflictDataDict["motivationCounterpartId"]
+    newConflict.score = conflictDataDict["score"]
+    newConflict.relationType =  conflictDataDict["relationType"]
+    newConflict.description = newConflict.id + "_1"
+ 
+    currentTextData = TextData(newConflict.id, newConflict.description, conflictDataDict["description <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newConflict.id, newConflict.description, conflictDataDict["description <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newConflict.id, newConflict.description, conflictDataDict["description <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    dbInstance.insertOrUpdateConflict(newConflict)
+
 
 def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotivationsDictArray):
     dbInstance = mongoDB.moovDBInstance()

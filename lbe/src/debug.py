@@ -5,7 +5,7 @@ import time
 import uuid
 from mongoDB import moovDBInstance
 import ExportJourney
-from generalData import UserRoles, Locale, Gender, UserImageData, UserData
+from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData
 from os import path
 import base64
 
@@ -35,7 +35,6 @@ import base64
 
 #gateway.get_user(id="U002", mail="")
 
-# dbInstance.setMotivationsToUSer(id="U002", motivations=userMotivations)
 # dbInstance.getQuestion("Q002", 2)
 
 # gateway.start_user_journey(userId="U001")
@@ -201,5 +200,11 @@ db = dbInstance_1.getDatabase()
 # userImage = gateway.get_user_image(userId = 'U001', request=None)
 
 # dbInstance_1.setUserPassword("U001", "123456")
-userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
+# userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
+# userMotivations={"M023" : "7", "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"}
+# dbInstance_1.setMotivationsToUSer(id="UA08", motivations=userMotivations)
+
+userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA, isRTL=False)
+usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
+
 print ("Done")
