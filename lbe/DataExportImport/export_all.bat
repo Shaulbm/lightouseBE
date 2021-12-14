@@ -10,3 +10,4 @@ mongoexport --collection=issues --db=moov --out="c:\\dev\\data\\MoovDB\\issues.j
 mongoexport --collection=moovs --db=moov --out="c:\\dev\\data\\MoovDB\\moovs.json"
 mongoexport --collection=activeMoovs --db=moov --out="c:\\dev\\data\\MoovDB\\activeMoovs.json"
 mongoexport --collection=counter --db=moov --out="c:\\dev\\data\\MoovDB\\counter.json"
+mongoexport --collection=conflicts --db=moov --out="c:\\dev\\data\\MoovDB\\conflicts.json"
