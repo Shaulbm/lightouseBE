@@ -237,3 +237,12 @@ def get_user_image (request: Request, userId):
     userImagePath = dbActions.getUserImageFromFile(userId=userId)
     
     return userImagePath
+
+@router.get("/conflictsForUsers")
+def get_conflicts_for_users (request: Request, userId, counterpartId):
+    userContextDetails = get_user_context(request)
+    dbActions = moovDBInstance()
+    
+    usersConflicts = dbActions.getConflictsForUsers(userId=userId,counterpartId=counterpartId, userContext=userContextDetails)
+    
+    return usersConflicts
