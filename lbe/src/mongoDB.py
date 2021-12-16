@@ -608,8 +608,10 @@ class moovDBInstance(metaclass=Singleton):
         conflictsDetails = []
 
         for currFoundConflictJSON in foundConflicts:
+            conflictTextsDic = self.getTextDataByParent(currFoundConflictJSON["id"], userContext.locale)
+            
             currConflictDetails = ConflictData()
-            currConflictDetails.buildFromJSON(currFoundConflictJSON)
+            currConflictDetails.buildFromJSON(currFoundConflictJSON, conflictTextsDic)
             
             conflictsDetails.append(currConflictDetails)
 
