@@ -5,7 +5,7 @@ from typing import Text
 from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from moovData import MoovData
+from moovData import MoovData, ConflictMoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
 from questionsData import QuestionData
@@ -153,6 +153,39 @@ class moovDBInstance(metaclass=Singleton):
         else:
             # this is a new moov
             moovsCollection.insert_one(moovDataObj.toJSON())
+
+    def insertOrUpdateConflictMoov (self, moovDataObj):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+        moovDataJSON = moovsCollection.find_one({"id" : moovDataObj.id})
+
+        if (moovDataJSON is not None):
+            #object found
+            moovFilter = {'id':moovDataObj.id}
+            moovsCollection.replace_one (moovFilter, moovDataObj.toJSON())
+        else:
+            # this is a new moov
+            moovsCollection.insert_one(moovDataObj.toJSON())
+
+    def getConflictMoovs (self, conflictId, userContext: UserContextData):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+
+        moovsDataJSON = moovsCollection.find({"conflictId" : conflictId})
+
+        if (moovsDataJSON is None):
+            return None
+
+        moovTextsDic = None
+
+        foundMoovs = []
+        for currMoovJSONData in moovsDataJSON:
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale)
+            newMoov = ConflictMoovData()
+            newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
+            foundMoovs.append(newMoov)
+
+        return foundMoovs
 
     def getMoov (self, id, userContext: UserContextData):
         db = self.getDatabase()

@@ -163,8 +163,8 @@ def insertConflict (conflictDataDict):
     newConflict.id = conflictDataDict["id"]
     newConflict.motivationId = conflictDataDict["motivationId"]
     newConflict.motivationCounterpartId = conflictDataDict["motivationCounterpartId"]
-    newConflict.score = conflictDataDict["score"]
-    newConflict.relationType =  conflictDataDict["relationType"]
+    newConflict.score = int(conflictDataDict["score"])
+    newConflict.relationType =  int(conflictDataDict["relationType"])
     newConflict.description = newConflict.id + "_1"
  
     currentTextData = TextData(newConflict.id, newConflict.description, conflictDataDict["description <<en>>"])

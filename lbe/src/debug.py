@@ -1,4 +1,7 @@
 from re import A
+
+from starlette.requests import Request
+from starlette.types import Scope
 import main
 import gateway
 import time
@@ -205,6 +208,13 @@ db = dbInstance_1.getDatabase()
 # dbInstance_1.setMotivationsToUSer(id="UA08", motivations=userMotivations)
 
 userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA, isRTL=False)
-usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
+# usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
+# scope = Scope()
+# scope["type"] = "http"
+# request = Request(scope=scope)
+# request.headers["X-USER-ID"] = 'U001'
+# usersConflicts = gateway.get_conflicts_for_users(request=None, userId="UA06", counterpartId="UA08", userContext=userContext)
+
+foundMoovs = dbInstance_1.getConflictMoovs(conflictId='CO001', userContext=userContext)
 
 print ("Done")

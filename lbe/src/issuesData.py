@@ -234,6 +234,12 @@ class MoovInstance:
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
 
+    
+class ExtendedMoovInstance(MoovInstance):
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
+        super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
+        self.moovData = moovData
+
 class ConflictData:
     def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS) -> None:
         self.id = id
@@ -262,8 +268,3 @@ class ConflictData:
         else:
             # create as is
             self.description = jsonData["description"]     
-    
-class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
-        super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
-        self.moovData = moovData

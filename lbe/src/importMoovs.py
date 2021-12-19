@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from moovData import MoovData
+from moovData import MoovData, ConflictMoovData
 import mongoDB
 from motivationsData import MotivationData
 from generalData import TextData
@@ -13,9 +13,9 @@ from generalData import TextData
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
-SAMPLE_RANGE_NAME = 'MoovsDetails!A1:O4'
-
+MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
+MOOVS_RANGE_NAME = 'MoovsDetails!A1:O4'
+CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
@@ -42,8 +42,8 @@ def main():
 
     # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                range=SAMPLE_RANGE_NAME).execute()
+    result = sheet.values().get(spreadsheetId=MOOVS_SPREADSHEET_ID,
+                                range=MOOVS_RANGE_NAME).execute()
     values = result.get('values', [])
 
     if not values:
@@ -58,6 +58,23 @@ def main():
 
             #create motivations
             insertMoov(currMoov)
+
+    result = sheet.values().get(spreadsheetId=MOOVS_SPREADSHEET_ID,
+                                range=CONFLICT_MOOVS_RANGE_NAME).execute()
+    values = result.get('values', [])
+
+    if not values:
+        print('No data found.')
+    else:
+        print('Name, Major:')
+        keysRow = values[0]
+        #skip the first row (keys row)
+        for currRow in values[1:]:
+            zip_iterator = zip (keysRow, currRow)
+            currMoov = dict(zip_iterator)
+
+            #create motivations
+            insertConflictMoov(currMoov)
 
 def insertMoov(moovDataDict):
     dbInstance = mongoDB.moovDBInstance()
@@ -107,6 +124,64 @@ def insertMoov(moovDataDict):
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     dbInstance.insertOrUpdateMoov(newMoov)
+
+def insertConflictMoov(conflictMoovDataDict):
+    dbInstance = mongoDB.moovDBInstance()
+    db = dbInstance.getDatabase()
+    moovsCollection = db["moovs"]
+
+    heb_ma_LocaleCollection = db["locale_he_ma"]
+    heb_fe_LocaleCollection = db["locale_he_fe"]
+    eng_LocaleCollection = db["locale_en"]
+
+    newMoov = ConflictMoovData()
+    newMoov.id = conflictMoovDataDict["id"]
+    newMoov.conflictId = conflictMoovDataDict["conflictId"]
+    newMoov.contributor = conflictMoovDataDict["contributorId"]
+    newMoov.score = int(conflictMoovDataDict["score"])
+    newMoov.image = conflictMoovDataDict["image"]
+    newMoov.name = newMoov.id + "_1"
+    newMoov.description = newMoov.id + "_2"
+    newMoov.howTo = newMoov.id + "_3"
+    newMoov.reasoning = newMoov.id + "_4"
+
+    currentTextData = TextData(newMoov.id, newMoov.name, conflictMoovDataDict["name <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.name, conflictMoovDataDict["name <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.name, conflictMoovDataDict["name <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.description, conflictMoovDataDict["description <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.description, conflictMoovDataDict["description <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.description, conflictMoovDataDict["description <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.howTo, conflictMoovDataDict["howTo <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.howTo, conflictMoovDataDict["howTo <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.howTo, conflictMoovDataDict["howTo <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, conflictMoovDataDict["reasoning <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, conflictMoovDataDict["reasoning <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, conflictMoovDataDict["reasoning <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    dbInstance.insertOrUpdateConflictMoov(newMoov)
 
 if __name__ == '__main__':
     main()

@@ -246,3 +246,12 @@ def get_conflicts_for_users (request: Request, userId, counterpartId):
     usersConflicts = dbActions.getConflictsForUsers(userId=userId,counterpartId=counterpartId, userContext=userContextDetails)
     
     return usersConflicts
+
+@router.get("/conflictsMoovs")
+def get_conflicts_for_users (request: Request, conflictId):
+    userContextDetails = get_user_context(request)
+    dbActions = moovDBInstance()
+    
+    conflictMoovs = dbActions.getConflictMoovs(conflictId=conflictId, userContext=userContextDetails)
+    
+    return conflictMoovs
