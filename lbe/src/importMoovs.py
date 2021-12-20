@@ -4,9 +4,8 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from moovData import MoovData, ConflictMoovData
+from moovData import IssueMoovData, ConflictMoovData
 import mongoDB
-from motivationsData import MotivationData
 from generalData import TextData
 
 # If modifying these scopes, delete the file token.json.
@@ -14,7 +13,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
-MOOVS_RANGE_NAME = 'MoovsDetails!A1:O4'
+MOOVS_RANGE_NAME = 'MoovsDetails!A1:R4'
 CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
 def main():
     """Shows basic usage of the Sheets API.
@@ -85,17 +84,18 @@ def insertMoov(moovDataDict):
     heb_fe_LocaleCollection = db["locale_he_fe"]
     eng_LocaleCollection = db["locale_en"]
 
-    newMoov = MoovData()
+    newMoov = IssueMoovData()
     newMoov.id = moovDataDict["id"]
     newMoov.issueId = moovDataDict["issueId"]
     newMoov.motivationId = moovDataDict["motivationId"]
     newMoov.score = int(moovDataDict["score"])
     newMoov.image = moovDataDict["image"]
+    newMoov.contributor = moovDataDict["contributor"]
     newMoov.name = newMoov.id + "_1"
     newMoov.description = newMoov.id + "_2"
     newMoov.howTo = newMoov.id + "_3"
-    newMoov.contributorId = moovDataDict["contributorId"]
-
+    newMoov.reasoning = newMoov.id + "_4"
+    
     currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
@@ -122,6 +122,16 @@ def insertMoov(moovDataDict):
 
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
 
     dbInstance.insertOrUpdateMoov(newMoov)
 

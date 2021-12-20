@@ -204,42 +204,7 @@ class IssuePartialData:
             self.name = jsonData["name"]
             self.shortDescription = jsonData["shortDescription"]        
 
-class MoovInstance:
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = ""):
-        self.id = id
-        self.userId = userId
-        self.counterpartId = counterpartId
-        self.moovId = moovId
-        self.issueId = issueId
-        self.startDate = startDate
-        self.endDate = endDate
-        self.feedbackScore = feedbackScore
-        self.feedbackText = feedbackText
-
-    def toJSON (self):
-        questionDataJSON = jsonpickle.encode(self, unpicklable=False)
-
-        jsonObject = json.loads (questionDataJSON)
-
-        return jsonObject
-
-    def buildFromJSON (self, jsonData):
-        self.id = jsonData["id"]
-        self.userId = jsonData["userId"]
-        self.counterpartId = jsonData["counterpartId"]
-        self.moovId = jsonData["moovId"]
-        self.issueId = jsonData["issueId"]
-        self.startDate = jsonData["startDate"]
-        self.endDate = jsonData["endDate"]
-        self.feedbackScore = jsonData["feedbackScore"]
-        self.feedbackText = jsonData["feedbackText"]
-
     
-class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", issueId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
-        super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId,issueId=issueId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
-        self.moovData = moovData
-
 class ConflictData:
     def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS) -> None:
         self.id = id

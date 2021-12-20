@@ -5,7 +5,7 @@ from typing import Text
 from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from moovData import MoovData, ConflictMoovData
+from moovData import IssueMoovData, ConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
 from questionsData import QuestionData
@@ -14,7 +14,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, MoovInstance, ExtendedMoovInstance, ConflictData
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData
 import datetime
 from os import path
 import hashlib
@@ -200,10 +200,29 @@ class moovDBInstance(metaclass=Singleton):
         if (userContext.locale is not None):
             moovTextsDic = self.getTextDataByParent(id, userContext.locale)
 
-        newMoov = MoovData()
+        newMoov = IssueMoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
         return newMoov 
+
+    def getBaseMoov(self, id, userContext: UserContextData):
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
+
+        moovDataJSON = moovsCollection.find_one({"id" : id})
+
+        if (moovDataJSON is None):
+            return None
+
+        moovTextsDic = None
+        if (userContext.locale is not None):
+            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+
+        newMoov = BaseMoovData()
+        newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
+
+        return newMoov 
+
 
     def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
         db = self.getDatabase()
@@ -224,7 +243,7 @@ class moovDBInstance(metaclass=Singleton):
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
             moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale)
-            newMoov = MoovData()
+            newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
 
@@ -908,7 +927,7 @@ class moovDBInstance(metaclass=Singleton):
         newActiveMoov.id = "AM_" + str(self.getNextCount())
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
-        newActiveMoov.counterpartId = counterpartId
+        newActiveMoov.counterpartsIds = counterpartId
         newActiveMoov.issueId = moovData.issueId
         newActiveMoov.startDate = datetime.datetime.now()
         
@@ -931,7 +950,7 @@ class moovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
+            foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
@@ -951,7 +970,7 @@ class moovDBInstance(metaclass=Singleton):
         for currHistoricMoovJSONData in historicMoovsDataJSONList:
             foundHistoricMoov = ExtendedMoovInstance()
             foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
-            foundHistoricMoov.moovData = self.getMoov(foundHistoricMoov.moovId, userContext)
+            foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, userContext)
             foundHistoricMoovs.append(foundHistoricMoov)
    
         return foundHistoricMoovs
@@ -972,7 +991,7 @@ class moovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getMoov(foundAcvtiveMoov.moovId, userContext)
+            foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs

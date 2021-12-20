@@ -215,6 +215,7 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA,
 # request.headers["X-USER-ID"] = 'U001'
 # usersConflicts = gateway.get_conflicts_for_users(request=None, userId="UA06", counterpartId="UA08", userContext=userContext)
 
-foundMoovs = dbInstance_1.getConflictMoovs(conflictId='CO001', userContext=userContext)
+foundMoovs = dbInstance_1.getConflictMoovs(conflictId='CO003', userContext=userContext)
 
 print ("Done")
+
