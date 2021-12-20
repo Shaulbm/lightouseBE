@@ -86,9 +86,9 @@ class MoovInstance:
         self.feedbackText = jsonData["feedbackText"]
 
         if len(jsonData["counterpartsIds"]) > 0:
-            self.personsOfInterest = jsonData["counterpartsIds"].copy()
+            self.counterpartsIds = jsonData["counterpartsIds"].copy()
         else:
-            self.personsOfInterest = []
+            self.counterpartsIds = []
 
 class ExtendedMoovInstance(MoovInstance):
     def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
