@@ -1000,7 +1000,7 @@ class moovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartId": counterpartId}
+        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": counterpartId}
 
         activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
 
