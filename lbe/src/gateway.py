@@ -195,14 +195,14 @@ def activate_moov(request: Request, moovId, userId, counterpartId):
     return returnValue
 
 @router.get("/activateConflictMoov")
-def activate_conflict_moov(request: Request, moovId, userId, counterpartsIds):
+def activate_conflict_moov(request: Request, moovId, userId, firstCounterpartId, secondCounterpartId):
+    counterpartsIds = [firstCounterpartId, secondCounterpartId]
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
     returnValue = dbActions.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, userContext=userContextDetails)
     
     return returnValue
-
 
 @router.get("/endMoov")
 def end_moov (request: Request, activeMoovId, feedbackScore, feedbackText):
