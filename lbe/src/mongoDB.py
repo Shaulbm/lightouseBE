@@ -927,7 +927,7 @@ class moovDBInstance(metaclass=Singleton):
         newActiveMoov.id = "AM_" + str(self.getNextCount())
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
-        newActiveMoov.counterpartsIds = counterpartId
+        newActiveMoov.counterpartsIds.append(counterpartId)
         newActiveMoov.issueId = moovData.issueId
         newActiveMoov.startDate = datetime.datetime.now()
         
