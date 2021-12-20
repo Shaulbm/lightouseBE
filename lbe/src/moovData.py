@@ -91,6 +91,6 @@ class MoovInstance:
             self.personsOfInterest = []
 
 class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
-        super().__init__(id=id, userId=userId,counterpartsIds=counterpartId,moovId=moovId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
+        super().__init__(id=id, userId=userId,counterpartsIds=counterpartsIds,moovId=moovId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
         self.moovData = moovData
