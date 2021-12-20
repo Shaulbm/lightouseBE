@@ -959,7 +959,7 @@ class moovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         historicMoovsCollection = db["historicMoovs"]
 
-        historicMoovFilter = {"userId":userId, "counterpartId": counterpartId}
+        historicMoovFilter = {"userId":userId, "counterpartsIds": counterpartId}
 
         historicMoovsDataJSONList = historicMoovsCollection.find(historicMoovFilter)
 
