@@ -167,14 +167,14 @@ def get_issue_for_user(request: Request, issueId, userId):
     
     return issuesDetails
 
-@router.get("/moov")
-def get_moov(request: Request, id):
-    userContextDetails = get_user_context(request)
-    dbActions = moovDBInstance()
+# @router.get("/moov")
+# def get_moov(request: Request, id):
+#     userContextDetails = get_user_context(request)
+#     dbActions = moovDBInstance()
     
-    moovDetails = dbActions.getMoov(id, userContextDetails)
+#     moovDetails = dbActions.getIssueMoov(id, userContextDetails)
     
-    return moovDetails
+#     return moovDetails
 
 @router.get("/moovsForIssueAndUser")
 def get_moovs_for_issue_and_user(request: Request, issueId, userId):
@@ -190,9 +190,19 @@ def activate_moov(request: Request, moovId, userId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    returnValue = dbActions.activateMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
+    returnValue = dbActions.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return returnValue
+
+@router.get("/activateConflictMoov")
+def activate_conflict_moov(request: Request, moovId, userId, counterpartsIds):
+    userContextDetails = get_user_context(request)
+    dbActions = moovDBInstance()
+    
+    returnValue = dbActions.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, userContext=userContextDetails)
+    
+    return returnValue
+
 
 @router.get("/endMoov")
 def end_moov (request: Request, activeMoovId, feedbackScore, feedbackText):

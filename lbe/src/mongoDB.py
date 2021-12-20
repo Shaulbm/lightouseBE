@@ -187,7 +187,26 @@ class moovDBInstance(metaclass=Singleton):
 
         return foundMoovs
 
-    def getMoov (self, id, userContext: UserContextData):
+    def getIssueMoov (self, id, userContext: UserContextData):
+        # db = self.getDatabase()
+        # moovsCollection = db["moovs"]
+
+        # moovDataJSON = moovsCollection.find_one({"id" : id})
+
+        # if (moovDataJSON is None):
+        #     return None
+
+        # moovTextsDic = None
+        # if (userContext.locale is not None):
+        #     moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+
+        # newMoov = IssueMoovData()
+        # newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
+
+        # return newMoov 
+        pass
+
+    def getBaseMoov (self, id, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
 
@@ -200,7 +219,7 @@ class moovDBInstance(metaclass=Singleton):
         if (userContext.locale is not None):
             moovTextsDic = self.getTextDataByParent(id, userContext.locale)
 
-        newMoov = IssueMoovData()
+        newMoov = BaseMoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
         return newMoov 
@@ -910,11 +929,11 @@ class moovDBInstance(metaclass=Singleton):
         return file_used
 
 
-    def activateMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
+    def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase();
         activeMoovsCollection = db["activeMoovs"]
 
-        moovData = self.getMoov(moovId, userContext=userContext)
+        moovData = self.getBaseMoov(moovId, userContext=userContext)
 
         #Check if there is an already moovId with userId and teamMember Id that is active
         existingMoov = self.getActiveMoovByMoovUserAndCounterpart(userId=userId, moovId=moovId, counterpartId=counterpartId)
@@ -928,7 +947,30 @@ class moovDBInstance(metaclass=Singleton):
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
         newActiveMoov.counterpartsIds.append(counterpartId)
-        newActiveMoov.issueId = moovData.issueId
+        newActiveMoov.startDate = datetime.datetime.now()
+        
+        activeMoovsCollection.insert_one(newActiveMoov.toJSON())
+
+        return newActiveMoov
+
+    def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
+        db = self.getDatabase();
+        activeMoovsCollection = db["activeMoovs"]
+
+        moovData = self.getBaseMoov(moovId, userContext=userContext)
+
+        #Check if there is an already moovId with userId and teamMember Id that is active
+        existingMoov = self.getActiveMoovByMoovUserAndMultipleCounterparts(userId=userId, moovId=moovId, counterpartsIds=counterpartsIds)
+
+        if existingMoov is not None:
+            #rasie error active Moov already exists
+            return existingMoov
+
+        newActiveMoov = MoovInstance()
+        newActiveMoov.id = "AM_" + str(self.getNextCount())
+        newActiveMoov.moovId = moovId
+        newActiveMoov.userId = userId
+        newActiveMoov.counterpartsIds = counterpartsIds.copy()
         newActiveMoov.startDate = datetime.datetime.now()
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
@@ -1001,6 +1043,22 @@ class moovDBInstance(metaclass=Singleton):
         activeMoovsCollection = db["activeMoovs"]
 
         activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": counterpartId}
+
+        activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
+
+        if (activeMoovJSONData is None):
+            return None
+
+        foundActiveMoov = MoovInstance()
+        foundActiveMoov.buildFromJSON(activeMoovJSONData)
+   
+        return foundActiveMoov
+
+    def getActiveMoovByMoovUserAndMultipleCounterparts(self, userId, moovId, counterpartsIds):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": {"$all": counterpartsIds}}
 
         activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
 
