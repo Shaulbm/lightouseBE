@@ -54,6 +54,7 @@ class IssueMoovData(BaseMoovData):
         self.motivationId = motivationId
 
     def buildFromJSON(self, jsonData, localedTextDic = None):
+        super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
         self.issueId = jsonData["issueId"]
         self.motivationId = jsonData["motivationId"]
 
