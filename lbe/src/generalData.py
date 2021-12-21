@@ -14,6 +14,16 @@ class Locale:
     LOCALE_HEB_FE = 2
     LOCALE_EN = 3
 
+    def toString(self, locale):
+        if locale == self.LOCALE_HEB_MA:
+            return ('he-IL')
+        elif (locale == self.LOCALE_HEB_FE):
+            return ('he-IL')
+        elif (locale == self.LOCALE_EN):
+            return ('en-US')
+
+        return ('en-US')
+
 class Gender:
     MALE = 1
     FEMALE = 2

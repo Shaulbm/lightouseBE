@@ -437,7 +437,7 @@ class moovDBInstance(metaclass=Singleton):
         usersCollection.update_one(
             {"id":userId}, {"$set":{"password":hashedPassword.hexdigest()}})
 
-        
+       
     def getUser (self, id = "", mail = ""):
         db = self.getDatabase()
         usersCollection = db["users"]
@@ -458,6 +458,9 @@ class moovDBInstance(metaclass=Singleton):
 
         userDetails = UserData()
         userDetails.fromJSON(userDataJSON)
+
+        # TEMP until refactor
+        userDetails.locale = Locale.toString(userDetails.locale)
 
         return userDetails
 
