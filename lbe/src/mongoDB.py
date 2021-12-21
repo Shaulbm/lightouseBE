@@ -14,7 +14,7 @@ from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
 from loguru import logger
 import anytree
 from anytree import Node
-from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData
+from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData, ExtendedConflictData
 import datetime
 from os import path
 import hashlib
@@ -43,7 +43,7 @@ class moovDBInstance(metaclass=Singleton):
             if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
                 self.usersContext.pop(userId)
             else: 
-                print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
+                # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
                 return userContextDetails
         
         # userId is not found / found and removed
@@ -58,13 +58,13 @@ class moovDBInstance(metaclass=Singleton):
 
     def getUserContextData(self, userId):
         
-        print ('in getUserContextData user id is ', userId)
+        # print ('in getUserContextData user id is ', userId)
         userContextDetails = None
 
         if (userId  in self.usersContext):
             
             userContextDetails = self.usersContext[userId]
-            print ('found user context and is ', userContextDetails.toJSON())
+            # print ('found user context and is ', userContextDetails.toJSON())
 
         return userContextDetails
 
@@ -655,19 +655,19 @@ class moovDBInstance(metaclass=Singleton):
 
         return conflictDetails
 
-    def getConflictsForUsers (self, userId, counterpartId, userContext : UserContextData):
-        userMotivations = self.getUserMotivations(userId, userContext)
+    def getConflictsForUsers (self, teamMemberId, counterpartId, userContext : UserContextData):
+        teamMemberMotivations = self.getUserMotivations(teamMemberId, userContext)
         counterpartMotivations = self.getUserMotivations(counterpartId, userContext)
 
-        if (userMotivations.__len__() == 0 or counterpartMotivations.__len__ == 0):
+        if (teamMemberMotivations.__len__() == 0 or counterpartMotivations.__len__ == 0):
             return None
         
-        userMotivationsIds = [m.id for m in userMotivations]
+        teamMemberMotivationIds = [m.id for m in teamMemberMotivations]
         counterpartMotivationsIds = [m.id for m in counterpartMotivations]
         
         # testFilter = [{'motivationId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}}, {'motivationId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}}
 
-        conflictFilter = {'$or':[{'motivationId': {'$in': userMotivationsIds}, 'motivationCounterpartId': {'$in': counterpartMotivationsIds}}, {'motivationId': {'$in': counterpartMotivationsIds}, 'motivationCounterpartId': {'$in': userMotivationsIds}}]}
+        conflictFilter = {'$or':[{'motivationId': {'$in': teamMemberMotivationIds}, 'motivationCounterpartId': {'$in': counterpartMotivationsIds}}, {'motivationId': {'$in': counterpartMotivationsIds}, 'motivationCounterpartId': {'$in': teamMemberMotivationIds}}]}
 
         print ('filter is ', str(conflictFilter))
 
@@ -678,12 +678,28 @@ class moovDBInstance(metaclass=Singleton):
 
         conflictsDetails = []
 
+        # create a joint list of the motivations - this is for use in the loop
+        jointMotivatios = []
+        counterpartMotivationsIds 
+        for currMotivation in teamMemberMotivations:
+            if currMotivation.id not in counterpartMotivationsIds:
+                jointMotivatios.append(currMotivation)
+
+        jointMotivatios = jointMotivatios + counterpartMotivations
+
         for currFoundConflictJSON in foundConflicts:
             conflictTextsDic = self.getTextDataByParent(currFoundConflictJSON["id"], userContext.locale)
             
-            currConflictDetails = ConflictData()
+            currConflictDetails = ExtendedConflictData()
             currConflictDetails.buildFromJSON(currFoundConflictJSON, conflictTextsDic)
+
+            userMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationId), None)
+            counterpartMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationCounterpartId), None)
             
+            if (userMotivation is not None and counterpartMotivation is not None):
+                currConflictDetails.motivationName = userMotivation.name
+                currConflictDetails.motivationCounterpartName = counterpartMotivation.name
+
             conflictsDetails.append(currConflictDetails)
 
         return conflictsDetails

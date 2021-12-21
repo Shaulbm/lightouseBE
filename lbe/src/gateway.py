@@ -253,7 +253,7 @@ def get_conflicts_for_users (request: Request, userId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    usersConflicts = dbActions.getConflictsForUsers(userId=userId,counterpartId=counterpartId, userContext=userContextDetails)
+    usersConflicts = dbActions.getConflictsForUsers(teamMemberId=userId,counterpartId=counterpartId, userContext=userContextDetails)
     
     return usersConflicts
 

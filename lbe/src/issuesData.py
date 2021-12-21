@@ -206,7 +206,7 @@ class IssuePartialData:
 
     
 class ConflictData:
-    def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS) -> None:
+    def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS):
         self.id = id
         self.motivationId = motivationId
         self.motivationCounterpartId = motivationCounterpartId
@@ -233,3 +233,9 @@ class ConflictData:
         else:
             # create as is
             self.description = jsonData["description"]     
+
+class ExtendedConflictData(ConflictData):
+    def __init__(self, id = "", motivationId = "", motivationCounterpartId = "", score = 0, description = "", relationType = MotivationsRelationType.CONTRIBUTING_MOTIVATIONS, motivationName ="", motivationCounterpartName=""):
+        super().__init__(id=id, motivationId=motivationId, motivationCounterpartId=motivationCounterpartId, score=score, description=description, relationType=relationType)
+        self.motivationName = motivationName
+        self.motivationCounterpartName = motivationCounterpartName

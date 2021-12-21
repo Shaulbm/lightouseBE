@@ -208,14 +208,21 @@ db = dbInstance_1.getDatabase()
 # dbInstance_1.setMotivationsToUSer(id="UA08", motivations=userMotivations)
 
 userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA, isRTL=False)
-# usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
+usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
 # scope = Scope()
 # scope["type"] = "http"
 # request = Request(scope=scope)
 # request.headers["X-USER-ID"] = 'U001'
 # usersConflicts = gateway.get_conflicts_for_users(request=None, userId="UA06", counterpartId="UA08", userContext=userContext)
 
-foundMoovs = dbInstance_1.getConflictMoovs(conflictId='CO003', userContext=userContext)
+# foundMoovs = dbInstance_1.getConflictMoovs(conflictId='CO003', userContext=userContext)
+# foundMoovs = dbInstance_1.getMoovsForIssueAndUser(userId="UA06", issueId='IS001', userContext=userContext)
+
+# activeMooveDetails = dbInstance_1.activateMoov(moovId="MO0001", userId="U001", counterpartId="UA06", userContext=userContext)
+# foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("U001","UA06", 1)
+# foundActiveMoobForUser = gateway.get_active_moov_for_user("U001")
+# dbInstance_1.endMoov(activeMoovId='AM_1', feedbackScore=2, feedbackText="no real feedback")
+# activeConflictMoov = dbInstance_1.activateConflictMoov(moovId='CMO0001', userId='U0001', counterpartsIds=['UA06', 'UA08'],userContext=userContext)
 
 print ("Done")
 
