@@ -10,18 +10,16 @@ class UserRoles:
 
 class Locale:
     UNKNOWN = 0
-    LOCALE_HEB_MA = 1
-    LOCALE_HEB_FE = 2
-    LOCALE_EN = 3
+    LOCALE_HE_IL = 1
+    LOCALE_EN_US = 3
 
     def toString(locale):
-        if locale == Locale.LOCALE_HEB_MA:
+        if (locale == Locale.LOCALE_HE_IL):
             return ('he-IL')
-        elif (locale == Locale.LOCALE_HEB_FE):
-            return ('he-IL')
-        elif (locale == Locale.LOCALE_EN):
+        elif (locale == Locale.LOCALE_EN_US):
             return ('en-US')
 
+        #default
         return ('en-US')
 
 class Gender:
@@ -184,10 +182,11 @@ class UserCircleData:
         self.peopleOfInterest = []
 
 class UserContextData:
-    def __init__(self, userId = "", firstName = "", lastName = "", locale = Locale.UNKNOWN, isRTL = False):
+    def __init__(self, userId = "", firstName = "", lastName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False):
         self.userId = userId
         self.firstName = firstName
         self.lastName = lastName
+        self.gender = gender
         self.locale = locale
         self.isRTL = isRTL
         self.timeStamp = None
@@ -203,6 +202,7 @@ class UserContextData:
         self.userId = jsonData["userId"]
         self.firstName = jsonData["firstName"]
         self.lastName = jsonData["lastName"]
+        self.gender = jsonData["gender"]
         self.locale = int(jsonData["locale"])
         self.isRTL = bool(jsonData["isRTL"])
         self.timeStamp = jsonData["timeStamp"]

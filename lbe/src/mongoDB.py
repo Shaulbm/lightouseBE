@@ -19,10 +19,6 @@ import datetime
 from os import path
 import hashlib
 
-LOCALE_HEB_MA = 1
-LOCALE_HEB_FE = 2
-LOCALE_EN = 3
-
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 
 class moovDBInstance(metaclass=Singleton):
@@ -98,8 +94,8 @@ class moovDBInstance(metaclass=Singleton):
 
         return counterValue
 
-    def getTextDataByParent (self, parentId, locale):
-        textDataCollection = self.getTextCollectionByLocale(locale)
+    def getTextDataByParent (self, parentId, locale, gender):
+        textDataCollection = self.getTextCollectionByLocale(locale, gender)
             
         allTextsArray = textDataCollection.find ({"parentId" : parentId})
 
@@ -110,25 +106,27 @@ class moovDBInstance(metaclass=Singleton):
 
         return textDic
 
-    def getTextDataByParents (self, parentsIds, locale):
+    def getTextDataByParents (self, parentsIds, locale, gender):
         resultTextDict = {}
         for currParrentId in parentsIds:
-            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale)
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
 
         return resultTextDict
 
 
-    def getTextCollectionByLocale(self, locale):
+    def getTextCollectionByLocale(self, locale, gender):
         db = self.getDatabase()
 
-        if locale == LOCALE_HEB_FE:
-            return db["locale_he_fe"]
-        elif locale == LOCALE_HEB_MA:
-            return db["locale_he_ma"]
-        elif locale == LOCALE_EN:
+        if locale == Locale.LOCALE_HE_IL:
+            if gender == Gender.FEMALE:
+                return db["locale_he_fe"]
+            elif gender == Gender.MALE:
+                return db["locale_he_ma"]
+        elif locale == Locale.LOCALE_EN_US:
             return db["locale_en"]
-        else:
-            return db ["locale_en"]
+        
+        #default
+        return db ["locale_en"]
 
     def insertOrUpdateMotivation (self, dataCollection, motivationDataObj):
         motivationDataJSON = dataCollection.find_one({"id" : motivationDataObj.id})
@@ -180,7 +178,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in moovsDataJSON:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale)
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
             newMoov = ConflictMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -216,8 +214,8 @@ class moovDBInstance(metaclass=Singleton):
             return None
 
         moovTextsDic = None
-        if (userContext.locale is not None):
-            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+        if (userContext is not None):
+            moovTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
         newMoov = BaseMoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
@@ -234,8 +232,8 @@ class moovDBInstance(metaclass=Singleton):
             return None
 
         moovTextsDic = None
-        if (userContext.locale is not None):
-            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+        if (userContext is not None):
+            moovTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
         newMoov = BaseMoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
@@ -261,7 +259,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale)
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
             newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -325,7 +323,7 @@ class moovDBInstance(metaclass=Singleton):
 
         # print ("motivation data is {0}", motivationDataJSON)
 
-        motivationTextsDic = self.getTextDataByParent(id, userContext.locale)
+        motivationTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
         newMotivtion = MotivationData()
         newMotivtion.buildFromJSON(motivationDataJSON, motivationTextsDic)
@@ -344,7 +342,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMotivations = []
         for currMotivationJSONData in motivationsDataJSONList:
-            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale)
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale, userContext.gender)
             newMotivation = MotivationPartialData()
             newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
             foundMotivations.append(newMotivation)
@@ -370,7 +368,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundMotivations = []
         for currMotivationJSONData in motivationsDataJSONList:
-            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale)
+            motivationTextsDic = self.getTextDataByParent(currMotivationJSONData["id"], userContext.locale, userContext.gender)
             newMotivation = MotivationPartialData()
             newMotivation.buildFromJSON(currMotivationJSONData, motivationTextsDic)
             foundMotivations.append(newMotivation)
@@ -497,7 +495,7 @@ class moovDBInstance(metaclass=Singleton):
             parentsIds.append(questionsDataJSON["id"])
             
             # get localed text
-            questionTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
+            questionTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
 
         questionDetails = QuestionData()
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
@@ -572,7 +570,7 @@ class moovDBInstance(metaclass=Singleton):
             #no discovery journey data found
             return None
 
-        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"], userContext.locale)
+        localedTextDict = self.getTextDataByParent(discoveryBatchDataJSON["batchId"], userContext.locale, userContext.gender)
 
         discoveryBatchDetails = DiscoveryBatchData()
         discoveryBatchDetails.buildFromJSON(discoveryBatchDataJSON, localedTextDict)
@@ -613,7 +611,7 @@ class moovDBInstance(metaclass=Singleton):
             
 
             # get localed text
-            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
+            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
 
         issueDetails = IssueData()
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
@@ -651,7 +649,7 @@ class moovDBInstance(metaclass=Singleton):
             parentsIds.append(conflictDataJSON["id"])            
 
             # get localed text
-            conflictssTextsDic = self.getTextDataByParents(parentsIds, userContext.locale)
+            conflictssTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
 
         conflictDetails = ConflictData()
         conflictDetails.buildFromJSON(jsonData = conflictDataJSON, localedTextDic=conflictssTextsDic)
@@ -691,7 +689,7 @@ class moovDBInstance(metaclass=Singleton):
         jointMotivatios = jointMotivatios + counterpartMotivations
 
         for currFoundConflictJSON in foundConflicts:
-            conflictTextsDic = self.getTextDataByParent(currFoundConflictJSON["id"], userContext.locale)
+            conflictTextsDic = self.getTextDataByParent(currFoundConflictJSON["id"], userContext.locale, userContext.gender)
             
             currConflictDetails = ExtendedConflictData()
             currConflictDetails.buildFromJSON(currFoundConflictJSON, conflictTextsDic)
@@ -718,7 +716,7 @@ class moovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale)
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, userContext.gender)
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        
@@ -734,7 +732,7 @@ class moovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale)
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, userContext.gender)
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        
@@ -794,7 +792,7 @@ class moovDBInstance(metaclass=Singleton):
 
         foundSubjects = []
         for currSubjectJSONData in subjectsDataJSONList:
-            subjectTextsDic = self.getTextDataByParent(currSubjectJSONData["id"], userContext.locale)
+            subjectTextsDic = self.getTextDataByParent(currSubjectJSONData["id"], userContext.locale, userContext.gender)
             newSubject = SubjectData()
             newSubject.buildFromJSON(currSubjectJSONData, subjectTextsDic)
             foundSubjects.append(newSubject)
