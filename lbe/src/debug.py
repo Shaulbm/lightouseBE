@@ -237,11 +237,11 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # activeConflictMoov = dbInstance_1.activateConflictMoov(moovId='CMO0001', userId='U0001', counterpartsIds=['UA06', 'UA08'],userContext=userContext)
 
 # userDetail = dbInstance_1.getUser(id='U001')
-createUsers(dbInstance_1)
-dbInstance_1.setMotivationsToUSer("U001", {"M001":3.5, "M002": 3.3, "M03": 3.1, "M04": 2, "M05": 1.7})
-dbInstance_1.setMotivationsToUSer("UA08", {"M023" : "7", "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"})
-dbInstance_1.setMotivationsToUSer("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
-userDetails = dbInstance_1.userLogin('U001@testUser.com', '123456')
-motivationDetails = dbInstance_1.getMotivation('M023', userContext)
+# createUsers(dbInstance_1)
+dbInstance_1.setMotivationsToUSer("U001", {"M001":3.5, "M002": 3.3, "M003": 3.1, "M004": 2, "M005": 1.7})
+# dbInstance_1.setMotivationsToUSer("UA08", {"M023" : "7", "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"})
+# dbInstance_1.setMotivationsToUSer("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
+# userDetails = dbInstance_1.userLogin('U001@testUser.com', '123456')
+# motivationDetails = dbInstance_1.getMotivation('M023', userContext)
 
 print ("Done")

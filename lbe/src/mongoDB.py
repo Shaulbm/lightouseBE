@@ -25,6 +25,7 @@ class moovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
         self.counterLock = threading.Lock()
+        self.userContextLock = threading.Lock()
         self.usersContext = {}
 
     def lock(self):
@@ -34,22 +35,27 @@ class moovDBInstance(metaclass=Singleton):
         self.counterLock.release()
 
     def setUserContextData(self, userId):
-        if (userId in self.usersContext):
-            userContextDetails = self.usersContext[userId]
-            if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
-                self.usersContext.pop(userId)
-            else: 
-                # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
-                return userContextDetails
-        
-        # userId is not found / found and removed
-        userDetails = self.getUser(userId)
-        userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
 
-        userContextDetails.timeStamp = datetime.datetime.utcnow()
-        self.usersContext[userId] = userContextDetails
+        self.userContextLock.acquire()
+        try:
+            if (userId in self.usersContext):
+                userContextDetails = self.usersContext[us erId]
+                if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
+                    self.usersContext.pop(userId)
+                else: 
+                    # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
+                    return userContextDetails
+            
+            # userId is not found / found and removed since TTL was breached
+            userDetails = self.getUser(userId)
+            userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
 
-        print ('in setUserContextData - user Context created and is ', userContextDetails.toJSON())
+            userContextDetails.timeStamp = datetime.datetime.utcnow()
+            self.usersContext[userId] = userContextDetails
+        finally:
+            self.userContextLock.release()
+
+        print ('in setUserContextData - new user Context created and is ', userContextDetails.toJSON())
         return userContextDetails
 
     def getUserContextData(self, userId):
@@ -57,10 +63,14 @@ class moovDBInstance(metaclass=Singleton):
         # print ('in getUserContextData user id is ', userId)
         userContextDetails = None
 
-        if (userId  in self.usersContext):
+        self.userContextLock.acquire()
+        try:
+            if (userId  in self.usersContext):
             
-            userContextDetails = self.usersContext[userId]
+                userContextDetails = self.usersContext[userId]
             # print ('found user context and is ', userContextDetails.toJSON())
+        finally:
+            self.userContextLock.release()
 
         return userContextDetails
 
