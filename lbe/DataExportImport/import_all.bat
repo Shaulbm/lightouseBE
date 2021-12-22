@@ -11,3 +11,4 @@ mongoimport --mode=upsert --collection=moovs --db=moov --file="c:\\dev\\data\\Mo
 mongoimport --mode=upsert --collection=activeMoovs --db=moov --file="c:\\dev\\data\\MoovDB\\activeMoovs.json"
 mongoimport --mode=upsert --collection=counter --db=moov --file="c:\\dev\\data\\MoovDB\\counter.json"
 mongoimport --mode=upsert --collection=conflicts --db=moov --file="c:\\dev\\data\\MoovDB\\conflicts.json"
+mongoimport --mode=upsert --collection=usersCreds --db=moov --file="c:\\dev\\data\\MoovDB\\usersCreds.json"

@@ -7,7 +7,7 @@ from pymongo import MongoClient
 from pymongo.common import partition_node
 from moovData import IssueMoovData, ConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData, UserCredData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -278,7 +278,7 @@ class moovDBInstance(metaclass=Singleton):
             dataCollection.insert_one(textDataObj.toJSON())
     
     def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
-        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mail, motivations=motivations, personsOfInterest=personsOfInterest)
+        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
@@ -410,32 +410,41 @@ class moovDBInstance(metaclass=Singleton):
 
     def getUserPassword (self, userId):
         db = self.getDatabase()
-        usersCollection = db["users"]
+        usersCollection = db["usersCreds"]
 
         userFilter = {"id":userId}
-        userDataJSON = usersCollection.find_one(userFilter)
+        userCredDataJSON = usersCollection.find_one(userFilter)
 
-        if (userDataJSON is None):
+        if (userCredDataJSON is None):
             #no user found
             return ""
 
-        if ("password" not in userDataJSON):
+        if ("password" not in userCredDataJSON):
             return ""
 
-        userPassword = userDataJSON["password"]
-        return userPassword
+        userCredDetails = UserCredData()
+        userCredDetails.fromJSON(userCredDataJSON)
+        return userCredDetails.password
 
     def setUserPassword (self, userId, passwordRaw):
         db = self.getDatabase()
-        usersCollection = db["users"]
+        usersCredCollection = db["usersCreds"]
 
         userFilter = {"id":userId}
         hashedPassword = hashlib.sha256(passwordRaw.encode('utf-8'))
 
-        usersCollection.update_one(
-            {"id":userId}, {"$set":{"password":hashedPassword.hexdigest()}})
+        userCredDetails = UserCredData(id=userId, password=hashedPassword.hexdigest())
 
-       
+        foundUserCred = usersCredCollection.find_one({"id":userId})
+
+        if (foundUserCred is not None):
+            #the user creds already exists - update
+            userDataFilter = {"id" : userId}
+            usersCredCollection.replace_one(userDataFilter, userCredDetails.toJSON())
+        else:
+            #this is a new user cred
+            usersCredCollection.insert_one(userCredDetails.toJSON())
+
     def getUser (self, id = "", mail = ""):
         db = self.getDatabase()
         usersCollection = db["users"]

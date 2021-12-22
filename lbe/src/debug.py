@@ -77,7 +77,7 @@ import base64
 # motivations = gateway.get_all_motivations(1)
 # print (motivations)
 
-def createUsers():
+def createUsers(dbInstance):
     #               U001
     #       UA02           UA03         UA04
     # UA05 UA06 UA07    UA08 UA09
@@ -85,19 +85,33 @@ def createUsers():
     #      UA10
     #   UA11 UA12
     # UA01 - HR
-    gateway.add_or_update_user(id="U001", parentId= "" ,firstName="Shaul", familyName="Ben Maor", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="shaul@hotmail.com", personsOfInterest=["UA11", "UA12"])
-    gateway.add_or_update_user(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.HR, mailAddress="")
-    gateway.add_or_update_user(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", gender=Gender.FEMALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA04", parentId= "U001" ,firstName="Riki", familyName="Class", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA05", parentId= "UA02" ,firstName="Alex", familyName="Tatarski", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA06", parentId= "UA02" ,firstName="Bessi", familyName="Dean", gender=Gender.FEMALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA10", parentId= "" ,firstName="Shimshon", familyName="Levi", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA11", parentId= "UA10" ,firstName="Shani", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
-    gateway.add_or_update_user(id="UA12", parentId= "UA10" ,firstName="Raz", familyName="Birenbaum", gender=Gender.MALE, locale=Locale.LOCALE_HEB_MA, orgId="O001", role=UserRoles.MANAGER, mailAddress="")
+    dbInstance.insertOrUpdateUserDetails(id="U001", parentId= "" ,firstName="Shaul", familyName="Ben Maor", gender=Gender.MALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="U001@testUser.com", personsOfInterest=["UA11", "UA12"])
+    dbInstance.insertOrUpdateUserDetails(id="UA01", parentId= "" ,firstName="Debbi", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.HR, mailAddress="UA01@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA02", parentId= "U001" ,firstName="Rebbeca", familyName="Doe", gender=Gender.FEMALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA02@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA03", parentId= "U001" ,firstName="Jona", familyName="Kinklaid", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA03@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA04", parentId= "U001" ,firstName="Riki", familyName="Class", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA04@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA05", parentId= "UA02" ,firstName="Alex", familyName="Tatarski", gender=Gender.MALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA05@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA06", parentId= "UA02" ,firstName="Bessi", familyName="Dean", gender=Gender.FEMALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA06@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA07", parentId= "UA02" ,firstName="Sean", familyName="Major", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA07@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA08", parentId= "UA03" ,firstName="Rex", familyName="Kruger", gender=Gender.MALE, locale=Locale.LOCALE_EN_US, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA08@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA09", parentId= "UA03" ,firstName="Mark", familyName="Zukerberg", gender=Gender.MALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA09@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA10", parentId= "" ,firstName="Shimshon", familyName="Levi", gender=Gender.MALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA10@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA11", parentId= "UA10" ,firstName="Shani", familyName="Cohen", gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA11@testUser.com")
+    dbInstance.insertOrUpdateUserDetails(id="UA12", parentId= "UA10" ,firstName="Raz", familyName="Birenbaum", gender=Gender.MALE, locale=Locale.LOCALE_HE_IL, orgId="O001", role=UserRoles.MANAGER, mailAddress="UA12@testUser.com")
+
+    dbInstance.setUserPassword("U001", "123456")
+    dbInstance.setUserPassword("UA01", "123456")
+    dbInstance.setUserPassword("UA02", "123456")
+    dbInstance.setUserPassword("UA03", "123456")
+    dbInstance.setUserPassword("UA04", "123456")
+    dbInstance.setUserPassword("UA05", "123456")
+    dbInstance.setUserPassword("UA06", "123456")
+    dbInstance.setUserPassword("UA07", "123456")
+    dbInstance.setUserPassword("UA08", "123456")
+    dbInstance.setUserPassword("UA09", "123456")
+    dbInstance.setUserPassword("UA10", "123456")
+    dbInstance.setUserPassword("UA11", "123456")
+    dbInstance.setUserPassword("UA12", "123456")
 
 # createUsers()
 
@@ -204,10 +218,8 @@ db = dbInstance_1.getDatabase()
 
 # dbInstance_1.setUserPassword("U001", "123456")
 # userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
-# userMotivations={"M023" : "7", "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"}
-# dbInstance_1.setMotivationsToUSer(id="UA08", motivations=userMotivations)
 
-userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA, isRTL=False)
+userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
 # usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
 # scope = Scope()
 # scope["type"] = "http"
@@ -224,6 +236,12 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Locale.LOCALE_HEB_MA,
 # dbInstance_1.endMoov(activeMoovId='AM_1', feedbackScore=2, feedbackText="no real feedback")
 # activeConflictMoov = dbInstance_1.activateConflictMoov(moovId='CMO0001', userId='U0001', counterpartsIds=['UA06', 'UA08'],userContext=userContext)
 
-userDetail = dbInstance_1.getUser(id='U001')
+# userDetail = dbInstance_1.getUser(id='U001')
+createUsers(dbInstance_1)
+dbInstance_1.setMotivationsToUSer("U001", {"M001":3.5, "M002": 3.3, "M03": 3.1, "M04": 2, "M05": 1.7})
+dbInstance_1.setMotivationsToUSer("UA08", {"M023" : "7", "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"})
+dbInstance_1.setMotivationsToUSer("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
+userDetails = dbInstance_1.userLogin('U001@testUser.com', '123456')
+motivationDetails = dbInstance_1.getMotivation('M023', userContext)
 
 print ("Done")

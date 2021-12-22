@@ -69,7 +69,7 @@ class UserData:
         self.orgId = jsonData["orgId"]
         self.role = jsonData["role"]
         self.gender = jsonData["gender"]
-        self.locale = int(jsonData["locale"])
+        self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
         self.mailAddress = jsonData["mailAddress"]
 
@@ -106,7 +106,7 @@ class UserPartialData:
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
         self.gender = jsonData["gender"]
-        self.locale = int(jsonData["locale"])
+        self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
         self.orgId = jsonData["orgId"]
 
@@ -129,6 +129,22 @@ class UserPartialData:
         else:
             self.motivations = {}
 
+class UserCredData:
+    def __init__(self, id ="", password=""):
+        self.id = id
+        self.password = password
+        pass
+
+    def toJSON (self):
+        userDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (userDataJSON)
+
+        return jsonObject 
+
+    def fromJSON (self, jsonData):
+        self.id = jsonData["id"]
+        self.password = jsonData["password"]
 
 class UserImageData:
     def __init__(self, userId ="", image = ""):
