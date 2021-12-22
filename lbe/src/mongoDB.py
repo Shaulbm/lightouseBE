@@ -39,7 +39,7 @@ class moovDBInstance(metaclass=Singleton):
         self.userContextLock.acquire()
         try:
             if (userId in self.usersContext):
-                userContextDetails = self.usersContext[us erId]
+                userContextDetails = self.usersContext[userId]
                 if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
                     self.usersContext.pop(userId)
                 else: 
