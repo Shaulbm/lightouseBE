@@ -9,18 +9,9 @@ class UserRoles:
     HR = 3
 
 class Locale:
-    UNKNOWN = 0
-    LOCALE_HE_IL = 1
-    LOCALE_EN_US = 3
-
-    def toString(locale):
-        if (locale == Locale.LOCALE_HE_IL):
-            return ('he-IL')
-        elif (locale == Locale.LOCALE_EN_US):
-            return ('en-US')
-
-        #default
-        return ('en-US')
+    UNKNOWN = ""
+    LOCALE_HE_IL = "he-IL"
+    LOCALE_EN_US = "en-US"
 
 class Gender:
     MALE = 1

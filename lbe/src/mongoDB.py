@@ -457,9 +457,6 @@ class moovDBInstance(metaclass=Singleton):
         userDetails = UserData()
         userDetails.fromJSON(userDataJSON)
 
-        # TEMP until refactor
-        userDetails.locale = Locale.toString(userDetails.locale)
-
         return userDetails
 
     def insertOrUpdateQuestion(self, currQuestionData):
