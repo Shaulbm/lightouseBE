@@ -696,9 +696,8 @@ class moovDBInstance(metaclass=Singleton):
         teamMemberMotivationIds = []
         counterpartMotivationsIds = []
 
-        if not partialData:
-            teamMemberMotivationIds = [m.id for m in teamMemberMotivations]
-            counterpartMotivationsIds = [m.id for m in counterpartMotivations]
+        teamMemberMotivationIds = [m.id for m in teamMemberMotivations]
+        counterpartMotivationsIds = [m.id for m in counterpartMotivations]
         
 
         conflictFilter = {'$or':[{'motivationId': {'$in': teamMemberMotivationIds}, 'motivationCounterpartId': {'$in': counterpartMotivationsIds}}, {'motivationId': {'$in': counterpartMotivationsIds}, 'motivationCounterpartId': {'$in': teamMemberMotivationIds}}]}
