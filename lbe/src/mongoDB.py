@@ -5,7 +5,7 @@ from typing import Text
 from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from moovData import IssueMoovData, ConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
+from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData, UserCredData
 from questionsData import QuestionData
@@ -180,6 +180,7 @@ class moovDBInstance(metaclass=Singleton):
         moovsCollection = db["moovs"]
 
         moovsDataJSON = moovsCollection.find({"conflictId" : conflictId})
+        ConflictDetails = self.getConflict(conflictId, userContext)
 
         if (moovsDataJSON is None):
             return None
@@ -189,11 +190,24 @@ class moovDBInstance(metaclass=Singleton):
         foundMoovs = []
         for currMoovJSONData in moovsDataJSON:
             moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
-            newMoov = ConflictMoovData()
+            newMoov = ExtendedConflictMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
+            newMoov.conflictScore = ConflictDetails.score
             foundMoovs.append(newMoov)
 
         return foundMoovs
+
+    def getConflictsMoovsForUsers (self, teamMemberId, counterpartId, userContext: UserContextData):
+        conflictsList = self.getConflictsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, partialData=  True, userContext=userContext)
+
+        conflictsMoovs = []
+
+        for currConflict in conflictsList:
+            currConflictMoovs = self.getConflictMoovs(conflictId=currConflict.id, userContext=userContext)
+
+            conflictsMoovs = conflictsMoovs + currConflictMoovs
+
+        return conflictsMoovs
 
     def getIssueMoov (self, id, userContext: UserContextData):
         # db = self.getDatabase()
@@ -672,17 +686,20 @@ class moovDBInstance(metaclass=Singleton):
 
         return conflictDetails
 
-    def getConflictsForUsers (self, teamMemberId, counterpartId, userContext : UserContextData):
+    def getConflictsForUsers (self, teamMemberId, counterpartId, partialData: bool, userContext : UserContextData):
         teamMemberMotivations = self.getUserMotivations(teamMemberId, userContext)
         counterpartMotivations = self.getUserMotivations(counterpartId, userContext)
 
         if (teamMemberMotivations.__len__() == 0 or counterpartMotivations.__len__ == 0):
             return None
         
-        teamMemberMotivationIds = [m.id for m in teamMemberMotivations]
-        counterpartMotivationsIds = [m.id for m in counterpartMotivations]
+        teamMemberMotivationIds = []
+        counterpartMotivationsIds = []
+
+        if not partialData:
+            teamMemberMotivationIds = [m.id for m in teamMemberMotivations]
+            counterpartMotivationsIds = [m.id for m in counterpartMotivations]
         
-        # testFilter = [{'motivationId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}}, {'motivationId': {'$in': '[' + ','.join(counterpartMotivationsIds)+ ']'}, 'motivationCounterpartId': {'$in': '[' + ','.join(userMotivationsIds)+ ']'}}
 
         conflictFilter = {'$or':[{'motivationId': {'$in': teamMemberMotivationIds}, 'motivationCounterpartId': {'$in': counterpartMotivationsIds}}, {'motivationId': {'$in': counterpartMotivationsIds}, 'motivationCounterpartId': {'$in': teamMemberMotivationIds}}]}
 
@@ -710,12 +727,13 @@ class moovDBInstance(metaclass=Singleton):
             currConflictDetails = ExtendedConflictData()
             currConflictDetails.buildFromJSON(currFoundConflictJSON, conflictTextsDic)
 
-            userMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationId), None)
-            counterpartMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationCounterpartId), None)
-            
-            if (userMotivation is not None and counterpartMotivation is not None):
-                currConflictDetails.motivationName = userMotivation.name
-                currConflictDetails.motivationCounterpartName = counterpartMotivation.name
+            if not partialData:
+                userMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationId), None)
+                counterpartMotivation = next((m for m in jointMotivatios if m.id == currConflictDetails.motivationCounterpartId), None)
+                
+                if (userMotivation is not None and counterpartMotivation is not None):
+                    currConflictDetails.motivationName = userMotivation.name
+                    currConflictDetails.motivationCounterpartName = counterpartMotivation.name
 
             conflictsDetails.append(currConflictDetails)
 

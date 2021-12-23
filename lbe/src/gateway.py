@@ -76,6 +76,7 @@ def add_or_update_user(request: Request, id, parentId = "", firstName = "", fami
 @router.post("/setMotivations")
 def set_motivations_to_user(request: Request, id, motivations):
     dbActions = moovDBInstance()
+    # print ("in set_motivaitons_to_user, motivations are {0}", str(motivations) )
     userDetails = dbActions.setMotivationsToUSer (id, ast.literal_eval(motivations))
 
     return userDetails
@@ -253,9 +254,18 @@ def get_conflicts_for_users (request: Request, userId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = moovDBInstance()
     
-    usersConflicts = dbActions.getConflictsForUsers(teamMemberId=userId,counterpartId=counterpartId, userContext=userContextDetails)
+    usersConflicts = dbActions.getConflictsForUsers(teamMemberId=userId,counterpartId=counterpartId, partailData=False ,userContext=userContextDetails)
     
     return usersConflicts
+
+@router.get("/conflictsMoovsForUsers")
+def get_all_conflicts_moovs_for_users (request: Request, userId, counterpartId):
+    userContextDetails = get_user_context(request)
+    dbActions = moovDBInstance()
+    
+    conflictMoovs = dbActions.getConflictsMoovsForUsers(teamMemberId=userId,counterpartId=counterpartId, userContext=userContextDetails)
+    
+    return conflictMoovs
 
 @router.get("/conflictMoovs")
 def get_conflict_moovs (request: Request, conflictId):

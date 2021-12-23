@@ -47,6 +47,13 @@ class ConflictMoovData(BaseMoovData):
         super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
         self.conflictId = jsonData["conflictId"]
 
+class ExtendedConflictMoovData(ConflictMoovData):
+    def __init__(self, id = "", conflictId = "", conflictScore = 0, score=0, image="", contributor="", name="", description="", howTo="", reasoning=""):
+        super().__init__(id = id, conflictId=conflictId ,score=score, image=image, contributor=contributor, name=name, description=description, howTo=howTo, reasoning=reasoning)
+
+        self.conflictScore = conflictScore
+
+
 class IssueMoovData(BaseMoovData):
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", contributor = "", reasoning=""):
         super().__init__(id = id, score=score, image=image, contributor=contributor, name=name, description=description, howTo=howTo, reasoning=reasoning)
