@@ -309,6 +309,12 @@ class moovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         usersCollection = db["users"]
 
+        # set isRTL by the provided Locale
+        if (currUserData.locale == Locale.LOCALE_HE_IL):
+            currUserData.isRTL = True
+        else:
+            currUserData.isRTL = False
+
         foundUser = usersCollection.find_one({"id":currUserData.id})
 
         if (foundUser is not None):

@@ -220,7 +220,7 @@ db = dbInstance_1.getDatabase()
 # userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
 
 userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
-# usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', userContext)
+usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userContext)
 # scope = Scope()
 # scope["type"] = "http"
 # request = Request(scope=scope)
@@ -244,5 +244,6 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # userDetails = dbInstance_1.userLogin('U001@testUser.com', '123456')
 # motivationDetails = dbInstance_1.getMotivation('M023', userContext)
 
-userContext = dbInstance_1.setUserContextData('U001')
+# userContext = dbInstance_1.setUserContextData('U001')
+moovs= dbInstance_1.getConflictsMoovsForUsers('UA06', 'UA08', userContext=userContext)
 print ("Done")
