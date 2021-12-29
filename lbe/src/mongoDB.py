@@ -18,8 +18,10 @@ from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedDa
 import datetime
 from os import path
 import hashlib
+from pathlib import Path
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
+DEFAULT_USER_IMAGES_DIR = 'Default'
 
 class moovDBInstance(metaclass=Singleton):
     def __init__(self):
@@ -977,13 +979,15 @@ class moovDBInstance(metaclass=Singleton):
 
         file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '_small.png'
 
-        # userImage = None
-
-        # with open(file_used, 'rb') as fout:
-        #     userImage = fout.read()
+        # if the user image does not exists, user detauls images
+        my_file = Path("/path/to/file")
+        if not my_file.exists():
+            if userDetails.gender == Gender.MALE:
+                file_used = ROOT_USER_IMAGES_PATH + '\\' + DEFAULT_USER_IMAGES_DIR + '\\' + 'male.png'
+            else:
+                file_used = ROOT_USER_IMAGES_PATH + '\\' + DEFAULT_USER_IMAGES_DIR + '\\'+ 'female.png'
 
         return file_used
-
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase();
