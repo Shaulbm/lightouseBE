@@ -977,7 +977,7 @@ class moovDBInstance(metaclass=Singleton):
         if userDetails is None:
             return None
 
-        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '_small.png'
+        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '_small.jpg'
 
         # if the user image does not exists, user detauls images
         my_file = Path(file_used)
