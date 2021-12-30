@@ -60,9 +60,10 @@ def get_user_motivations(request: Request, userId):
 
 
 @router.get("/user")
-def get_user(request: Request, id, mail = ""):
+def get_user(request: Request, id):
     dbActions = moovDBInstance()
-    userDetails = dbActions.getUser (id, mail)
+
+    userDetails = dbActions.getUser (id)
 
     return userDetails
 

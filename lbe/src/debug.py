@@ -11,6 +11,7 @@ import ExportJourney
 from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData
 from os import path
 import base64
+import cache
 
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')

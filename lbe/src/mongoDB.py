@@ -19,6 +19,7 @@ import datetime
 from os import path
 import hashlib
 from pathlib import Path
+from cache import Cache
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
@@ -29,6 +30,7 @@ class moovDBInstance(metaclass=Singleton):
         self.counterLock = threading.Lock()
         self.userContextLock = threading.Lock()
         self.usersContext = {}
+        self.dbCache = Cache(self)
 
     def lock(self):
         self.counterLock.acquire()
@@ -344,7 +346,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return userDetails
 
-    def getMotivation (self, id, userContext: UserContextData):
+    def getDBMotivation (self, id, userContext: UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
 
@@ -357,11 +359,15 @@ class moovDBInstance(metaclass=Singleton):
 
         motivationTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
-        newMotivtion = MotivationData()
-        newMotivtion.buildFromJSON(motivationDataJSON, motivationTextsDic)
+        foundMotivation = MotivationData()
+        foundMotivation.buildFromJSON(motivationDataJSON, motivationTextsDic)
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
-        return newMotivtion 
+        return foundMotivation 
+
+    def getMotivation (self, id, userContext: UserContextData):
+        motivationDetails = self.dbCache.getMotivationDetailsById(motivationId=id, userContext=userContext)
+        return motivationDetails
     
     def getAllMotivations(self,userContext:UserContextData):
         db = self.getDatabase()
@@ -422,7 +428,7 @@ class moovDBInstance(metaclass=Singleton):
         return motivationsIds
 
     def userLogin(self, userMail, password):
-        userDetails : UserData = self.getUser(mail=userMail)
+        userDetails : UserData = self.getDBUserByMail(mail=userMail)
 
         # TBD verify password
         # for now password is always true
@@ -477,17 +483,11 @@ class moovDBInstance(metaclass=Singleton):
             #this is a new user cred
             usersCredCollection.insert_one(userCredDetails.toJSON())
 
-    def getUser (self, id = "", mail = ""):
+    def getDBUserById (self, id):
         db = self.getDatabase()
         usersCollection = db["users"]
 
-        if (id != ""): 
-            userFilter = {"id":id}
-        elif (mail != ""):
-            userFilter = {"mailAddress":mail}
-        else:
-            # no identifier is passed to the user
-            return None
+        userFilter = {"id":id}
 
         userDataJSON = usersCollection.find_one(userFilter)
 
@@ -497,6 +497,28 @@ class moovDBInstance(metaclass=Singleton):
 
         userDetails = UserData()
         userDetails.fromJSON(userDataJSON)
+
+        return userDetails
+
+    def getDBUserByMail (self, mail):
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        userFilter = {"mailAddress":mail}
+
+        userDataJSON = usersCollection.find_one(userFilter)
+
+        if (userDataJSON is None):
+            #no user found
+            return None
+
+        userDetails = UserData()
+        userDetails.fromJSON(userDataJSON)
+
+        return userDetails
+    
+    def getUser (self, id = ""):      
+        userDetails = self.dbCache.getUSerDetailsById (id)
 
         return userDetails
 
