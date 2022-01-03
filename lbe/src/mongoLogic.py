@@ -14,13 +14,10 @@ ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
 
 class MoovScheduler:
-    def __init__(self):
-        print ('in MoovScheduler __init__')
-        self.moovLogicInstance = MoovLogic()
-
-    def verifyTTLObjects(self):
+    def verifyTTLObjects():
         print ('in Moov Scheduler verify TTL')
-        self.moovLogicInstance.verifyTTLForObjects()
+        moovLogicInstance = MoovLogic()
+        moovLogicInstance.verifyTTLForObjects()
 
 class MoovLogic(metaclass=Singleton):
     def __init__(self):
@@ -81,7 +78,7 @@ class MoovLogic(metaclass=Singleton):
 
     def verifyTTLForActiveMoovs(self):
         
-        print ('in MoovLogic.verifyTTL time is ', datetime.datetime.utcnow().strftime())
+        print ('in MoovLogic.verifyTTL time is ', str(datetime.datetime.utcnow()))
         # get all active moovs - filter by end time < now.
         # end all of the active moovs
         # send mail to each ended active moov

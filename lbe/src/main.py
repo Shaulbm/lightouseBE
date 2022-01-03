@@ -48,35 +48,27 @@ async def get_user_details_from_header(request: Request, call_next):
 
 shuttingDown = False
 
-def job():
+def verifyTTL():
     print ('in a job time is ', str(datetime.datetime.utcnow()))
 
-# @repeat(every(5).seconds)
-def runTTLVerification():
-    print ('in run TTL verification')
-    # moovScheduler = MoovScheduler()
+    MoovScheduler.verifyTTLObjects()
 
-    # moovScheduler.verifyTTLObjects()
-    schedule.every(5).seconds.do(job)
+def runTTLVerification():
+    schedule.every(15).seconds.do(verifyTTL)
 
     index = 0
 
-    print ('running kob for the first time')
-    job()
-
-    while index < 1000:
+    while not shuttingDown:
         # print ('in loop')
         schedule.run_pending()
         # print ('in main runTTL time is ', str(datetime.datetime.utcnow()))
-        time.sleep(1)
-        index += 1
+        time.sleep(5)
 
 @app.on_event("startup")
 def startup():
     print ('on startup')
     executor = ThreadPoolExecutor(2)
     executor.submit(runTTLVerification)
-    pass
 
 @app.on_event("shutdown")
 def shutdown():
