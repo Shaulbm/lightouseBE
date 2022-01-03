@@ -3,7 +3,7 @@ from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, TailResolutionData
 from generalData import UserContextData
-from mongoDB import moovDBInstance
+from mongoLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
 from loguru import logger
@@ -16,7 +16,7 @@ MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE = 1.3
 def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     #creates an entry in discovery Journey if one doesn't exists, returns the user journey id
     
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     existingDiscoveryJourney = dbInstance.getUserDiscoveryJourney(userId)
     
     if (existingDiscoveryJourney is not None and existingDiscoveryJourney.status != "close"):
@@ -45,7 +45,7 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)   
     userDetails = dbInstance.getUser(userId)
 
@@ -105,7 +105,7 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
     return questionsList
 
 def setUserResponse (userId, questionId, responseId, userContext: UserContextData):
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
     if discoveryJourneyDetails is None:
@@ -121,7 +121,7 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
 
 def setUserMultipleResponses (userId, questionId, responses):
     if (TAIL_QUESTION_ID in questionId):
-        dbInstance = moovDBInstance()
+        dbInstance = MoovLogic()
         discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
         if discoveryJourneyDetails is None:
@@ -140,7 +140,7 @@ def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
     # create a dictionaray from all the different motivations ids as keys, and 0.0 score as value - userMotivationsScoreBoard
     # get the responses array and for eachquestion, find the response motivation score and update the userMotivationsScoreBoard
     # return the score board
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     motivationsIds = dbInstance.getAllMotivationsIds()
 
     # create a dict of {MotivationId, Score}
@@ -206,7 +206,7 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
 
 def endUserJourney (userId, userMotivationScoreBoard):
     #end the journey and update the user data with the top 5 motivations
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     currJourney = dbInstance.getUserDiscoveryJourney(userId)
 
     currJourney.currBatch = ""
@@ -216,7 +216,7 @@ def endUserJourney (userId, userMotivationScoreBoard):
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
 
 def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserContextData):
-    dbInstance = moovDBInstance()
+    dbInstance = MoovLogic()
     tailResolutionQuestion = dbInstance.getQuestion(TAIL_QUESTION_ID, userContext)
 
     tailResolutionQuestion.id = TAIL_QUESTION_ID + "_" + str(uuid.uuid4())[:8]

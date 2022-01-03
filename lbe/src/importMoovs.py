@@ -76,7 +76,7 @@ def main():
             insertConflictMoov(currMoov)
 
 def insertMoov(moovDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
     moovsCollection = db["moovs"]
 
@@ -136,7 +136,7 @@ def insertMoov(moovDataDict):
     dbInstance.insertOrUpdateMoov(newMoov)
 
 def insertConflictMoov(conflictMoovDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
     moovsCollection = db["moovs"]
 

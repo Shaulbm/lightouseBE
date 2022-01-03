@@ -59,7 +59,7 @@ def main():
             insertMotivation(currMotivation)
 
 def insertMotivation(motivationDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
     motivationsCollection = db["motivations"]
 
@@ -111,7 +111,7 @@ def insertMotivation(motivationDataDict):
     currentTextData = TextData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    dbInstance.insertOrUpdateMotivation(motivationsCollection, newMotivation)
+    dbInstance.insertOrUpdateMotivation(newMotivation)
 
 if __name__ == '__main__':
     main()

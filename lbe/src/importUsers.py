@@ -59,7 +59,7 @@ def main():
             insertUser(userDataDict=currSubject)        
 
 def insertUser(userDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
 
     newUser = UserData()

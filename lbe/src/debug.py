@@ -2,11 +2,12 @@ from re import A
 
 from starlette.requests import Request
 from starlette.types import Scope
+from mongoLogic import MoovLogic
 import main
 import gateway
 import time
 import uuid
-from mongoDB import moovDBInstance
+from mongoDB import MoovDBInstance
 import ExportJourney
 from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData
 from os import path
@@ -178,7 +179,7 @@ def createUsers(dbInstance):
 
 # fout.close()
 #Image - End
-dbInstance_1 = moovDBInstance()
+dbInstance_1 = MoovDBInstance()
 # dbInstance.setMotivationsToUSer ("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
 # motivations = dbInstance.getUserMotivations("U001", 1)
 # print (motivations)
@@ -198,7 +199,7 @@ dbInstance_1 = moovDBInstance()
 # foundActiveMoobForCP = gateway.get_active_moovs_to_counterpart("U001","UA06", 1)
 # foundActiveMoobForUser = gateway.get_active_moov_for_user("U001")
 # gateway.end_moov(activeMooveDetails.id, 2, "no real feedback")
-db = dbInstance_1.getDatabase()
+db = MoovLogic()
 
 # usersCollection = db["users"]
 
@@ -221,7 +222,7 @@ db = dbInstance_1.getDatabase()
 # userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
 
 userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
-usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userContext)
+# usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userContext)
 # scope = Scope()
 # scope["type"] = "http"
 # request = Request(scope=scope)
@@ -246,5 +247,24 @@ usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userCo
 # motivationDetails = dbInstance_1.getMotivation('M023', userContext)
 
 # userContext = dbInstance_1.setUserContextData('U001')
-moovs= dbInstance_1.getConflictsMoovsForUsers('UA06', 'UA08', userContext=userContext)
+# moovs= dbInstance_1.getConflictsMoovsForUsers('UA06', 'UA08', userContext=userContext)
+
+user = db.getUser('U001')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('UA01')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('U001')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('UA01')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('UA02')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('UA01')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('U001')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('UA03')
+print ('user id {0}, user name {1}', user.id, user.firstName)
+user = db.getUser('U001')
+print ('user id {0}, user name {1}', user.id, user.firstName)
 print ("Done")

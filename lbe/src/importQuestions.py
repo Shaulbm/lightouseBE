@@ -76,7 +76,7 @@ def main():
             insertQuestion(currQuestion, currResponses)
 
 def insertQuestion(questionsDataDict, responsesDataDictArray):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]

@@ -119,7 +119,7 @@ def main():
             insertIssue(issueDataDict=currIssue, resolvingMotivationsDictArray=currResolvingMotivations, contributingMotivationsDictArray=currContributingMotivations)
 
 def insertSubject(subjectDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
@@ -152,7 +152,7 @@ def insertSubject(subjectDataDict):
     dbInstance.insertOrUpdateSubject(newSubject)
 
 def insertConflict (conflictDataDict):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
@@ -180,7 +180,7 @@ def insertConflict (conflictDataDict):
 
 
 def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotivationsDictArray):
-    dbInstance = mongoDB.moovDBInstance()
+    dbInstance = mongoDB.MoovDBInstance()
     db = dbInstance.getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]

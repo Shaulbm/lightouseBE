@@ -1,13 +1,10 @@
 from hashlib import new
 from threading import current_thread
-import threading
-from typing import Text
-from anytree.node import nodemixin
 from pymongo import MongoClient
 from pymongo.common import partition_node
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserImageData, UserContextData, UserCredData
+from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -16,67 +13,19 @@ import anytree
 from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData, ExtendedConflictData
 import datetime
-from os import path
-import hashlib
-from pathlib import Path
-from cache import Cache
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
 
-class moovDBInstance(metaclass=Singleton):
+class MoovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
-        self.counterLock = threading.Lock()
-        self.userContextLock = threading.Lock()
-        self.usersContext = {}
-        self.dbCache = Cache(self)
 
     def lock(self):
         self.counterLock.acquire()
 
     def release(self):
         self.counterLock.release()
-
-    def setUserContextData(self, userId):
-
-        self.userContextLock.acquire()
-        try:
-            if (userId in self.usersContext):
-                userContextDetails = self.usersContext[userId]
-                if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
-                    self.usersContext.pop(userId)
-                else: 
-                    # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
-                    return userContextDetails
-            
-            # userId is not found / found and removed since TTL was breached
-            userDetails = self.getUser(userId)
-            userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
-
-            userContextDetails.timeStamp = datetime.datetime.utcnow()
-            self.usersContext[userId] = userContextDetails
-        finally:
-            self.userContextLock.release()
-
-        print ('in setUserContextData - new user Context created and is ', userContextDetails.toJSON())
-        return userContextDetails
-
-    def getUserContextData(self, userId):
-        
-        # print ('in getUserContextData user id is ', userId)
-        userContextDetails = None
-
-        self.userContextLock.acquire()
-        try:
-            if (userId  in self.usersContext):
-            
-                userContextDetails = self.usersContext[userId]
-            # print ('found user context and is ', userContextDetails.toJSON())
-        finally:
-            self.userContextLock.release()
-
-        return userContextDetails
 
     def getDatabase(self):
 
@@ -120,12 +69,12 @@ class moovDBInstance(metaclass=Singleton):
 
         return textDic
 
-    def getTextDataByParents (self, parentsIds, locale, gender):
-        resultTextDict = {}
-        for currParrentId in parentsIds:
-            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
+    # def getTextDataByParents (self, parentsIds, locale, gender):
+    #     resultTextDict = {}
+    #     for currParrentId in parentsIds:
+    #         resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
 
-        return resultTextDict
+    #     return resultTextDict
 
 
     def getTextCollectionByLocale(self, locale, gender):
@@ -142,16 +91,18 @@ class moovDBInstance(metaclass=Singleton):
         #default
         return db ["locale_en"]
 
-    def insertOrUpdateMotivation (self, dataCollection, motivationDataObj):
-        motivationDataJSON = dataCollection.find_one({"id" : motivationDataObj.id})
+    def insertOrUpdateMotivation (self, motivationDataObj):
+        db = self.getDatabase()
+        motivationsCollection = db["motivations"]
+        motivationDataJSON = motivationsCollection.find_one({"id" : motivationDataObj.id})
 
         if (motivationDataJSON is not None):
             #object found
             motivationFilter = {'id':motivationDataObj.id}
-            dataCollection.replace_one (motivationFilter, motivationDataObj.toJSON())
+            motivationsCollection.replace_one (motivationFilter, motivationDataObj.toJSON())
         else:
             # this is a new motivation
-            dataCollection.insert_one(motivationDataObj.toJSON())
+            motivationsCollection.insert_one(motivationDataObj.toJSON())
 
     def insertOrUpdateMoov (self, moovDataObj):
         db = self.getDatabase()
@@ -245,29 +196,10 @@ class moovDBInstance(metaclass=Singleton):
         if (userContext is not None):
             moovTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
-        newMoov = BaseMoovData()
-        newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
+        foundMoov = BaseMoovData()
+        foundMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
-        return newMoov 
-
-    def getBaseMoov(self, id, userContext: UserContextData):
-        db = self.getDatabase()
-        moovsCollection = db["moovs"]
-
-        moovDataJSON = moovsCollection.find_one({"id" : id})
-
-        if (moovDataJSON is None):
-            return None
-
-        moovTextsDic = None
-        if (userContext is not None):
-            moovTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
-
-        newMoov = BaseMoovData()
-        newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
-
-        return newMoov 
-
+        return foundMoov 
 
     def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
         db = self.getDatabase()
@@ -346,7 +278,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return userDetails
 
-    def getDBMotivation (self, id, userContext: UserContextData):
+    def getMotivation (self, id, userContext: UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
 
@@ -365,10 +297,6 @@ class moovDBInstance(metaclass=Singleton):
         # print ("motivation object is {0}", newMotivtion.toJSON())
         return foundMotivation 
 
-    def getMotivation (self, id, userContext: UserContextData):
-        motivationDetails = self.dbCache.getMotivationDetailsById(motivationId=id, userContext=userContext)
-        return motivationDetails
-    
     def getAllMotivations(self,userContext:UserContextData):
         db = self.getDatabase()
         motivationCollection = db["motivations"]
@@ -427,24 +355,24 @@ class moovDBInstance(metaclass=Singleton):
 
         return motivationsIds
 
-    def userLogin(self, userMail, password):
-        userDetails : UserData = self.getDBUserByMail(mail=userMail)
+    # def userLogin(self, userMail, password):
+    #     userDetails : UserData = self.getDBUserByMail(mail=userMail)
 
-        # TBD verify password
-        # for now password is always true
+    #     # TBD verify password
+    #     # for now password is always true
 
-        partialUserDetails = None
+    #     partialUserDetails = None
 
-        if (userDetails is not None):
-            hashedPassword = hashlib.sha256(password.encode('utf-8'))
-            if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
-                partialUserDetails = UserPartialData()
-                partialUserDetails.fromFullDetails(userDetails)
-            else:
-                # raise error 404
-                pass
+    #     if (userDetails is not None):
+    #         hashedPassword = hashlib.sha256(password.encode('utf-8'))
+    #         if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
+    #             partialUserDetails = UserPartialData()
+    #             partialUserDetails.fromFullDetails(userDetails)
+    #         else:
+    #             # raise error 404
+    #             pass
         
-        return partialUserDetails
+    #     return partialUserDetails
 
     def getUserPassword (self, userId):
         db = self.getDatabase()
@@ -464,26 +392,21 @@ class moovDBInstance(metaclass=Singleton):
         userCredDetails.fromJSON(userCredDataJSON)
         return userCredDetails.password
 
-    def setUserPassword (self, userId, passwordRaw):
+    def setUserPassword (self, userCreds: UserCredData):
         db = self.getDatabase()
         usersCredCollection = db["usersCreds"]
 
-        userFilter = {"id":userId}
-        hashedPassword = hashlib.sha256(passwordRaw.encode('utf-8'))
-
-        userCredDetails = UserCredData(id=userId, password=hashedPassword.hexdigest())
-
-        foundUserCred = usersCredCollection.find_one({"id":userId})
+        foundUserCred = usersCredCollection.find_one({"id":userCreds.id})
 
         if (foundUserCred is not None):
             #the user creds already exists - update
-            userDataFilter = {"id" : userId}
-            usersCredCollection.replace_one(userDataFilter, userCredDetails.toJSON())
+            userDataFilter = {"id" : userCreds.id}
+            usersCredCollection.replace_one(userDataFilter, userCreds.toJSON())
         else:
             #this is a new user cred
-            usersCredCollection.insert_one(userCredDetails.toJSON())
+            usersCredCollection.insert_one(userCreds.toJSON())
 
-    def getDBUserById (self, id):
+    def getUser (self, id):
         db = self.getDatabase()
         usersCollection = db["users"]
 
@@ -500,7 +423,7 @@ class moovDBInstance(metaclass=Singleton):
 
         return userDetails
 
-    def getDBUserByMail (self, mail):
+    def getUserByMail (self, mail):
         db = self.getDatabase()
         usersCollection = db["users"]
 
@@ -514,11 +437,6 @@ class moovDBInstance(metaclass=Singleton):
 
         userDetails = UserData()
         userDetails.fromJSON(userDataJSON)
-
-        return userDetails
-    
-    def getUser (self, id = ""):      
-        userDetails = self.dbCache.getUSerDetailsById (id)
 
         return userDetails
 
@@ -862,21 +780,6 @@ class moovDBInstance(metaclass=Singleton):
 
         return foundSubjects
 
-    def getUserCircle(self, userId):
-        db = self.getDatabase()
-
-        print ('in getUserCircle, UserID is {0}', userId)
-
-        userCircleDetails = UserCircleData()
-        userCircleDetails.teamMembersList = self.getUsersUnder(userId)
-
-        print ('in getUserCircle, after team members')
-        
-        userCircleDetails.peopleOfInterest = self.getUserPeopleOfInterest(userId)
-        print ('in getUserCircle, after team poi')
-
-        return userCircleDetails
-
     def getUsersUnder (self, userId):
         requestingUser = self.getUser(id=userId)
 
@@ -949,67 +852,6 @@ class moovDBInstance(metaclass=Singleton):
                     foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
         return foundSubordinatesDataList
-
-    def getUserPeopleOfInterest(self, userId):
-        peopleOfInterestList = []
-
-        requestingUser = self.getUser(id=userId)
-        poiIdList = requestingUser.personsOfInterest 
-
-        for currPOI in poiIdList:
-            currentUserDetails = self.getUser(id=currPOI)
-            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, motivations=currentUserDetails.motivations))
-
-        return peopleOfInterestList
-
-    def insertOrUpdateUserImage(self, imageData):
-        db = self.getDatabase()
-        usersImagesCollection = db["usersImages"]
-
-        foundImage = usersImagesCollection.find_one({"userId":imageData.userId})
-
-        if (foundImage is not None):
-            #the issue already exists - update the issue
-            imageDataFilter = {"id" : imageData.userId}
-            usersImagesCollection.replace_one(imageDataFilter, imageData.toJSON())
-        else:
-            #this is a new user
-            usersImagesCollection.insert_one(imageData.toJSON())
-
-    def getUserImage(self, userId):
-        db = self.getDatabase()
-        usersImagesCollection = db["usersImages"]
-
-        userFilter = {"userId":userId}
-
-        userImageDataJSON = usersImagesCollection.find_one(userFilter)
-
-        if (userImageDataJSON is None):
-            #no discovery journey data found
-            return None
-
-        userImageDetails = UserImageData()
-        userImageDetails.fromJSON(userImageDataJSON)
-
-        return userImageDetails
-
-    def getUserImageFromFile(self, userId):
-        userDetails = self.getUser(id=userId)
-
-        if userDetails is None:
-            return None
-
-        file_used = ROOT_USER_IMAGES_PATH + '\\' + userDetails.orgId + '\\' + userDetails.id + '_small.jpg'
-
-        # if the user image does not exists, user detauls images
-        my_file = Path(file_used)
-        if not my_file.exists():
-            if userDetails.gender == Gender.MALE:
-                file_used = ROOT_USER_IMAGES_PATH + '\\' + DEFAULT_USER_IMAGES_DIR + '\\' + 'male.png'
-            else:
-                file_used = ROOT_USER_IMAGES_PATH + '\\' + DEFAULT_USER_IMAGES_DIR + '\\'+ 'female.png'
-
-        return file_used
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase();

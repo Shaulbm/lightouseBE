@@ -1,9 +1,9 @@
 import datetime
 import threading
 from common.rwLock import RWLock
-from lbe.src.generalData import UserContextData, UserData
+from generalData import UserContextData, UserData
 from motivationsData import MotivationData
-from mongoDB import moovDBInstance
+from mongoDB import MoovDBInstance
 
 TTL_M = 720 
 class BaseCacheItem:
@@ -21,7 +21,7 @@ class UserDetailsCacheData (BaseCacheItem):
         self.userDetails = userDetails
 
 class Cache:
-    def __init__(self, db : moovDBInstance):
+    def __init__(self, db : MoovDBInstance):
         self.motivationsCache = {}
         self.usersCache = {}
         self.db = db
@@ -98,7 +98,7 @@ class Cache:
     
         if userDetails is None:
             # no motivation data was found (or it was not valid) - create a cache entry
-            userDetails = self.db.getDBUserById(id=userId)
+            userDetails = self.db.getUser(id=userId)
             userCacheData = UserDetailsCacheData(userDetails)
 
             self.usersLock.writer_acquire()
