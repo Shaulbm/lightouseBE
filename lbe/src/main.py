@@ -10,6 +10,7 @@ import schedule
 from concurrent.futures import ThreadPoolExecutor
 import time
 from mongoLogic import MoovScheduler
+from schedule import every, repeat
 
 app = FastAPI()
 
@@ -50,28 +51,22 @@ shuttingDown = False
 def job():
     print ('in a job')
 
+@repeat(every(5).seconds)
 def runTTLVerification():
     print ('in run TTL verification')
     moovScheduler = MoovScheduler()
 
-    # schedule.every(5).seconds.do(moovScheduler.verifyTTLObjects)
-    schedule.every(5).seconds.do(job)
+    moovScheduler.verifyTTLObjects()
+    # schedule.every(5).seconds.do(job)
 
-
-    if shuttingDown:
-        print ('shtting down is True')
-
-    while not shuttingDown:
-        print ('in loop')
-        schedule.run_pending()
-        print ('in main runTTL time is ', datetime.datetime.utcnow().strftime())
-        time.sleep(15)
+    # while not shuttingDown:
+    #     print ('in loop')
+    #     schedule.run_pending()
+    #     print ('in main runTTL time is ', datetime.datetime.utcnow().strftime())
+    #     time.sleep(1)
 
 @app.on_event("startup")
 def startup():
-    print ('in startup')
-    executor = ThreadPoolExecutor(2)
-    executor.submit(runTTLVerification)
 
 @app.on_event("shutdown")
 def shutdown():
