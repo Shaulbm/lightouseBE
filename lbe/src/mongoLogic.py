@@ -228,7 +228,7 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateSubject(currSubjectData=currSubjectData)
 
     def getAllSubjects(self, userContext: UserContextData):
-        self.dataBaseInstance.getAllSubjects(userContext=userContext)
+        return self.dataBaseInstance.getAllSubjects(userContext=userContext)
 
     def getUserCircle(self, userId):
         userCircleDetails = UserCircleData()
