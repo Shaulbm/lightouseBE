@@ -36,7 +36,7 @@ class Cache:
 
     def getMotivationDetailsById(self, motivationId, userContext: UserContextData):
         motivationDetails = None
-        motivationComplexId = self.getComplexId(motivationId)
+        motivationComplexId = self.getComplexId(id=motivationId, userContext=userContext)
         self.motivationsLock.reader_acquire()
         
         foundMotivationCacheDetails = None
