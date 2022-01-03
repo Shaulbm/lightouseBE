@@ -69,12 +69,12 @@ class MoovDBInstance(metaclass=Singleton):
 
         return textDic
 
-    # def getTextDataByParents (self, parentsIds, locale, gender):
-    #     resultTextDict = {}
-    #     for currParrentId in parentsIds:
-    #         resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
+    def getTextDataByParents (self, parentsIds, locale, gender):
+        resultTextDict = {}
+        for currParrentId in parentsIds:
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
 
-    #     return resultTextDict
+        return resultTextDict
 
 
     def getTextCollectionByLocale(self, locale, gender):
