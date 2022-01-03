@@ -67,6 +67,7 @@ def runTTLVerification():
 
 @app.on_event("startup")
 def startup():
+    pass
 
 @app.on_event("shutdown")
 def shutdown():
