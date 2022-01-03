@@ -47,11 +47,16 @@ async def get_user_details_from_header(request: Request, call_next):
 
 shuttingDown = False
 
+def job():
+    print ('in a job')
+
 def runTTLVerification():
     print ('in run TTL verification')
     moovScheduler = MoovScheduler()
 
-    schedule.every(5).seconds.do(moovScheduler.verifyTTLObjects)
+    # schedule.every(5).seconds.do(moovScheduler.verifyTTLObjects)
+    schedule.every(5).seconds.do(job)
+
 
     if shuttingDown:
         print ('shtting down is True')
