@@ -53,7 +53,11 @@ def runTTLVerification():
 
     schedule.every(60).seconds.do(moovScheduler.verifyTTLObjects)
 
+    if shuttingDown:
+        print ('shtting down is True')
+
     while not shuttingDown:
+        print ('in loop')
         schedule.run_pending()
         print ('in main runTTL time is ', datetime.datetime.utcnow().strftime())
         time.sleep(15)
@@ -66,5 +70,5 @@ def startup():
 
 @app.on_event("shutdown")
 def shutdown():
-    shuttingDown = true
+    shuttingDown = True
 
