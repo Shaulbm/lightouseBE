@@ -1,5 +1,3 @@
-from re import A
-
 from starlette.requests import Request
 from starlette.types import Scope
 from mongoLogic import MoovLogic

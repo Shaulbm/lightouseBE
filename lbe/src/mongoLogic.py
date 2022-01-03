@@ -15,9 +15,11 @@ DEFAULT_USER_IMAGES_DIR = 'Default'
 
 class MoovScheduler:
     def __init__(self):
+        print ('in MoovScheduler __init__')
         self.moovLogicInstance = MoovLogic()
 
     def verifyTTLObjects(self):
+        print ('in Moov Scheduler verify TTL')
         self.moovLogicInstance.verifyTTLForObjects()
 
 class MoovLogic(metaclass=Singleton):

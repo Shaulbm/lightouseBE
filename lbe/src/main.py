@@ -51,7 +51,7 @@ def runTTLVerification():
     print ('in run TTL verification')
     moovScheduler = MoovScheduler()
 
-    schedule.every(60).seconds.do(moovScheduler.verifyTTLObjects)
+    schedule.every(5).seconds.do(moovScheduler.verifyTTLObjects)
 
     if shuttingDown:
         print ('shtting down is True')
