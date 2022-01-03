@@ -1,9 +1,16 @@
+import datetime
+from threading import Timer
 from fastapi import FastAPI, Request
 from fastapi import HTTPException
 from typing import List
 from gateway import router
 import gateway
 from fastapi.middleware.cors import CORSMiddleware
+import schedule
+from concurrent.futures import ThreadPoolExecutor
+import time
+
+from lbe.src.mongoLogic import MoovScheduler
 
 app = FastAPI()
 
@@ -39,11 +46,24 @@ async def get_user_details_from_header(request: Request, call_next):
     
     return response
 
+shuttingDown = False
+
+def runTTLVerification():
+    moovScheduler = MoovScheduler
+
+    schedule.every(60).seconds.do(moovScheduler.verifyTTLObjects)
+
+    while not shuttingDown:
+        schedule.run_pending()
+        print ('in main runTTL time is ', datetime.datetime.utcnow().strftime())
+        time.sleep(15)
 
 @app.on_event("startup")
 def startup():
-    pass
+    executor = ThreadPoolExecutor(2)
+    schedulingThread = executor.submit(runTTLVerification)
 
 @app.on_event("shutdown")
 def shutdown():
-    pass
+    shuttingDown = true
+

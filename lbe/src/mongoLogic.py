@@ -8,9 +8,17 @@ import datetime
 import hashlib
 from pathlib import Path
 from cache import Cache
+import time
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
+
+class MoovScheduler:
+    def __init__(self):
+        self.moovLogicInstance = MoovLogic()
+
+    def verifyTTLObjects(self):
+        self.moovLogicInstance.verifyTTLForObjects()
 
 class MoovLogic(metaclass=Singleton):
     def __init__(self):
@@ -65,6 +73,20 @@ class MoovLogic(metaclass=Singleton):
             self.userContextLock.release()
 
         return userContextDetails
+
+    def verifyTTLForObjects(self):
+        self.verifyTTLForActiveMoovs()
+
+    def verifyTTLForActiveMoovs(self):
+        
+        print ('in MoovLogic.verifyTTL time is ', datetime.datetime.utcnow().strftime())
+        # get all active moovs - filter by end time < now.
+        # end all of the active moovs
+        # send mail to each ended active moov
+
+        # get all active moovs that are ending tomorrow - end time < now + 1 day
+        # send notifications on the soon ending active moovs.
+        pass
 
     def getDatabase(self):
         return self.dataBaseInstance
