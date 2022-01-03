@@ -1,3 +1,4 @@
+from datetime import datetime
 from starlette.requests import Request
 from starlette.types import Scope
 from mongoLogic import MoovLogic
@@ -11,6 +12,7 @@ from generalData import UserRoles, Locale, Gender, UserImageData, UserData, User
 from os import path
 import base64
 import cache
+import schedule
 
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
@@ -76,6 +78,9 @@ import cache
 # print (questionsList)
 # motivations = gateway.get_all_motivations(1)
 # print (motivations)
+
+def job():
+    print ('in job, time is ', str(datetime.utcnow()))
 
 def createUsers(dbInstance):
     #               U001
@@ -268,7 +273,17 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 
 # motivation = db.getMotivation('M001', userContext)
 # motivation = db.getMotivation('M001', userContext)
-subjects = db.getAllSubjects(userContext)
-issues = db.getAllIssues(userContext)
+# subjects = db.getAllSubjects(userContext)
+# issues = db.getAllIssues(userContext)
+
+job()
+schedule.every(5).seconds.do(job)
+
+index = 0
+
+while index < 100:
+    schedule.run_pending()
+    time.sleep(1)
+    index += 1
 
 print ("Done")

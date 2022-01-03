@@ -15,7 +15,6 @@ DEFAULT_USER_IMAGES_DIR = 'Default'
 
 class MoovScheduler:
     def verifyTTLObjects():
-        print ('in Moov Scheduler verify TTL')
         moovLogicInstance = MoovLogic()
         moovLogicInstance.verifyTTLForObjects()
 

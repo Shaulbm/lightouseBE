@@ -31,13 +31,14 @@ app.add_middleware(
 
 app.include_router(router)
 
+shuttingDown = False
+
 @app.middleware('http')
 async def get_user_details_from_header(request: Request, call_next):
     userContext = None
     
     if "X-USER-ID" in request.headers:
         userId = request.headers["X-USER-ID"]
-        # print ("server request user id is {0}", userId)
         gateway.set_user_context(userId)
     else:
         print ('request called with no user context')
@@ -46,22 +47,18 @@ async def get_user_details_from_header(request: Request, call_next):
     
     return response
 
-shuttingDown = False
-
 def verifyTTL():
-    print ('in a job time is ', str(datetime.datetime.utcnow()))
-
     MoovScheduler.verifyTTLObjects()
 
+# runu on a thread of it's own - load the scheduler with jobs and run pending jobs
+# every 5 seconds (if there are no current pending tasks the action is costless)
 def runTTLVerification():
     schedule.every(15).seconds.do(verifyTTL)
 
     index = 0
 
     while not shuttingDown:
-        # print ('in loop')
         schedule.run_pending()
-        # print ('in main runTTL time is ', str(datetime.datetime.utcnow()))
         time.sleep(5)
 
 @app.on_event("startup")
@@ -73,6 +70,3 @@ def startup():
 @app.on_event("shutdown")
 def shutdown():
     shuttingDown = True
-
-# if __name__ == '__main__':
-#     startup()
