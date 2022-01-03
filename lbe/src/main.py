@@ -30,7 +30,7 @@ async def get_user_details_from_header(request: Request, call_next):
     
     if "X-USER-ID" in request.headers:
         userId = request.headers["X-USER-ID"]
-        print ("server request user id is {0}", userId)
+        # print ("server request user id is {0}", userId)
         gateway.set_user_context(userId)
     else:
         print ('request called with no user context')
