@@ -9,8 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import schedule
 from concurrent.futures import ThreadPoolExecutor
 import time
-
-from lbe.src.mongoLogic import MoovScheduler
+from mongoLogic import MoovScheduler
 
 app = FastAPI()
 
