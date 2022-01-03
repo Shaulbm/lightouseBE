@@ -48,6 +48,7 @@ async def get_user_details_from_header(request: Request, call_next):
 shuttingDown = False
 
 def runTTLVerification():
+    print ('in run TTL verification')
     moovScheduler = MoovScheduler
 
     schedule.every(60).seconds.do(moovScheduler.verifyTTLObjects)
@@ -59,8 +60,9 @@ def runTTLVerification():
 
 @app.on_event("startup")
 def startup():
+    print ('in startup')
     executor = ThreadPoolExecutor(2)
-    schedulingThread = executor.submit(runTTLVerification)
+    executor.submit(runTTLVerification)
 
 @app.on_event("shutdown")
 def shutdown():
