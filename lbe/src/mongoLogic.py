@@ -1,5 +1,6 @@
 import threading
 from typing import Text
+from lbe.src.moovData import MoovInstance
 from mongoDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData
 from singleton import Singleton
@@ -21,7 +22,6 @@ class MoovScheduler:
 class MoovLogic(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = MoovDBInstance()
-        self.counterLock = threading.Lock()
         self.userContextLock = threading.Lock()
         self.usersContext = {}
         self.dbCache = Cache(self.dataBaseInstance)
@@ -76,16 +76,18 @@ class MoovLogic(metaclass=Singleton):
         self.verifyTTLForActiveMoovs()
 
     def verifyTTLForActiveMoovs(self):
+        # get all active moovs - filter by end time < now.
+        # mark as overdue for theseactive moovs
+        # send mail to each of these moovs
         
         print ('in MoovLogic.verifyTTL time is ', str(datetime.datetime.utcnow()))
-        # get all active moovs - filter by end time < now.
-        # end all of the active moovs
-        # send mail to each ended active moov
+        foundMoovs = self.getAllMoovsPlannedToEnd(datetime.datetime.utcnow())
 
-        # get all active moovs that are ending tomorrow - end time < now + 1 day
-        # send notifications on the soon ending active moovs.
-        pass
-
+        for currMoov in foundMoovs:
+            currMoov.isOverdue = True
+            self.dataBaseInstance.updateMoovInstane(currMoov)
+            #send mail
+        
     def getDatabase(self):
         return self.dataBaseInstance
 
@@ -291,10 +293,18 @@ class MoovLogic(metaclass=Singleton):
         return file_used
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
-        return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, userContext=userContext)
+        moovInstancePriority = self.calculateIssueMoovPriority(userId, counterpartId)
+        return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority userContext=userContext)
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
-        return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, userContext=userContext)
+        moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
+        return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
+
+    def calculateIssueMoovPriority(self, userId, caounterpartId):
+        return 0
+
+    def calculateConflictMoovPriority(self, userId, counterpartsIds):
+        return 0
 
     def getActiveMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         return self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
@@ -308,5 +318,8 @@ class MoovLogic(metaclass=Singleton):
     def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId):
         return self.dataBaseInstance.getActiveMoovByMoovUserAndCounterpart (userId=userId, moovId=moovId, counterpartId=counterpartId)
 
-    def endMoov (self, activeMoovId, feedbackScore, feedbackText):
-        self.dataBaseInstance.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
+        self.dataBaseInstance.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=isEndedByTimer)
+    
+    def getAllMoovsPlannedToEnd (self, timeStamp):
+        return self.dataBaseInstance.getAllMoovsPlannedToEnd(timeStamp=timeStamp)

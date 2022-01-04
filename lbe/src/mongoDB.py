@@ -1,5 +1,5 @@
 from hashlib import new
-from threading import current_thread
+import threading
 from pymongo import MongoClient
 from pymongo.common import partition_node
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
@@ -16,10 +16,12 @@ import datetime
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
+DAYS_TO_COMPLETE_MOOV = 7
 
 class MoovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
+        self.counterLock = threading.Lock()
 
     def lock(self):
         self.counterLock.acquire()
@@ -853,7 +855,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundSubordinatesDataList
 
-    def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
+    def activateIssueMoov (self, moovId, userId, counterpartId, priority, userContext: UserContextData):
         db = self.getDatabase();
         activeMoovsCollection = db["activeMoovs"]
 
@@ -871,14 +873,16 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
         newActiveMoov.counterpartsIds.append(counterpartId)
-        newActiveMoov.startDate = datetime.datetime.now()
+        newActiveMoov.priority = priority
+        newActiveMoov.startDate = datetime.datetime.utcnow()
+        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=DAYS_TO_COMPLETE_MOOV)
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
         return newActiveMoov
 
-    def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
-        db = self.getDatabase();
+    def activateConflictMoov (self, moovId, userId, counterpartsIds, priority, userContext: UserContextData):
+        db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
         moovData = self.getBaseMoov(moovId, userContext=userContext)
@@ -895,7 +899,9 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
         newActiveMoov.counterpartsIds = counterpartsIds.copy()
-        newActiveMoov.startDate = datetime.datetime.now()
+        newActiveMoov.priority = priority
+        newActiveMoov.startDate = datetime.datetime.utcnow()
+        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=DAYS_TO_COMPLETE_MOOV)
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
@@ -994,8 +1000,8 @@ class MoovDBInstance(metaclass=Singleton):
    
         return foundActiveMoov
 
-    def endMoov (self, activeMoovId, feedbackScore, feedbackText):
-        db = self.getDatabase();
+    def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
+        db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
         historicMoovsCollections=db["historicMoovs"]
 
@@ -1013,3 +1019,30 @@ class MoovDBInstance(metaclass=Singleton):
             # create a record in the historic data and delete from active moovs
             historicMoovsCollections.insert_one(activeMoovDetails.toJSON())
             activeMoovsCollection.delete_one(activeMoovFilter)
+
+    def getAllMoovsPlannedToEnd(self, timeStamp):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        # don't pick overdue moovs as they were handled
+        activeMoovsFilter = {'plannedEndDate': {'$lt': timeStamp}, 'isOverdue': False}
+        foundMoovsData = activeMoovsCollection.find(activeMoovsFilter)
+
+        activeMoovs = []
+        for currMoovJSONData in foundMoovsData:
+            currMoov = MoovInstance()
+            currMoov.buildFromJSON(currMoovJSONData)
+            activeMoovs.append(currMoov)
+
+        return activeMoovs
+
+    def updateMoovInstane(self, moovInstance):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        foundMoov = activeMoovsCollection.find_one({"id":moovInstance.id})
+
+        if (foundMoov is not None):
+            #the conflict already exists - update the issue
+            conflictDataFilter = {"id" : moovInstance.id}
+            activeMoovsCollection.replace_one(conflictDataFilter, moovInstance.toJSON())

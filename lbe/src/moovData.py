@@ -1,3 +1,4 @@
+from datetime import datetime
 import jsonpickle
 import json
 
@@ -66,13 +67,16 @@ class IssueMoovData(BaseMoovData):
         self.motivationId = jsonData["motivationId"]
 
 class MoovInstance:
-    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = ""):
+    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, feedbackScore = 0, feedbackText = ""):
         self.id = id
         self.userId = userId
         self.counterpartsIds = counterpartsIds.copy()
         self.moovId = moovId
+        self.priority = priority
         self.startDate = startDate
         self.endDate = endDate
+        self.plannedEndDate = plannedEndDate
+        self.isOverdue = isOverdue
         self.feedbackScore = feedbackScore
         self.feedbackText = feedbackText
 
@@ -80,6 +84,11 @@ class MoovInstance:
         questionDataJSON = jsonpickle.encode(self, unpicklable=False)
 
         jsonObject = json.loads (questionDataJSON)
+        
+        # forcing DateTime to json, as json
+        jsonObject["startDate"] = self.startDate
+        jsonObject["endDate"] = self.endDate
+        jsonObject["plannedEndDate"] = self.plannedEndDate
 
         return jsonObject
 
@@ -87,8 +96,13 @@ class MoovInstance:
         self.id = jsonData["id"]
         self.userId = jsonData["userId"]
         self.moovId = jsonData["moovId"]
+        self.priority = jsonData["priority"]
+
+        # self.startDate = datetime.strptime(jsonData["startDate"], '%Y-%m-%dT%H:%M:%S.%f')
         self.startDate = jsonData["startDate"]
         self.endDate = jsonData["endDate"]
+        self.plannedEndDate = jsonData["plannedEndDate"]
+        self.isOverdue = bool(jsonData["isOverdue"])
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
 
@@ -98,6 +112,6 @@ class MoovInstance:
             self.counterpartsIds = []
 
 class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", startDate= "", endDate="", feedbackScore = 0, feedbackText = "", moovData = None):
-        super().__init__(id=id, userId=userId,counterpartsIds=counterpartsIds,moovId=moovId,startDate=startDate, endDate=endDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority= 0, startDate= "", endDate="", plannedEndDate =  datetime.utcnow(), feedbackScore = 0, feedbackText = "", moovData = None):
+        super().__init__(id=id, userId=userId,counterpartsIds=counterpartsIds,moovId=moovId, priority=priority, startDate=startDate, endDate=endDate, plannedEndDate=plannedEndDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
         self.moovData = moovData

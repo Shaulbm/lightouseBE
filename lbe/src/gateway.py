@@ -210,7 +210,7 @@ def activate_conflict_moov(request: Request, moovId, userId, firstCounterpartId,
 def end_moov (request: Request, activeMoovId, feedbackScore, feedbackText):
     dbActions = MoovLogic()
     
-    returnValue = dbActions.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    returnValue = dbActions.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=False)
     
     return returnValue
 

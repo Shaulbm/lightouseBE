@@ -276,14 +276,9 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # subjects = db.getAllSubjects(userContext)
 # issues = db.getAllIssues(userContext)
 
-job()
-schedule.every(5).seconds.do(job)
+# moovInstance = db.activateIssueMoov('MO0002', 'U001', 'UA06', userContext)
+moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
+jsonData = moovInstances[1].toJSON()
 
-index = 0
-
-while index < 100:
-    schedule.run_pending()
-    time.sleep(1)
-    index += 1
-
+foundMoovs = db.getAllMoovsPlannedToEnd(datetime.utcnow())
 print ("Done")
