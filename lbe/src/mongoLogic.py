@@ -1,6 +1,5 @@
 import threading
 from typing import Text
-from lbe.src.moovData import MoovInstance
 from mongoDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData
 from singleton import Singleton
@@ -294,7 +293,7 @@ class MoovLogic(metaclass=Singleton):
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
         moovInstancePriority = self.calculateIssueMoovPriority(userId, counterpartId)
-        return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority userContext=userContext)
+        return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
         moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
