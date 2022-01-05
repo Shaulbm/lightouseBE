@@ -40,6 +40,29 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
     return newDiscoveryJourney.id
 
+def continueUserJourney (userId):
+    dbInstance = MoovLogic()
+    return dbInstance.getUserDiscoveryJourney(userId)
+
+
+def getCurrentQuestionsBatch (userId, userContext: UserContextData):
+    dbInstance = MoovLogic()
+    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+
+    if discoveryJourneyDetails is None:
+        return None
+
+    currBatchDetails = dbInstance.getDiscvoeryBatch(batchId = discoveryJourneyDetails.currBatch, userContext=userContext)
+
+    # it might be that we still don't have a current batch as we just started
+    if (currBatchDetails is not None):
+        return currBatchDetails
+
+    # if the curr batch is none - return the next batch (first)
+    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchDetails.batchIdx + 1, userContext=userContext)
+
+    return nextBatchDetails
+
 def getNextQuestionsBatch (userId, userContext : UserContextData):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
@@ -47,9 +70,6 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
     dbInstance = MoovLogic()
     discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)   
-    userDetails = dbInstance.getUser(userId)
-
-    logger.debug("get next question batch, journey is \n {}", discoveryJourneyDetails.toJSON())
 
     if discoveryJourneyDetails is None:
         return None
