@@ -1,8 +1,8 @@
 from threading import current_thread
 from pymongo import response
 from pymongo.mongo_client import MongoClient
-from discoveryData import UserDiscoveryJourneyData, TailResolutionData
-from generalData import UserContextData
+from discoveryData import UserDiscoveryJourneyData, JourneyResolutionData, UserDiscoveryJourneyState
+from generalData import UserContextData, UserMotivationData
 from mongoLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
@@ -19,7 +19,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     dbInstance = MoovLogic()
     existingDiscoveryJourney = dbInstance.getUserDiscoveryJourney(userId)
     
-    if (existingDiscoveryJourney is not None and existingDiscoveryJourney.status != "close"):
+    if (existingDiscoveryJourney is not None and existingDiscoveryJourney.state != "close"):
         #reset current journey
         existingDiscoveryJourney.currBatch = ""
         existingDiscoveryJourney.userResponses = {}
@@ -33,7 +33,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     newDiscoveryJourney.userId = userId
     #current we only have one journey
     newDiscoveryJourney.journeyId = journeyTypeId
-    newDiscoveryJourney.status = "new"
+    newDiscoveryJourney.state = UserDiscoveryJourneyState.NEW
     newDiscoveryJourney.currBatch = ""
 
     dbInstance.insertOrUpdateDiscoveryJourney(newDiscoveryJourney)
@@ -97,21 +97,37 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
             tailResQuestion = createTailResolutionQuestion(motivationsTail, userContext=userContext)
 
             questionsList.append(tailResQuestion) 
+
+            discoveryJourneyDetails.state = UserDiscoveryJourneyState.TAIL_RESOLUTION
+            dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
+        elif discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER or discoveryJourneyDetails.state == UserDiscoveryJourneyState.TAIL_RESOLUTION:
+            # user is done with the questioneer (either with or without tail)
+            gapScoringQuestions = createGapScoringQuestions(motivationScoreBoard)
+
+            discoveryJourneyDetails.state = UserDiscoveryJourneyState.GAP_SCORING
+            dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         else:
-            # no tail and no more batches - process is done
+            # no tail and no more batches - check if we were in gap
+            if (discoveryJourneyDetails.state == UserDiscoveryJourneyState.GAP_SCORING):
+                sortedScoreBoard = dict(sorted(motivationScoreBoard.items(), key=lambda item: item[1], reverse= True))
 
-            sortedScoreBoard = dict(sorted(motivationScoreBoard.items(), key=lambda item: item[1], reverse= True))
+                topFiveMotivations = {}
+                motivationIdx = 0
+                for key,value in sortedScoreBoard.items():
 
-            topFiveMotivations = {}
-            motivationIdx = 0
-            for key,value in sortedScoreBoard.items():
-                topFiveMotivations[key] = value
-                motivationIdx +=1
+                    motivationGapScore = 0
+                    if (key in discoveryJourneyDetails.motivationsGap):
+                        motivationGapScore = discoveryJourneyDetails.motivationsGap[key]
+                    
+                    userMotviationDetails = UserMotivationData(motivationId=key, journeyScore=value, gapFactor=motivationGapScore)
 
-                if motivationIdx > 4:
-                    break
-            
-            endUserJourney(userId, topFiveMotivations)
+                    topFiveMotivations[key] = userMotviationDetails
+                    motivationIdx +=1
+
+                    if motivationIdx > 4:
+                        break
+                
+                endUserJourney(userId, topFiveMotivations)
     else:
         #discovery journey is on going - just get the next batch
  
@@ -137,6 +153,22 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
         discoveryJourneyDetails.userResponses[questionId] = responseId
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
 
+    dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
+
+def convertResponseScoreToMotivationGapScore (score):
+    return score
+
+def setUserScoredResponse (userId, questionId, score, userContext: UserContextData):
+    dbInstance = MoovLogic()
+    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
+
+    if discoveryJourneyDetails is None:
+        return None
+
+    currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=userContext)
+
+    if (currQuestionDetails.type == QuestionsType.MOTIVATION_GAP):
+        discoveryJourneyDetails.motivationsGap[currQuestionDetails.possibleResponses[0].motivationId] = convertResponseScoreToMotivationGapScore(score=score) 
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
 def setUserMultipleResponses (userId, questionId, responses):
@@ -196,10 +228,9 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
     motivationsList = list(sortedScoreBoard)
 
     
-
     if (scoreList[4] > scoreList[5]):
         #no tail - return empty object
-        return TailResolutionData()
+        return JourneyResolutionData()
 
     motivationsTail = []
     currScoreIndex = 0
@@ -221,7 +252,7 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
       
         currScoreIndex += 1
 
-    tailResult = TailResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTail)
+    tailResult = JourneyResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTail)
     return tailResult
 
 def endUserJourney (userId, userMotivationScoreBoard):
@@ -230,7 +261,7 @@ def endUserJourney (userId, userMotivationScoreBoard):
     currJourney = dbInstance.getUserDiscoveryJourney(userId)
 
     currJourney.currBatch = ""
-    currJourney.status = "closed"
+    currJourney.state = "closed"
 
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
@@ -263,3 +294,7 @@ def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserC
     dbInstance.insertOrUpdateQuestion(tailResolutionQuestion)
 
     return tailResolutionQuestion
+
+def createGapScoringQuestions (motivationsScoreBoard : JourneyResolutionData):
+    motivationsScoreBoard.motivationsList = motivationsScoreBoard.motivationsList
+ 

@@ -19,7 +19,7 @@ class reportResponseData:
         self.motivationId = motivationId
         
 
-class userJourneyData:
+class UserJourneyData:
     def __init__(self, id = "", userResponses = [], motivations = []):
         self.id = id
         self.userResponses = userResponses.copy()
@@ -52,7 +52,7 @@ def main():
         userMail = userId + "@gmail.com"
         gateway.add_or_update_user(userId, userMail)
 
-        currUserJourneyReport = userJourneyData(id = userId)
+        currUserJourneyReport = UserJourneyData(id = userId)
         
         #2. start journey
         gateway.start_user_journey(userId)

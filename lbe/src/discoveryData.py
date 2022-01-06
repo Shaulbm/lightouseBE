@@ -2,25 +2,34 @@ from collections import namedtuple
 import json
 import jsonpickle
 
+class UserDiscoveryJourneyState:
+    NEW = 'new'
+    STANDARD_QUESTIONER = 'standard'
+    TAIL_RESOLUTION = 'tail'
+    GAP_SCORING = 'gap'
+    DONE = 'done'
+
 class UserDiscoveryJourneyData:
-    def __init__(self, id ="", journeyId = "", userId = "", status = "", currBatch = "", lastAnsweredQuestion = "", userResponses = {}):
+    def __init__(self, id ="", journeyId = "", userId = "", state = UserDiscoveryJourneyState.NEW, currBatch = "", lastAnsweredQuestion = "", userResponses = {}, motivationsGap = {}):
         self.id = id
         self.journeyId = journeyId
         self.userId = userId
-        self.status = status
+        self.state = state
         self.currBatch = currBatch
         self.lastAnsweredQuestion = lastAnsweredQuestion
         self.userResponses = userResponses
+        self.motivationsGap = motivationsGap
 
     def buildFromJSON (self, jsonData):
         try:
             self.id = jsonData["id"]
             self.journeyId = jsonData["journeyId"]
             self.userId = jsonData["userId"]
-            self.status = jsonData["status"]
+            self.state = jsonData["state"]
             self.currBatch = jsonData["currBatch"]
             self.lastAnsweredQuestion = jsonData["lastAnsweredQuestion"]
             self.userResponses = jsonData["userResponses"]
+            self.motivationsGap = jsonData["motivationsGap"]
 
         except Exception as err:
             #log this
@@ -67,7 +76,7 @@ class DiscoveryBatchData:
 
         return jsonObject
 
-class TailResolutionData:
+class JourneyResolutionData:
     def __init__(self, motivationsToResolveCount = 0, motivationsList = []):
         self.motivationsToResovleCount = motivationsToResolveCount
         self.motivationsList = motivationsList.copy()

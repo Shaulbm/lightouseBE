@@ -17,6 +17,8 @@ class Gender:
     MALE = 1
     FEMALE = 2
 
+
+
 class TextData:
     def __init__(self, parentId = "", Id = "", contentText = ""):
         self.parentId = parentId
@@ -38,6 +40,12 @@ class TextData:
         except Exception as err:
             #log this
             raise TypeError(str.format("failed to load text data from JSON, data is {0}, error is {1}", jsonData, err))
+
+class UserMotivationData:
+    def __init__(self, motivationId = "", journeyScore = 0.0, gapFactor = 0.0):
+        self.motivationId = motivationId
+        self.journeyScore = journeyScore
+        self.gapFactor = gapFactor     
 
 class UserData:
     def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, mailAddress = "", motivations = {}, personsOfInterest = []):

@@ -8,7 +8,7 @@ from google.oauth2.credentials import Credentials
 from questionsData import QuestionData, ResponseData
 import mongoDB
 from generalData import TextData
-from TestDiscoveryJourney import userJourneyData, reportResponseData
+from TestDiscoveryJourney import UserJourneyData, reportResponseData
 
 # If modifying these scopes, delete the file token.json.
 # SCOPES = ['https://www.googleapis.com/auth/spreadsheets']

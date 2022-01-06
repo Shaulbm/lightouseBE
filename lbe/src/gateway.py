@@ -11,6 +11,12 @@ from pydantic import BaseModel
 
 router = APIRouter()
 
+class UserMotivationData:
+    def __init__(self, motivationId, questionerScore, gapScore):
+        self.motivationId = motivationId
+        self.questionerScore =  questionerScore
+        self.gapScore = gapScore
+
 class LoginData(BaseModel):
     userMail: str
     password: str

@@ -4,6 +4,7 @@ import json
 class QuestionsType:
     REGULAR = 1
     TEXT_ONLY = 2
+    MOTIVATION_GAP = 3
 
 class ResponseData:
     def __init__(self, id = "", idx = 0, dependency = "", questionId="", motivationId="", motviationScore=0.0, responseText = ""):
@@ -36,7 +37,7 @@ class ResponseData:
             self.responseText = jsonData["responseText"]
 
 class QuestionData:
-    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, type = QuestionsType.REGULAR, questionText = "", userResponsesNo = 0, imageUrl = "", possibleResponses = []):
+    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, type = QuestionsType.REGULAR, questionText = "", userResponsesNo = 0, motivationId= "", imageUrl = "", possibleResponses = []):
         self.id = id
         self.batchId = batchId
         self.batchIdx = batchIdx
@@ -44,6 +45,7 @@ class QuestionData:
         self.setIdx = setIdx
         self.type = type
         self.userResponsesNo = userResponsesNo
+        self.motivationId = motivationId
         self.imageURL = imageUrl
         self.questionText = questionText
         self.possibleResponses = possibleResponses.copy()
@@ -63,6 +65,7 @@ class QuestionData:
         self.setIdx = int(jsonData["setIdx"])
         self.type = int (jsonData["type"]) 
         self.userResponsesNo = int(jsonData["userResponsesNo"])
+        self.motivationId = jsonData["motivationId"]
         self.imageURL = jsonData["imageURL"]
 
         if (localedTextDic is not None):
