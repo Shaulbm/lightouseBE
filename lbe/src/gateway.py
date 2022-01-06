@@ -112,7 +112,7 @@ def continue_user_journey(request: Request, userId):
 @router.get("/journeyGetNextBatch")
 def get_next_questions_batch(request: Request, userId):
     userContextDetails = get_user_context(request)
-    questionsBatch = userDiscoveryJourney.getNextQuestionsBatch(userId, userContext=userContextDetails)
+    questionsBatch = userDiscoveryJourney.getQuestionsBatch(userId, userContext=userContextDetails)
     
     return questionsBatch
 

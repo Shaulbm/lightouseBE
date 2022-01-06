@@ -2,6 +2,7 @@ from hashlib import new
 import threading
 from pymongo import MongoClient
 from pymongo.common import partition_node
+from lbe.src.questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData
@@ -498,6 +499,29 @@ class MoovDBInstance(metaclass=Singleton):
             questionsInBatch.append (self.getQuestion(currQuestion["id"], userContext))
 
         return questionsInBatch
+
+    def getQuestionsByMotivationsIds(self, motivationsIdsList, userContext : UserContextData):
+        db = self.getDatabase()
+        questionsCollection = db["questions"]
+
+        questionsFilter = {'motivationId': {'$in': motivationsIdsList}, 'type' : QuestionsType.MOTIVATION_GAP}
+
+        foundQuestions = questionsCollection.find(questionsFilter)
+
+        questionsList = []
+        for foundQuestion in foundQuestions:
+
+            questionTextsDic = None
+            if (userContext.locale != Locale.UNKNOWN):
+                # get id's for text quesry
+                questionTextsDic = self.getTextDataByParent(foundQuestion.id, userContext.locale, userContext.gender)
+
+            currQuestionDetails = QuestionData()
+            currQuestionDetails.buildFromJSON(foundQuestion, questionTextsDic)
+
+            questionsList.append(currQuestionDetails)
+
+        return questionsList
 
     def getUserDiscoveryJourney(self, userId):
         db = self.getDatabase()

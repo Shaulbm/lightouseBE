@@ -1,5 +1,7 @@
 import threading
 from typing import Text
+
+from pymongo.common import RETRY_READS
 from mongoDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData
 from singleton import Singleton
@@ -211,6 +213,9 @@ class MoovLogic(metaclass=Singleton):
 
     def getQuestionsFromBatch(self, batchId, userContext:UserContextData):
         return self.dataBaseInstance.getQuestionsFromBatch(batchId=batchId, userContext=userContext)
+
+    def getQuestionsByMotivationsIds (self, motivationsIdsList):
+        return self.dataBaseInstance.getQuestionsByMotivationsIds(motivationsIdsList)
 
     def getUserDiscoveryJourney(self, userId):
         return self.dataBaseInstance.getUserDiscoveryJourney(userId=userId)

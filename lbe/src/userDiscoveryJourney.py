@@ -3,6 +3,7 @@ from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, JourneyResolutionData, UserDiscoveryJourneyState
 from generalData import UserContextData, UserMotivationData
+from lbe.src.discoveryData import DiscoveryBatchData
 from mongoLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
@@ -63,7 +64,7 @@ def getCurrentQuestionsBatch (userId, userContext: UserContextData):
 
     return nextBatchDetails
 
-def getNextQuestionsBatch (userId, userContext : UserContextData):
+def getQuestionsBatch (userId, userContext : UserContextData):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 
@@ -81,6 +82,23 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
     # it might be that we still don't have a current batch as we just started
     if (currBatchDetails is not None):
         currBatchIdx = currBatchDetails.batchIdx
+        #check if the user have finished answering the questions in this batch (it might be that he have stopped and continued)
+        questionsList = dbInstance.getQuestionsFromBatch(currBatchDetails.batchId, userContext=userContext)
+        lastQuestionIdx = len(questionsList)
+        lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
+
+        if (lastQuestion is not None and lastQuestion.id != discoveryJourneyDetails.lastAnsweredQuestion):
+            # the user have not finished to answer all the questions in the current batch, return the remaining questions
+            remainingQuestions = []
+
+            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion)
+
+            for currQuestion in questionsList:
+                if currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
+                    # if the currQuestions Idx is bigger than the last questions' Idx  - add them to the remaning questions list
+                    remainingQuestions.append (currQuestion)
+
+            return remainingQuestions
 
     nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1, userContext=userContext)
 
@@ -102,7 +120,7 @@ def getNextQuestionsBatch (userId, userContext : UserContextData):
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         elif discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER or discoveryJourneyDetails.state == UserDiscoveryJourneyState.TAIL_RESOLUTION:
             # user is done with the questioneer (either with or without tail)
-            gapScoringQuestions = createGapScoringQuestions(motivationScoreBoard)
+            questionsList = createGapScoringQuestions(motivationsTail, userContext)
 
             discoveryJourneyDetails.state = UserDiscoveryJourneyState.GAP_SCORING
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
@@ -168,7 +186,7 @@ def setUserScoredResponse (userId, questionId, score, userContext: UserContextDa
     currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=userContext)
 
     if (currQuestionDetails.type == QuestionsType.MOTIVATION_GAP):
-        discoveryJourneyDetails.motivationsGap[currQuestionDetails.possibleResponses[0].motivationId] = convertResponseScoreToMotivationGapScore(score=score) 
+        discoveryJourneyDetails.motivationsGap[currQuestionDetails.motivationId] = convertResponseScoreToMotivationGapScore(score=score) 
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
 def setUserMultipleResponses (userId, questionId, responses):
@@ -295,6 +313,6 @@ def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserC
 
     return tailResolutionQuestion
 
-def createGapScoringQuestions (motivationsScoreBoard : JourneyResolutionData):
-    motivationsScoreBoard.motivationsList = motivationsScoreBoard.motivationsList
- 
+def createGapScoringQuestions (self, motivationsResolutionDetails : JourneyResolutionData, userContext: UserContextData):
+    dbInstance = MoovLogic()
+    return dbInstance.getQuestionsByMotivationsIds(motivationsResolutionDetails.motivationsList)
