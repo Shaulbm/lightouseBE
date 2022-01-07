@@ -3,7 +3,7 @@ from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, JourneyResolutionData, UserDiscoveryJourneyState
 from generalData import UserContextData, UserMotivationData
-from lbe.src.discoveryData import DiscoveryBatchData
+from discoveryData import DiscoveryBatchData
 from mongoLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
@@ -87,11 +87,11 @@ def getQuestionsBatch (userId, userContext : UserContextData):
         lastQuestionIdx = len(questionsList)
         lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
 
-        if (lastQuestion is not None and lastQuestion.id != discoveryJourneyDetails.lastAnsweredQuestion):
+        if (lastQuestion is not None and lastQuestion.batchId != 'B99' and lastQuestion.id != discoveryJourneyDetails.lastAnsweredQuestion):
             # the user have not finished to answer all the questions in the current batch, return the remaining questions
             remainingQuestions = []
 
-            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion)
+            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext)
 
             for currQuestion in questionsList:
                 if currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
@@ -117,6 +117,7 @@ def getQuestionsBatch (userId, userContext : UserContextData):
             questionsList.append(tailResQuestion) 
 
             discoveryJourneyDetails.state = UserDiscoveryJourneyState.TAIL_RESOLUTION
+            discoveryJourneyDetails.currBatch = tailResQuestion.batchId
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         elif discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER or discoveryJourneyDetails.state == UserDiscoveryJourneyState.TAIL_RESOLUTION:
             # user is done with the questioneer (either with or without tail)

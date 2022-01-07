@@ -2,7 +2,7 @@ from hashlib import new
 import threading
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from lbe.src.questionsData import QuestionsType
+from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
 from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData

@@ -206,7 +206,7 @@ class MoovLogic(metaclass=Singleton):
         return userDetails
 
     def insertOrUpdateQuestion(self, currQuestionData):
-        self.insertOrUpdateQuestion(currQuestionData=currQuestionData)
+        self.dataBaseInstance.insertOrUpdateQuestion(currQuestionData=currQuestionData)
 
     def getQuestion(self, id, userContext: UserContextData):
         return self.dataBaseInstance.getQuestion(id=id, userContext=userContext)
