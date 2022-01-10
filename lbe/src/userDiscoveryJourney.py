@@ -1,3 +1,4 @@
+import json
 from threading import current_thread
 from pymongo import response
 from pymongo.mongo_client import MongoClient
@@ -83,30 +84,57 @@ def getQuestionsBatch (userId, userContext : UserContextData):
     if (currBatchDetails is not None):
         currBatchIdx = currBatchDetails.batchIdx
         #check if the user have finished answering the questions in this batch (it might be that he have stopped and continued)
-        questionsList = dbInstance.getQuestionsFromBatch(currBatchDetails.batchId, userContext=userContext)
-        lastQuestionIdx = len(questionsList)
-        lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
-
-        if (lastQuestion is not None and lastQuestion.batchId != 'B99' and lastQuestion.id != discoveryJourneyDetails.lastAnsweredQuestion):
-            # the user have not finished to answer all the questions in the current batch, return the remaining questions
+        # user Context is set to None - ad hoc questions have no localaziation option so bypass the getQuestion buildFromJson issues 
+        if (currBatchDetails.batchId == 'B99' and 'Q99' not in  discoveryJourneyDetails.lastAnsweredQuestion):
             remainingQuestions = []
 
-            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext)
-
-            for currQuestion in questionsList:
-                if currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
-                    # if the currQuestions Idx is bigger than the last questions' Idx  - add them to the remaning questions list
-                    remainingQuestions.append (currQuestion)
+            #the user broke from the journey in the tail resolution part
+            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext=None)
+            
+            remainingQuestions.append (lastAnsweredQuestionDetails)
 
             return remainingQuestions
+        else:
 
-    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1, userContext=userContext)
+            userRespondedLastBatchQuestion = False
+
+            if (currBatchDetails.batchId == 'B99'):
+                if (discoveryJourneyDetails.tailResolutionQuestionId == discoveryJourneyDetails.lastAnsweredQuestion):
+                    userRespondedLastBatchQuestion = True
+            else:
+                questionsList = dbInstance.getQuestionsFromBatch(currBatchDetails.batchId, userContext=None)
+                lastQuestionIdx = len(questionsList)
+                lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
+                if (lastQuestion is not None and lastQuestion.id == discoveryJourneyDetails.lastAnsweredQuestion):
+                    userRespondedLastBatchQuestion = True
+            
+            if (not userRespondedLastBatchQuestion):         
+                # the user have not finished to answer all the questions in the current batch, return the remaining questions
+                remainingQuestions = []
+
+                lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext)
+
+                for currQuestion in questionsList:
+                    if currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
+                        # if the currQuestions Idx is bigger than the last questions' Idx  - add them to the remaning questions list
+                        remainingQuestions.append (currQuestion)
+
+                return remainingQuestions
+    else:
+        #curr batch details is none - this is the first time we get the batch request
+        discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
+    
+    nextBatchDetails = None
+    
+    if (discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER):
+        # this is an on going regular questioner - get next questions batch
+        nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchIdx + 1, userContext=userContext)
 
     questionsList = []
 
     if (nextBatchDetails is None):
         #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
-        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userContext=userContext)
+        motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userContext=None)
 
         motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
 
@@ -118,6 +146,7 @@ def getQuestionsBatch (userId, userContext : UserContextData):
 
             discoveryJourneyDetails.state = UserDiscoveryJourneyState.TAIL_RESOLUTION
             discoveryJourneyDetails.currBatch = tailResQuestion.batchId
+            discoveryJourneyDetails.tailResolutionQuestionId = tailResQuestion.id
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         elif discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER or discoveryJourneyDetails.state == UserDiscoveryJourneyState.TAIL_RESOLUTION:
             # user is done with the questioneer (either with or without tail)
@@ -149,6 +178,7 @@ def getQuestionsBatch (userId, userContext : UserContextData):
                 endUserJourney(userId, topFiveMotivations)
     else:
         #discovery journey is on going - just get the next batch
+        discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
  
         discoveryJourneyDetails.currBatch = nextBatchDetails.batchId
         #updaing user discovery journey
@@ -204,6 +234,7 @@ def setUserMultipleResponses (userId, questionId, responses):
             discoveryJourneyDetails.userResponses[currQuestionId] = currResponse.id
             
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
+
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)    
 
 def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
@@ -215,6 +246,7 @@ def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
     motivationsIds = dbInstance.getAllMotivationsIds()
 
     # create a dict of {MotivationId, Score}
+    motivationsScoreBoard = {}
     motivationsScoreBoard = dict.fromkeys(motivationsIds, 0)
 
     for currQuestionId in userDiscoveryJourney.userResponses:
@@ -226,6 +258,7 @@ def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
              #we need to extract the question from the list remove the suffix _1 / _2 etc.
             actualCurrQuestionId = currQuestionId[:currQuestionId.rfind('_')]
 
+        # no need for localized text
         currQuestion = dbInstance.getQuestion(id=actualCurrQuestionId, userContext=userContext)
         
         foundResponseData = None
@@ -246,32 +279,32 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
     scoreList = list(sortedScoreBoard.values())
     motivationsList = list(sortedScoreBoard)
 
-    
     if (scoreList[4] > scoreList[5]):
         #no tail - return empty object
-        return JourneyResolutionData()
+        motivationsTopList = motivationsList[:5].copy()
+        return JourneyResolutionData(motivationsToResolveCount=0, motivationsList=motivationsTopList)
 
-    motivationsTail = []
+    motivationsTopList = []
     currScoreIndex = 0
     #start from 1 as we have at least one to resolve
     motivationsToResolveCount = 1
-    motivationsTail.append(motivationsList[4])
+    motivationsTopList.append(motivationsList[4])
     #check score tail
     while currScoreIndex < len(sortedScoreBoard):
         if (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex < 4):
             # before the top 5
-            motivationsTail.append(motivationsList[currScoreIndex])
+            motivationsTopList.append(motivationsList[currScoreIndex])
             motivationsToResolveCount += 1
         elif (scoreList[currScoreIndex] == scoreList[4] and currScoreIndex > 4):
             # after the top 5
-            motivationsTail.append(motivationsList[currScoreIndex])
+            motivationsTopList.append(motivationsList[currScoreIndex])
         elif (scoreList[4] > scoreList[currScoreIndex] and currScoreIndex > 4):
             # we are out of the tail
             break
       
         currScoreIndex += 1
 
-    tailResult = JourneyResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTail)
+    tailResult = JourneyResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTopList)
     return tailResult
 
 def endUserJourney (userId, userMotivationScoreBoard):
@@ -314,6 +347,6 @@ def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserC
 
     return tailResolutionQuestion
 
-def createGapScoringQuestions (self, motivationsResolutionDetails : JourneyResolutionData, userContext: UserContextData):
+def createGapScoringQuestions (motivationsResolutionDetails : JourneyResolutionData, userContext: UserContextData):
     dbInstance = MoovLogic()
-    return dbInstance.getQuestionsByMotivationsIds(motivationsResolutionDetails.motivationsList)
+    return dbInstance.getMotivationGapQuestionsByMotivationsIds(motivationsResolutionDetails.motivationsList, userContext=userContext)

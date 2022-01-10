@@ -10,13 +10,14 @@ class UserDiscoveryJourneyState:
     DONE = 'done'
 
 class UserDiscoveryJourneyData:
-    def __init__(self, id ="", journeyId = "", userId = "", state = UserDiscoveryJourneyState.NEW, currBatch = "", lastAnsweredQuestion = "", userResponses = {}, motivationsGap = {}):
+    def __init__(self, id ="", journeyId = "", userId = "", state = UserDiscoveryJourneyState.NEW, currBatch = "", lastAnsweredQuestion = "", tailResolutionQuestionId = "",userResponses = {}, motivationsGap = {}):
         self.id = id
         self.journeyId = journeyId
         self.userId = userId
         self.state = state
         self.currBatch = currBatch
         self.lastAnsweredQuestion = lastAnsweredQuestion
+        self.tailResolutionQuestionId = tailResolutionQuestionId
         self.userResponses = userResponses
         self.motivationsGap = motivationsGap
 
@@ -28,6 +29,7 @@ class UserDiscoveryJourneyData:
             self.state = jsonData["state"]
             self.currBatch = jsonData["currBatch"]
             self.lastAnsweredQuestion = jsonData["lastAnsweredQuestion"]
+            self.tailResolutionQuestionId = jsonData["tailResolutionQuestionId"]
             self.userResponses = jsonData["userResponses"]
             self.motivationsGap = jsonData["motivationsGap"]
 

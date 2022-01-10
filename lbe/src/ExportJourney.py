@@ -65,12 +65,18 @@ def writeJourneyTestReport(journeysReport):
     headlineRow = ["userId"]
 
     for currResponse in journeysReport[0].userResponses:
-        if "Q999" not in currResponse.questionId:
+        if "Q999" not in currResponse.questionId and "QM" not in currResponse.questionId:
+            #skip all tail and gap questions
             headlineRow.append(currResponse.questionId)            
 
     idx = 1
     while idx < 6:
         headlineRow.append("Q999_" + str(idx))
+        idx += 1
+
+    idx = 1
+    while idx < 6:
+        headlineRow.append("QM_" + str(idx))
         idx += 1
 
     idx = 1
@@ -85,17 +91,31 @@ def writeJourneyTestReport(journeysReport):
     for currJourney in journeysReport:
         newRow = []
         newRow.append(currJourney.id)
+        tailData = []
+        motivationGapData = []
         for currResponse in currJourney.userResponses:
-            if "Q999" not in currResponse.questionId:
+            if "Q999" not in currResponse.questionId and "QM" not in currResponse.questionId:
                 newRow.append(currResponse.idx)
+            elif "Q999" in currResponse.questionId:
+                #tail question
+                tailData.append(currResponse.motivationId)
             else:
-                newRow.append(currResponse.motivationId)
+                #motivation Gap question - build the result to be M002(1)
+                motivationGapData.append(currResponse.motivationId + '('+str(currResponse.idx)+')')
+
+        #done with Questions:
+        for currMotivationGapData in tailData:
+            newRow.append(currMotivationGapData)
 
         #missing Cells 60 Questions + max 5 for tail + userId
         missingIdx = 66 - len(newRow)
         while missingIdx > 0:
             newRow.append("")
             missingIdx -= 1
+
+        # add motivations Gap questions
+        for currMotivationGapData in motivationGapData:
+            newRow.append(currMotivationGapData)
 
         for currMotivation in currJourney.motivations:
             newRow.append(currMotivation)

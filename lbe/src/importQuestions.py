@@ -91,6 +91,7 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
     newQuestion.setIdx = int(questionsDataDict["setIdx"])
     newQuestion.type = int(questionsDataDict["type"])
     newQuestion.userResponsesNo = int (questionsDataDict["userResponsesNo"])
+    newQuestion.motivationId = questionsDataDict["motivationId"]
     newQuestion.questionText = newQuestion.id + "_1"
     newQuestion.imageURL = questionsDataDict["imageURL"]
     newQuestion.possibleResponses = []

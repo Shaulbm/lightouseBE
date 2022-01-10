@@ -468,9 +468,9 @@ class MoovDBInstance(metaclass=Singleton):
 
         questionTextsDic = None
         
-        print ('in getQuestion user Context is ', userContext.toJSON())
+        # print ('in getQuestion user Context is ', userContext.toJSON())
 
-        if (userContext.locale != Locale.UNKNOWN):
+        if (userContext is not None and userContext.locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = ([p["id"] for p in questionsDataJSON["possibleResponses"]])
             parentsIds.append(questionsDataJSON["id"])
@@ -500,7 +500,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return questionsInBatch
 
-    def getQuestionsByMotivationsIds(self, motivationsIdsList, userContext : UserContextData):
+    def getMotivationGapQuestionsByMotivationsIds(self, motivationsIdsList, userContext : UserContextData):
         db = self.getDatabase()
         questionsCollection = db["questions"]
 
@@ -514,7 +514,7 @@ class MoovDBInstance(metaclass=Singleton):
             questionTextsDic = None
             if (userContext.locale != Locale.UNKNOWN):
                 # get id's for text quesry
-                questionTextsDic = self.getTextDataByParent(foundQuestion.id, userContext.locale, userContext.gender)
+                questionTextsDic = self.getTextDataByParent(foundQuestion["id"], userContext.locale, userContext.gender)
 
             currQuestionDetails = QuestionData()
             currQuestionDetails.buildFromJSON(foundQuestion, questionTextsDic)

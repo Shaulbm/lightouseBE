@@ -9,10 +9,11 @@ import jsonpickle
 import json
 from generalData import UserData, UserContextData, Locale, Gender, UserRoles
 import ExportJourney
+from questionsData import QuestionsType
 from mongoLogic import MoovLogic
 import userDiscoveryJourney as discovery
 
-TESTS_NUMBER = 1
+TESTS_NUMBER = 250
 
 class reportResponseData:
     def __init__(self, id = "", idx = 0, questionId = "", motivationId = ""):
@@ -82,6 +83,11 @@ def main():
                 # get curr idx, compare to last set id to know whther to remove the response from possible answers
                 currQuestion = getQuestionByIdx(questionsBatch, sortedQuestionsIdx[currQuestionIdx])
 
+                if (currQuestion.type == QuestionsType.TEXT_ONLY):
+                    #this is just a notification to the user - skip iteration
+                    currQuestionIdx +=1
+                    continue
+
                 if currQuestion.batchId !="B99" and currQuestion.batchId != "B100":
                      # this is a regular question (not tail or motivation gap) 
                     currQuestionPossibleResponses = []
@@ -128,8 +134,8 @@ def main():
                     
                     currUserResponseReport = reportResponseData()
                     currUserResponseReport.questionId = currQuestion.id
-                    currUserResponseReport.id = str(motivationGapScore)
-                    currUserResponseReport.idx = "0"
+                    currUserResponseReport.id = currQuestion.id
+                    currUserResponseReport.idx = motivationGapScore
                     currUserResponseReport.motivationId = currQuestion.motivationId
 
                     currUserJourneyReport.userResponses.append (currUserResponseReport)
@@ -157,4 +163,4 @@ def exportDataToExcel(usersJourneysReport):
     #     print (currJourneyReport)
 
 if __name__ == '__main__':
-    main()
+        main()

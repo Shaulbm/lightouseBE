@@ -214,8 +214,8 @@ class MoovLogic(metaclass=Singleton):
     def getQuestionsFromBatch(self, batchId, userContext:UserContextData):
         return self.dataBaseInstance.getQuestionsFromBatch(batchId=batchId, userContext=userContext)
 
-    def getQuestionsByMotivationsIds (self, motivationsIdsList):
-        return self.dataBaseInstance.getQuestionsByMotivationsIds(motivationsIdsList)
+    def getMotivationGapQuestionsByMotivationsIds (self, motivationsIdsList, userContext : UserContextData):
+        return self.dataBaseInstance.getMotivationGapQuestionsByMotivationsIds(motivationsIdsList, userContext=userContext)
 
     def getUserDiscoveryJourney(self, userId):
         return self.dataBaseInstance.getUserDiscoveryJourney(userId=userId)
