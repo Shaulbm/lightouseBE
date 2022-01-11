@@ -33,7 +33,7 @@ class MoovDBInstance(metaclass=Singleton):
     def getDatabase(self):
 
         if (self.dataBaseInstance is None):
-            connectionString = "mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+            connectionString = "mongodb://localhost:27017/?readPreference=primary&appname=moovDB%20Compass&directConnection=true&ssl=false"
             client = MongoClient(connectionString)
             self.dataBaseInstance = client.moov
 
@@ -878,6 +878,23 @@ class MoovDBInstance(metaclass=Singleton):
                     foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
 
         return foundSubordinatesDataList
+
+    #return the users that the given UserId is in their POI
+    def getInterestedusers(self, userId):
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        usersFillter = {"personsOfInterest" : userId}
+        foundUsersRaw = usersCollection.find(usersFillter)
+
+        foundUsersDetails = []
+
+        for currUserJSON in foundUsersRaw:
+            currUserDetails = UserData()
+            currUserDetails.fromJSON(currUserJSON)
+            foundUsersDetails.append(currUserDetails)
+
+        return foundUsersDetails
 
     def activateIssueMoov (self, moovId, userId, counterpartId, priority, userContext: UserContextData):
         db = self.getDatabase();

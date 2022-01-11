@@ -2,7 +2,9 @@ import threading
 from typing import Text
 
 from pymongo.common import RETRY_READS
-from mongoDB import MoovDBInstance
+from environmentProvider import EnvKeys
+from notificationsProvider import NotificationsProvider
+from moovDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData
 from singleton import Singleton
 from loguru import logger
@@ -10,7 +12,7 @@ import datetime
 import hashlib
 from pathlib import Path
 from cache import Cache
-import time
+import environmentProvider as ep
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
@@ -26,6 +28,7 @@ class MoovLogic(metaclass=Singleton):
         self.userContextLock = threading.Lock()
         self.usersContext = {}
         self.dbCache = Cache(self.dataBaseInstance)
+        self.notificationsProvider = NotificationsProvider()
 
     def lock(self):
         self.counterLock.acquire()
@@ -138,7 +141,15 @@ class MoovLogic(metaclass=Singleton):
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
+        # get user details prior to potentially adding it to the DB
+        existingUser = self.getUser(currUserData.id)
+
         self.dataBaseInstance.insertOrUpdateUser(currUserData=currUserData)
+
+        if existingUser is None:
+            #this is a new user - so we need to set a default password for him, and send a welcome email
+            self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.defaults_initialUserPassword))
+            self.notificationsProvider.sendWelcomeMail(userDetails=currUserData)
 
     def setMotivationsToUSer (self, id, motivations):
         self.dataBaseInstance.setMotivationsToUSer(id=id, motivations=motivations)
@@ -327,3 +338,24 @@ class MoovLogic(metaclass=Singleton):
     
     def getAllMoovsPlannedToEnd (self, timeStamp):
         return self.dataBaseInstance.getAllMoovsPlannedToEnd(timeStamp=timeStamp)
+
+    def userJourneyEnded (self, userId):
+        # gather all the relevant users to notify
+        #   1. Direct Manager
+        #   2. All those which these users are POI on
+        # 
+        # send notifications to all
+        usersToNotify = []
+        currUser = self.getUser(userId)
+        currUserDirectManager = self.getUser(currUser.parentId)
+        currUserPassivePOI = self.getInterestedusers(currUser.id)
+
+        usersToNotify += currUserPassivePOI
+        usersToNotify.append(currUserDirectManager)        
+
+        # notify to all who are interested in this user
+        for userToNotify in usersToNotify:
+            self.notificationsProvider.sendDiscoveryDoneMail(notifyTo=userToNotify, userWhoEndedDiscoveryDetails=currUser)    
+    
+    def getInterestedusers(self, userId):
+        return self.dataBaseInstance.getInterestedusers(userId)

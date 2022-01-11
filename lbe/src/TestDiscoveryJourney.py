@@ -10,7 +10,7 @@ import json
 from generalData import UserData, UserContextData, Locale, Gender, UserRoles
 import ExportJourney
 from questionsData import QuestionsType
-from mongoLogic import MoovLogic
+from moovLogic import MoovLogic
 import userDiscoveryJourney as discovery
 
 TESTS_NUMBER = 250

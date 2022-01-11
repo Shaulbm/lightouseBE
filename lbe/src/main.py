@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import schedule
 from concurrent.futures import ThreadPoolExecutor
 import time
-from mongoLogic import MoovScheduler
+from moovLogic import MoovScheduler
 from schedule import every, repeat
 
 app = FastAPI()

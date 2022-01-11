@@ -5,7 +5,7 @@ from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, JourneyResolutionData, UserDiscoveryJourneyState
 from generalData import UserContextData, UserMotivationData
 from discoveryData import DiscoveryBatchData
-from mongoLogic import MoovLogic
+from moovLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
 from loguru import logger
@@ -317,6 +317,9 @@ def endUserJourney (userId, userMotivationScoreBoard):
 
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
+
+    # call Logic to perform post journey actions
+    dbInstance.userJourneyEnded(userId)
 
 def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserContextData):
     dbInstance = MoovLogic()

@@ -1,12 +1,12 @@
 from datetime import datetime
 from starlette.requests import Request
 from starlette.types import Scope
-from mongoLogic import MoovLogic
+from moovLogic import MoovLogic
 import main
 import gateway
 import time
 import uuid
-from mongoDB import MoovDBInstance
+from moovDB import MoovDBInstance
 import ExportJourney
 from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData
 from os import path
@@ -243,26 +243,26 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 
 # userDetail = dbInstance_1.getUser(id='U001')
 # createUsers(dbInstance_1)
-db.setMotivationsToUSer("U001", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
-                                            "M001": {"motivationId" : "M001", "journeyScore" : 3.3, "gapFactor": -2}, 
-                                            "M002": {"motivationId" : "M002", "journeyScore" : 3.1, "gapFactor": -1}, 
-                                            "M003": {"motivationId" : "M003", "journeyScore" : 2, "gapFactor": 1}, 
-                                            "M004": {"motivationId" : "M004", "journeyScore" : 1.7, "gapFactor": 2},
-                                            "M005": {"motivationId" : "M004", "journeyScore" : 1.3, "gapFactor": 2}})
+# db.setMotivationsToUSer("U001", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
+#                                             "M001": {"motivationId" : "M001", "journeyScore" : 3.3, "gapFactor": -2}, 
+#                                             "M002": {"motivationId" : "M002", "journeyScore" : 3.1, "gapFactor": -1}, 
+#                                             "M003": {"motivationId" : "M003", "journeyScore" : 2, "gapFactor": 1}, 
+#                                             "M004": {"motivationId" : "M004", "journeyScore" : 1.7, "gapFactor": 2},
+#                                             "M005": {"motivationId" : "M004", "journeyScore" : 1.3, "gapFactor": 2}})
 
-db.setMotivationsToUSer("UA06", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
-                                            "M001": {"motivationId" : "M001", "journeyScore" : 3.3, "gapFactor": -2}, 
-                                            "M002": {"motivationId" : "M002", "journeyScore" : 3.1, "gapFactor": -1}, 
-                                            "M013": {"motivationId" : "M013", "journeyScore" : 2, "gapFactor": 1}, 
-                                            "M014": {"motivationId" : "M014", "journeyScore" : 1.7, "gapFactor": 2},
-                                            "M023": {"motivationId" : "M023", "journeyScore" : 1.3, "gapFactor": 2}})
+# db.setMotivationsToUSer("UA06", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
+#                                             "M001": {"motivationId" : "M001", "journeyScore" : 3.3, "gapFactor": -2}, 
+#                                             "M002": {"motivationId" : "M002", "journeyScore" : 3.1, "gapFactor": -1}, 
+#                                             "M013": {"motivationId" : "M013", "journeyScore" : 2, "gapFactor": 1}, 
+#                                             "M014": {"motivationId" : "M014", "journeyScore" : 1.7, "gapFactor": 2},
+#                                             "M023": {"motivationId" : "M023", "journeyScore" : 1.3, "gapFactor": 2}})
 
-db.setMotivationsToUSer("UA08", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
-                                            "M023": {"motivationId" : "M023", "journeyScore" : 3.3, "gapFactor": -2}, 
-                                            "M028": {"motivationId" : "M028", "journeyScore" : 3.1, "gapFactor": -1}, 
-                                            "M021": {"motivationId" : "M021", "journeyScore" : 2, "gapFactor": 1}, 
-                                            "M007": {"motivationId" : "M007", "journeyScore" : 1.7, "gapFactor": 2},
-                                            "M011": {"motivationId" : "M011", "journeyScore" : 1.3, "gapFactor": 2}})# dbInstance_1.setMotivationsToUSer("UA08", {"M023" : 7, "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"})
+# db.setMotivationsToUSer("UA08", {"M001": {"motivationId" : "", "journeyScore" : 3.5, "gapFactor": 0}, 
+#                                             "M023": {"motivationId" : "M023", "journeyScore" : 3.3, "gapFactor": -2}, 
+#                                             "M028": {"motivationId" : "M028", "journeyScore" : 3.1, "gapFactor": -1}, 
+#                                             "M021": {"motivationId" : "M021", "journeyScore" : 2, "gapFactor": 1}, 
+#                                             "M007": {"motivationId" : "M007", "journeyScore" : 1.7, "gapFactor": 2},
+#                                             "M011": {"motivationId" : "M011", "journeyScore" : 1.3, "gapFactor": 2}})# dbInstance_1.setMotivationsToUSer("UA08", {"M023" : 7, "M028" : "12", "M021" : "19", "M007" : "8", "M011" : "12"})
 # dbInstance_1.setMotivationsToUSer("UA06", {"M001":3.5, "M002": 3.3, "M013": 3.1, "M014": 2, "M023": 1.7})
 # userDetails = dbInstance_1.userLogin('U001@testUser.com', '123456')
 # motivationDetails = dbInstance_1.getMotivation('M023', userContext)
@@ -294,9 +294,17 @@ db.setMotivationsToUSer("UA08", {"M001": {"motivationId" : "", "journeyScore" : 
 # subjects = db.getAllSubjects(userContext)
 # issues = db.getAllIssues(userContext)
 
+
+
 # moovInstance = db.activateIssueMoov('MO0002', 'U001', 'UA06', userContext)
 # moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
 # jsonData = moovInstances[1].toJSON()
 
 # foundMoovs = db.getAllMoovsPlannedToEnd(datetime.utcnow())
+# users = db.getInterestedusers('UA11')
+
+newUser = UserData (id = "UT01", mailAddress="shaul.ben.maor@gmail.com", firstName= "john", familyName="doe", orgId="O003", locale=Locale.LOCALE_HE_IL)
+# dbInstance = moovDBInstance()
+# dbInstance.insertOrUpdateUser(newUser)
+db.insertOrUpdateUser(newUser)
 print ("Done")

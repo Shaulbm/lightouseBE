@@ -2,7 +2,7 @@ from fastapi import Header, APIRouter, Request
 from fastapi.responses import FileResponse
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
-from mongoLogic import MoovLogic
+from moovLogic import MoovLogic
 import userDiscoveryJourney
 from generalData import UserRoles, Gender, Locale, UserContextData
 from loguru import logger

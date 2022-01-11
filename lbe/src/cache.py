@@ -3,7 +3,7 @@ import threading
 from common.rwLock import RWLock
 from generalData import UserContextData, UserData
 from motivationsData import MotivationData
-from mongoDB import MoovDBInstance
+from moovDB import MoovDBInstance
 
 TTL_M = 720 
 class BaseCacheItem:
