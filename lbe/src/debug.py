@@ -303,8 +303,17 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # foundMoovs = db.getAllMoovsPlannedToEnd(datetime.utcnow())
 # users = db.getInterestedusers('UA11')
 
-newUser = UserData (id = "UT01", mailAddress="shaul.ben.maor@gmail.com", firstName= "john", familyName="doe", orgId="O003", locale=Locale.LOCALE_HE_IL)
+# newUser = UserData (id = "UT01", mailAddress="shaul.ben.maor@gmail.com", firstName= "john", familyName="doe", orgId="O003", locale=Locale.LOCALE_HE_IL)
 # dbInstance = moovDBInstance()
 # dbInstance.insertOrUpdateUser(newUser)
-db.insertOrUpdateUser(newUser)
+# db.insertOrUpdateUser(newUser)
+main.startup()
+db.setUserContextData("U001")
+db.activateIssueMoov(moovId="MO0001", userId="U001", counterpartId="UA06", userContext=userContext)
+
+index = 0
+while True:
+    print ('iteration {}', index)
+    index += 1
+    time.sleep(3)
 print ("Done")

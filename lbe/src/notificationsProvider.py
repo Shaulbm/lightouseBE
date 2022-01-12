@@ -4,7 +4,7 @@ import json
 from generalData import UserData
 from generalData import Gender
 from singleton import Singleton
-from environmentProvider import EnvironmentProvider, EnvKeys
+from environmentProvider import EnvKeys
 import environmentProvider as ep
 
 class NotificationsProvider(metaclass=Singleton):
@@ -29,7 +29,7 @@ class NotificationsProvider(metaclass=Singleton):
       )
 
     def sendDiscoveryDoneMail(self, notifyTo, userWhoEndedDiscoveryDetails):
-      if ep.shouldSuppressNotifications:
+      if ep.shouldSuppressNotifications():
         return
 
       resp = self.client.send(
@@ -45,7 +45,7 @@ class NotificationsProvider(metaclass=Singleton):
       )
 
     def sendIssueMoovIsAboutToOverdue(self, moovOwner, moovCounterpart, moovName):
-        if ep.shouldSuppressNotifications:
+        if ep.shouldSuppressNotifications():
           return 
 
         resp = self.client.send(
@@ -62,7 +62,7 @@ class NotificationsProvider(metaclass=Singleton):
         )
 
     def sendConflictMoovIsAboutToOverdue(self, moovOwner, moovName):
-        if ep.shouldSuppressNotifications:
+        if ep.shouldSuppressNotifications():
           return 
 
         resp = self.client.send(

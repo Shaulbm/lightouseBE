@@ -74,6 +74,9 @@ class MoovLogic(metaclass=Singleton):
         finally:
             self.userContextLock.release()
 
+        if (userContextDetails is None):
+            userContextDetails = self.setUserContextData(userId)
+
         return userContextDetails
 
     def verifyTTLForObjects(self):
@@ -97,13 +100,13 @@ class MoovLogic(metaclass=Singleton):
         foundMoovs = self.getAllMoovsPlannedToEnd(datetime.datetime.utcnow() + datetime.timedelta(hours=timeToNotifyBeforeOverdue))
 
         for currMoov in foundMoovs:
-            userContext = self.getuserContext(currMoov.userId)
+            userContext = self.getUserContextData(currMoov.userId)
             currMoovData = self.getBaseMoov(currMoov.moovId, userContext)
 
             userDetails = self.getUser(currMoov.userId)
-
-            if (len(currMoov.counterpartIds) == 1):
-                counterpartDetails = self.getUser(currMoov.counterpartIds[0])
+                             
+            if (len(currMoov.counterpartsIds) == 1):
+                counterpartDetails = self.getUser(currMoov.counterpartsIds[0])
                 self.notificationsProvider.sendIssueMoovIsAboutToOverdue(moovOwner=userDetails,moovCounterpart=counterpartDetails, moovName=currMoovData.name)
             else:
                 self.notificationsProvider.sendConflictMoovIsAboutToOverdue(moovOwner=userDetails, moovName=currMoovData.name)

@@ -2,7 +2,8 @@ from hashlib import new
 import threading
 from pymongo import MongoClient
 from pymongo.common import partition_node
-from lbe.src.environmentProvider import EnvKeys
+from environmentProvider import EnvKeys
+import environmentProvider as ep
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
@@ -15,7 +16,6 @@ import anytree
 from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData, ExtendedConflictData
 import datetime
-import environmentProvider as ep
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
