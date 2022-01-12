@@ -19,7 +19,6 @@ import datetime
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
-DAYS_TO_COMPLETE_MOOV = 7
 
 class MoovDBInstance(metaclass=Singleton):
     def __init__(self):
@@ -944,7 +943,7 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.counterpartsIds = counterpartsIds.copy()
         newActiveMoov.priority = priority
         newActiveMoov.startDate = datetime.datetime.utcnow()
-        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=DAYS_TO_COMPLETE_MOOV)
+        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
