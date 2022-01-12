@@ -309,7 +309,7 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # db.insertOrUpdateUser(newUser)
 main.startup()
 db.setUserContextData("U001")
-db.activateIssueMoov(moovId="MO0001", userId="U001", counterpartId="UA06", userContext=userContext)
+# db.activateIssueMoov(moovId="MO0001", userId="U001", counterpartId="UA06", userContext=userContext)
 
 index = 0
 while True:

@@ -49,7 +49,7 @@ class NotificationsProvider(metaclass=Singleton):
           return 
 
         resp = self.client.send(
-          event="moov-soon-to-overdue",
+          event="issue-moov-soon-to-overdue",
           recipient=moovOwner.mailAddress,
           data={
             "userName": moovOwner.firstName,
@@ -66,7 +66,7 @@ class NotificationsProvider(metaclass=Singleton):
           return 
 
         resp = self.client.send(
-          event="moov-soon-to-overdue",
+          event="conflict-moov-soon-overdue",
           recipient=moovOwner.mailAddress,
           data={
             "userName": moovOwner.firstName,
