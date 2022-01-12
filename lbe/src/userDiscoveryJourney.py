@@ -44,8 +44,12 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
 def continueUserJourney (userId):
     dbInstance = MoovLogic()
-    return dbInstance.getUserDiscoveryJourney(userId)
+    userJourney = dbInstance.getUserDiscoveryJourney(userId)
 
+    if userJourney is None:
+        userJourney = startUserJourney(userId=userId)
+
+    return userJourney.id
 
 def getCurrentQuestionsBatch (userId, userContext: UserContextData):
     dbInstance = MoovLogic()

@@ -88,10 +88,30 @@ class MoovLogic(metaclass=Singleton):
         foundMoovs = self.getAllMoovsPlannedToEnd(datetime.datetime.utcnow())
 
         for currMoov in foundMoovs:
+            # just mark as overdue
             currMoov.isOverdue = True
             self.dataBaseInstance.updateMoovInstane(currMoov)
-            #send mail
-        
+            
+        # find those moovs that are ending and send notifcations
+        timeToNotifyBeforeOverdue = ep.getAttribute(EnvKeys.behaviour, EnvKeys.hoursToNotifyBeforMoovsOverdue) 
+        foundMoovs = self.getAllMoovsPlannedToEnd(datetime.datetime.utcnow() + datetime.timedelta(hours=timeToNotifyBeforeOverdue))
+
+        for currMoov in foundMoovs:
+            userContext = self.getuserContext(currMoov.userId)
+            currMoovData = self.getBaseMoov(currMoov.moovId, userContext)
+
+            userDetails = self.getUser(currMoov.userId)
+
+            if (len(currMoov.counterpartIds) == 1):
+                counterpartDetails = self.getUser(currMoov.counterpartIds[0])
+                self.notificationsProvider.sendIssueMoovIsAboutToOverdue(moovOwner=userDetails,moovCounterpart=counterpartDetails, moovName=currMoovData.name)
+            else:
+                self.notificationsProvider.sendConflictMoovIsAboutToOverdue(moovOwner=userDetails, moovName=currMoovData.name)
+            
+            # marking that we notified the user, it will not be called again
+            currMoov.notifiedUserForOverdue = True
+            self.dataBaseInstance.updateMoovInstane(currMoov)         
+
     def getDatabase(self):
         return self.dataBaseInstance
 
@@ -148,7 +168,7 @@ class MoovLogic(metaclass=Singleton):
 
         if existingUser is None:
             #this is a new user - so we need to set a default password for him, and send a welcome email
-            self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.defaults_initialUserPassword))
+            self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword))
             self.notificationsProvider.sendWelcomeMail(userDetails=currUserData)
 
     def setMotivationsToUSer (self, id, motivations):
@@ -336,8 +356,8 @@ class MoovLogic(metaclass=Singleton):
     def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
         self.dataBaseInstance.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=isEndedByTimer)
     
-    def getAllMoovsPlannedToEnd (self, timeStamp):
-        return self.dataBaseInstance.getAllMoovsPlannedToEnd(timeStamp=timeStamp)
+    def getAllMoovsPlannedToEnd (self, timeStamp, ignoreUserNotifications = False):
+        return self.dataBaseInstance.getAllMoovsPlannedToEnd(timeStamp=timeStamp, ignoreUserNotifications = ignoreUserNotifications)
 
     def userJourneyEnded (self, userId):
         # gather all the relevant users to notify

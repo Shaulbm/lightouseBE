@@ -67,7 +67,7 @@ class IssueMoovData(BaseMoovData):
         self.motivationId = jsonData["motivationId"]
 
 class MoovInstance:
-    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, feedbackScore = 0, feedbackText = ""):
+    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = ""):
         self.id = id
         self.userId = userId
         self.counterpartsIds = counterpartsIds.copy()
@@ -77,6 +77,7 @@ class MoovInstance:
         self.endDate = endDate
         self.plannedEndDate = plannedEndDate
         self.isOverdue = isOverdue
+        self.notifiedUserForOverdue = False
         self.feedbackScore = feedbackScore
         self.feedbackText = feedbackText
 
@@ -103,6 +104,7 @@ class MoovInstance:
         self.endDate = jsonData["endDate"]
         self.plannedEndDate = jsonData["plannedEndDate"]
         self.isOverdue = bool(jsonData["isOverdue"])
+        self.notifiedUserForOverdue = bool(jsonData["notifiedUserForOverdue"])
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
 

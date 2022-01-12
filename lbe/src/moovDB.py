@@ -2,6 +2,7 @@ from hashlib import new
 import threading
 from pymongo import MongoClient
 from pymongo.common import partition_node
+from lbe.src.environmentProvider import EnvKeys
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
@@ -14,6 +15,7 @@ import anytree
 from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData, ExtendedConflictData
 import datetime
+import environmentProvider as ep
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
@@ -916,7 +918,7 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.counterpartsIds.append(counterpartId)
         newActiveMoov.priority = priority
         newActiveMoov.startDate = datetime.datetime.utcnow()
-        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=DAYS_TO_COMPLETE_MOOV)
+        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
         
         activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
@@ -1061,12 +1063,15 @@ class MoovDBInstance(metaclass=Singleton):
             historicMoovsCollections.insert_one(activeMoovDetails.toJSON())
             activeMoovsCollection.delete_one(activeMoovFilter)
 
-    def getAllMoovsPlannedToEnd(self, timeStamp):
+    def getAllMoovsPlannedToEnd(self, timeStamp, ignoreUserNotifications = False):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
         # don't pick overdue moovs as they were handled
-        activeMoovsFilter = {'plannedEndDate': {'$lt': timeStamp}, 'isOverdue': False}
+        if ignoreUserNotifications:
+            activeMoovsFilter = {'plannedEndDate': {'$lt': timeStamp}, 'isOverdue': False}
+        else:
+            activeMoovsFilter = {'plannedEndDate': {'$lt': timeStamp}, 'notifiedUserForOverdue': False ,'isOverdue': False}
         foundMoovsData = activeMoovsCollection.find(activeMoovsFilter)
 
         activeMoovs = []

@@ -9,18 +9,20 @@ def getAttribute(className, keyName):
     return EnvironmentProvider.getInstance().getAttribute(className,keyName)
 
 def shouldSuppressNotifications ():
-    if (EnvironmentProvider.getInstance().getAttribute(EnvKeys.behaviour, EnvKeys.behaviour_supressMailNotifications) == 1):
+    if (EnvironmentProvider.getInstance().getAttribute(EnvKeys.behaviour, EnvKeys.supressMailNotifications) == 1):
         return True
     else:
         return False
 
 class EnvKeys:
     courier = "courier"
-    courier_auth_token = "token"
+    courierAuthToken = "token"
     defaults = "defaults"
-    defaults_initialUserPassword = "initialUserPassword" 
+    initialUserPassword = "initialUserPassword" 
     behaviour = "behaviour"
-    behaviour_supressMailNotifications = "supressMailNotifications"
+    supressMailNotifications = "supressMailNotifications"
+    hoursToNotifyBeforMoovsOverdue = "hoursToNotifyMoversOverDue"
+    daysToAccomplishActiveMoov = "daysToAccomplishActiveMoov"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None

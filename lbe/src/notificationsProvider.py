@@ -9,11 +9,11 @@ import environmentProvider as ep
 
 class NotificationsProvider(metaclass=Singleton):
     def __init__(self):
-      self.authToken = ep.getAttribute(EnvKeys.courier, EnvKeys.courier_auth_token)
-      self.client = Courier(self.authToken)
+      self.authToken = ep.getAttribute(EnvKeys.courier, EnvKeys.courierAuthToken)
+      self.client = Courier(auth_token=self.authToken)
 
     def sendWelcomeMail (self, userDetails : UserData):
-      if ep.shouldSuppressNotifications:
+      if ep.shouldSuppressNotifications():
         return
 
       resp = self.client.send(
@@ -21,7 +21,7 @@ class NotificationsProvider(metaclass=Singleton):
         recipient=userDetails.mailAddress,
         data={
           "firstName": userDetails.firstName,
-          "defaultPassword" : ep.getAttribute(EnvKeys.defaults, EnvKeys.defaults_initialUserPassword)
+          "defaultPassword" : ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword)
         },
         profile={
           "email": userDetails.mailAddress
@@ -43,3 +43,36 @@ class NotificationsProvider(metaclass=Singleton):
           "email": notifyTo.mailAddress
         }
       )
+
+    def sendIssueMoovIsAboutToOverdue(self, moovOwner, moovCounterpart, moovName):
+        if ep.shouldSuppressNotifications:
+          return 
+
+        resp = self.client.send(
+          event="moov-soon-to-overdue",
+          recipient=moovOwner.mailAddress,
+          data={
+            "userName": moovOwner.firstName,
+            "counterpartName" : moovCounterpart.firstName,
+            "moovName" : moovName
+          },
+          profile={
+            "email": moovOwner.mailAddress
+          }
+        )
+
+    def sendConflictMoovIsAboutToOverdue(self, moovOwner, moovName):
+        if ep.shouldSuppressNotifications:
+          return 
+
+        resp = self.client.send(
+          event="moov-soon-to-overdue",
+          recipient=moovOwner.mailAddress,
+          data={
+            "userName": moovOwner.firstName,
+            "moovName" : moovName
+          },
+          profile={
+            "email": moovOwner.mailAddress
+          }
+        )
