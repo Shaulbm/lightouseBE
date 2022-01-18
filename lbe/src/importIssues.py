@@ -6,8 +6,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from issuesData import IssueData, RelatedMotivationData, SubjectData, ConflictData
-import mongoDB
 from generalData import TextData
+from moovLogic import MoovLogic
 
 # If modifying these scopes, delete the file token.json.
 # SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -17,8 +17,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 ISSUES_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
 ISSUES_RANGE_NAME = 'Issues!A1:K10'
 SUBJECTS_RANGE_NAME = 'Subjects!A1:G4'
-RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:J22'
-CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:J19'
+RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:G22'
+CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G43'
 CONFLICTS_RANGE_NAME='Conflicts!A1:H6'
 
 def main():
@@ -119,8 +119,8 @@ def main():
             insertIssue(issueDataDict=currIssue, resolvingMotivationsDictArray=currResolvingMotivations, contributingMotivationsDictArray=currContributingMotivations)
 
 def insertSubject(subjectDataDict):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -152,8 +152,8 @@ def insertSubject(subjectDataDict):
     dbInstance.insertOrUpdateSubject(newSubject)
 
 def insertConflict (conflictDataDict):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -180,8 +180,8 @@ def insertConflict (conflictDataDict):
 
 
 def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotivationsDictArray):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -230,24 +230,17 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         newResolvingMotivation.motivationId = currResolvingMotivations["motivationId"]
         newResolvingMotivation.impact = int(currResolvingMotivations["impact"])
         newResolvingMotivation.text = newResolvingMotivation.id + "_1"
-        newResolvingMotivation.moovExplanation = newResolvingMotivation.id + "_2"
 
         currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.text, currResolvingMotivations["text <<en>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
         currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.text, currResolvingMotivations["text <<he_fe>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
         currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.text, currResolvingMotivations["text <<he_ma>>"])
-        dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
-
-        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<en>>"])
-        dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<he_fe>>"])
-        dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
-
-        currentTextData = TextData(newResolvingMotivation.id, newResolvingMotivation.moovExplanation, currResolvingMotivations["moovExplanation <<he_ma>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
         newIssue.resolvingMotivations.append(newResolvingMotivation)
@@ -259,25 +252,19 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
         newContributingMotivation.motivationId = currContributingMotivations["motivationId"]
         newContributingMotivation.impact = int(currContributingMotivations["impact"])
         newContributingMotivation.text = newContributingMotivation.id + "_1"
-        newContributingMotivation.moovExplanation = newContributingMotivation.id + "_2"
 
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<en>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<he_fe>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
         currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.text, currContributingMotivations["text <<he_ma>>"])
+        currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<en>>"])
-        dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<he_fe>>"])
-        dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
-
-        currentTextData = TextData(newContributingMotivation.id, newContributingMotivation.moovExplanation, currContributingMotivations["moovExplanation <<he_ma>>"])
-        dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
         newIssue.contributingMotivations.append(newContributingMotivation)
 
     dbInstance.insertOrUpdateIssue(newIssue)

@@ -5,7 +5,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from moovData import IssueMoovData, ConflictMoovData
-import mongoDB
+from moovLogic import MoovLogic
 from generalData import TextData
 
 # If modifying these scopes, delete the file token.json.
@@ -13,7 +13,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
-MOOVS_RANGE_NAME = 'MoovsDetails!A1:R4'
+MOOVS_RANGE_NAME = 'MoovsDetails!A1:R63'
 CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
 def main():
     """Shows basic usage of the Sheets API.
@@ -76,9 +76,8 @@ def main():
             insertConflictMoov(currMoov)
 
 def insertMoov(moovDataDict):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
-    moovsCollection = db["moovs"]
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -106,38 +105,47 @@ def insertMoov(moovDataDict):
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<en>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_ma>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_fe>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_ma>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_fe>>"])
+    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
 
     dbInstance.insertOrUpdateMoov(newMoov)
 
 def insertConflictMoov(conflictMoovDataDict):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
     moovsCollection = db["moovs"]
 
     heb_ma_LocaleCollection = db["locale_he_ma"]

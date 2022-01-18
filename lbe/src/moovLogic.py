@@ -157,9 +157,9 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getMoovsForIssueAndUser(userId=userId, issueId=issueId, userContext=userContext)
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
-        self.dataBaseInstance.insertOrUpdateText(self, dataCollection=dataCollection, textDataObj=textDataObj)
+        self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
     
-    def insertOrUpdateUserDetails (self, id, mail = "", parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def insertOrUpdateUserDetails (self, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
         newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
@@ -267,10 +267,10 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.getIssue(id= id, userContext=userContext)
 
     def insertOrUpdateConflict(self, currConflictData):
-        self.insertOrUpdateConflict(currConflictData=currConflictData)
+        self.dataBaseInstance.insertOrUpdateConflict(currConflictData=currConflictData)
 
     def getConflict(self, id, userContext: UserContextData):
-        return self.dataBaseInstance.getConflict
+        return self.dataBaseInstance.getConflict()
 
     def getConflictsForUsers (self, teamMemberId, counterpartId, partialData: bool, userContext : UserContextData):
         return self.dataBaseInstance.getConflictsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, partialData=partialData, userContext=userContext)
