@@ -57,8 +57,8 @@ class RelatedMotivationData:
             self.text = jsonData["text"]
 
 class ExtendedRelatedMotivationData(RelatedMotivationData):
-    def __init__(self, id = "", issueId = "", motivationId = "", motivationName= "", impact = "", text = "", moovExplanation = ""):
-        super().__init__(id=id, issueId=issueId, motivationId=motivationId, impact=impact, text=text,moovExplanation=moovExplanation)
+    def __init__(self, id = "", issueId = "", motivationId = "", motivationName= "", impact = "", text = ""):
+        super().__init__(id=id, issueId=issueId, motivationId=motivationId, impact=impact, text=text)
         self.motivationName = motivationName
 
     def toJSON(self):
@@ -81,7 +81,6 @@ class ExtendedRelatedMotivationData(RelatedMotivationData):
         self.motivationId = relatedMotivationDetails.motivationId
         self.impact = relatedMotivationDetails.impact
         self.text = relatedMotivationDetails.text
-        self.moovExplanation = relatedMotivationDetails.moovExplanation
 
 class IssueData:
     def __init__(self, id="", subjectId = "", name = 0, shortDescription = "", longDescription = 0, contributingMotivations = [], resolvingMotivations = []):
