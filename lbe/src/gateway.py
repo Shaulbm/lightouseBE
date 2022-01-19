@@ -203,7 +203,7 @@ def get_moovs_for_issue_and_user(request: Request, issueId, userId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    moovsDetails = dbActions.getMoovsForIssueAndUser(issueId=issueId, userId=userId, userContext= userContextDetails)
+    moovsDetails = dbActions.getMoovsForIssueAndCounterpart(issueId=issueId, counterpartId=userId, userContext= userContextDetails)
     
     return moovsDetails
 

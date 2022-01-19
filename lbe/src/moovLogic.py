@@ -155,8 +155,8 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getBaseMoov(id=id, userContext=userContext)
 
 
-    def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
-        return self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=userId, issueId=issueId, userContext=userContext)
+    def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
+        return self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=issueId, userContext=userContext)
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)

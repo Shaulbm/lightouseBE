@@ -318,6 +318,6 @@ db.setUserContextData("U001")
 #     time.sleep(3)
 
 issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
-moovs = db.getMoovsForIssueAndUser("UA06", "IS001", userContext)
+moovs = db.getMoovsForIssueAndCounterpart("UA06", "IS001", userContext)
 
 print ("Done")
