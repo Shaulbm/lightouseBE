@@ -121,13 +121,15 @@ class MoovLogic(metaclass=Singleton):
     def getNextCount(self):
         return self.dataBaseInstance.getNextCount()
 
-    def getTextDataByParent (self, parentId, locale, gender):
-        return self.dataBaseInstance.getTextDataByParent(parentId=parentId, locale=locale, gender=gender)
+    def getTextDataByParent (self, parentId, locale, gender, name = ""):
+        localedText = self.dataBaseInstance.getTextDataByParent(parentId=parentId, locale=locale, gender=gender, name=name)
 
-    def getTextDataByParents (self, parentsIds, locale, gender):
+        return localedText
+
+    def getTextDataByParents (self, parentsIds, locale, gender, name = ""):
         resultTextDict = {}
         for currParrentId in parentsIds:
-            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender, name=name)
 
         return resultTextDict
 
@@ -154,7 +156,7 @@ class MoovLogic(metaclass=Singleton):
 
 
     def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
-        return self.dataBaseInstance.getMoovsForIssueAndUser(userId=userId, issueId=issueId, userContext=userContext)
+        return self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=userId, issueId=issueId, userContext=userContext)
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
@@ -281,8 +283,8 @@ class MoovLogic(metaclass=Singleton):
     def getAllIssues (self, userContext: UserContextData):
         return self.dataBaseInstance.getAllIssues(userContext=userContext)
     
-    def getIssueForUser(self, issueId, userId, userContext: UserContextData):
-        return self.dataBaseInstance.getIssueForUser(issueId=issueId, userId=userId, userContext=userContext)
+    def getIssueForCounterpart(self, issueId, counterpartId, userContext: UserContextData):
+        return self.dataBaseInstance.getIssueForCounterpart(issueId=issueId, counterpartId=counterpartId, userContext=userContext)
 
     def insertOrUpdateSubject(self, currSubjectData):
         self.dataBaseInstance.insertOrUpdateSubject(currSubjectData=currSubjectData)

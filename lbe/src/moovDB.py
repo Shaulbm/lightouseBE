@@ -61,7 +61,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return counterValue
 
-    def getTextDataByParent (self, parentId, locale, gender):
+    def getTextDataByParent (self, parentId, locale, gender, name=""):
         textDataCollection = self.getTextCollectionByLocale(locale, gender)
             
         allTextsArray = textDataCollection.find ({"parentId" : parentId})
@@ -69,14 +69,18 @@ class MoovDBInstance(metaclass=Singleton):
         textDic = {}
 
         for currText in allTextsArray:
-            textDic[currText["id"]] = currText["text"]
+            # if name is not empty, replace <<NAME>> with the given name value
+            if (name != ""):
+                textDic[currText["id"]] = currText["text"].replace("<<NAME>>", name)
+            else:
+                textDic[currText["id"]] = currText["text"]
 
         return textDic
 
-    def getTextDataByParents (self, parentsIds, locale, gender):
+    def getTextDataByParents (self, parentsIds, locale, gender, name=""):
         resultTextDict = {}
         for currParrentId in parentsIds:
-            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender)
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender, name)
 
         return resultTextDict
 
@@ -205,10 +209,10 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundMoov 
 
-    def getMoovsForIssueAndUser (self, userId, issueId, userContext: UserContextData):
+    def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
-        requestedUser = self.getUser(userId)
+        requestedUser = self.getUser(counterpartId)
 
         if (requestedUser.motivations is None or requestedUser.motivations.__len__ == 0):
             return {}
@@ -223,7 +227,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender, name=requestedUser.firstName)
             newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -596,7 +600,7 @@ class MoovDBInstance(metaclass=Singleton):
             #this is a new issue
             issuesCollection.insert_one(currIssueData.toJSON())
 
-    def getIssue(self, id, userContext: UserContextData):
+    def getIssue(self, id, userContext: UserContextData, name = ""):
         db = self.getDatabase()
         issuesCollection = db["issues"]
 
@@ -616,7 +620,7 @@ class MoovDBInstance(metaclass=Singleton):
             
 
             # get localed text
-            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
+            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender, name=name )
 
         issueDetails = IssueData()
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
@@ -747,14 +751,13 @@ class MoovDBInstance(metaclass=Singleton):
 
         return issuesDetailsList
     
-    def getIssueForUser(self, issueId, userId, userContext: UserContextData):
+    def getIssueForCounterpart(self, issueId, counterpartId, userContext: UserContextData):
+        counterpartDetails = self.getUser(id=counterpartId)
+        issueDetails = self.getIssue (id=issueId, userContext=userContext, name=counterpartDetails.firstName)
 
-        issueDetails = self.getIssue (id=issueId, userContext=userContext)
-        userDetails = self.getUser(id=userId)
-
-        # filter all the resolving motivations that are in the user motivations
-        filteredResolvingMotivatios = [rm for rm in issueDetails.resolvingMotivations if rm.motivationId in userDetails.motivations]
-        filteredContributingMotivatios = [cm for cm in issueDetails.contributingMotivations if cm.motivationId in userDetails.motivations]
+        # filter all the resolving motivations that are in the counterpart motivations
+        filteredResolvingMotivatios = [rm for rm in issueDetails.resolvingMotivations if rm.motivationId in counterpartDetails.motivations]
+        filteredContributingMotivatios = [cm for cm in issueDetails.contributingMotivations if cm.motivationId in counterpartDetails.motivations]
 
         issueDetails.resolvingMotivations = filteredResolvingMotivatios.copy()
         issueDetails.contributingMotivations = filteredContributingMotivatios.copy()

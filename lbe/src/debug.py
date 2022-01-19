@@ -307,13 +307,17 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # dbInstance = moovDBInstance()
 # dbInstance.insertOrUpdateUser(newUser)
 # db.insertOrUpdateUser(newUser)
-main.startup()
+# main.startup()
 db.setUserContextData("U001")
 # db.activateIssueMoov(moovId="MO0001", userId="U001", counterpartId="UA06", userContext=userContext)
 
-index = 0
-while True:
-    print ('iteration {}', index)
-    index += 1
-    time.sleep(3)
+# index = 0
+# while True:
+#     print ('iteration {}', index)
+#     index += 1
+#     time.sleep(3)
+
+issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
+moovs = db.getMoovsForIssueAndUser("UA06", "IS001", userContext)
+
 print ("Done")

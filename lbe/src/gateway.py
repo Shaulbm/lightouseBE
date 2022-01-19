@@ -185,7 +185,7 @@ def get_issue_for_user(request: Request, issueId, userId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    issuesDetails = dbActions.getIssueForUser(issueId, userId, userContextDetails)
+    issuesDetails = dbActions.getIssueForCounterpart(issueId, userId, userContextDetails)
     
     return issuesDetails
 
