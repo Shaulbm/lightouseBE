@@ -227,7 +227,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender, name=requestedUser.firstName)
+            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, requestedUser.gender, name=requestedUser.firstName)
             newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -600,7 +600,7 @@ class MoovDBInstance(metaclass=Singleton):
             #this is a new issue
             issuesCollection.insert_one(currIssueData.toJSON())
 
-    def getIssue(self, id, userContext: UserContextData, name = ""):
+    def getIssueByDetails (self, id, locale, gender, name):
         db = self.getDatabase()
         issuesCollection = db["issues"]
 
@@ -611,7 +611,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         issuesTextsDic = None
         
-        if (userContext.locale != Locale.UNKNOWN):
+        if (locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = []
             parentsIds.append(issueDataJSON["id"])
@@ -620,12 +620,16 @@ class MoovDBInstance(metaclass=Singleton):
             
 
             # get localed text
-            issuesTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender, name=name )
+            issuesTextsDic = self.getTextDataByParents(parentsIds, locale, gender, name=name )
 
         issueDetails = IssueData()
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
 
         return issueDetails
+
+    def getIssue(self, id, userContext: UserContextData, name = ""):
+        return self.getIssueByDetails(id=id, locale=userContext.locale, gender = userContext.gender, name = name)
+
 
     def insertOrUpdateConflict(self, currConflictData):
         db = self.getDatabase()
@@ -753,7 +757,7 @@ class MoovDBInstance(metaclass=Singleton):
     
     def getIssueForCounterpart(self, issueId, counterpartId, userContext: UserContextData):
         counterpartDetails = self.getUser(id=counterpartId)
-        issueDetails = self.getIssue (id=issueId, userContext=userContext, name=counterpartDetails.firstName)
+        issueDetails = self.getIssueByDetails (id=issueId, locale=userContext.locale, gender=counterpartDetails.gender, name=counterpartDetails.firstName)
 
         # filter all the resolving motivations that are in the counterpart motivations
         filteredResolvingMotivatios = [rm for rm in issueDetails.resolvingMotivations if rm.motivationId in counterpartDetails.motivations]
