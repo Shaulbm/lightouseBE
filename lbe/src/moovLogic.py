@@ -1,11 +1,15 @@
+from itertools import count
+from sqlite3 import Timestamp
 import threading
 from typing import Text
 
 from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
+from issuesData import RelatedMotivationData
+from moovData import IssueMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData, UserRelationshipData
 from singleton import Singleton
 from loguru import logger
 import datetime
@@ -149,14 +153,36 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getConflictsMoovsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, userContext=userContext)
 
     def getIssueMoov (self, id, userContext: UserContextData):
-        pass
+        return self.getDatabase().getIssueMoov(id=id, userContext=userContext)
 
     def getBaseMoov (self, id, userContext: UserContextData):
         return self.dataBaseInstance.getBaseMoov(id=id, userContext=userContext)
 
 
     def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
-        return self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=issueId, userContext=userContext)
+        issueMoovs :list (IssueMoovData) = self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=issueId, userContext=userContext)
+
+        issueDetails = self.getIssue(issueId, userContext = None)
+
+        for currMoov in issueMoovs:
+            relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
+            
+            if relatedMotivation is not None:
+                currMoov.score = self.calculateMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
+
+        return issueMoovs
+
+    def calculateMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
+        userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovScore)
+
+        multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
+        
+        calculatedScore = moov.score + relatedMotivation.impact + multiplyer*userMotivationGap
+        
+        # normalize - get the % of 100
+        normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        return normalizedScore
+
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
@@ -266,7 +292,7 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateIssue(currIssueData=currIssueData)
 
     def getIssue(self, id, userContext: UserContextData):
-        self.dataBaseInstance.getIssue(id= id, userContext=userContext)
+        return self.dataBaseInstance.getIssue(id= id, userContext=userContext)
 
     def insertOrUpdateConflict(self, currConflictData):
         self.dataBaseInstance.insertOrUpdateConflict(currConflictData=currConflictData)
@@ -333,18 +359,61 @@ class MoovLogic(metaclass=Singleton):
         return file_used
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
-        moovInstancePriority = self.calculateIssueMoovPriority(userId, counterpartId)
+        moovDetails = self.getIssueMoov(moovId)
+
+        moovInstancePriority = self.calculateIssueMoovPriority(userId = userId, counterpartId = counterpartId, motivationId=moovDetails.motivationId)
         return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
         moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
         return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
 
-    def calculateIssueMoovPriority(self, userId, caounterpartId):
-        return 0
+    def calculateIssueMoovPriority(self, userId, counterpartId, motivationId):
+        userRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartId)
+
+        if userRelationshipDetails is None:
+            return ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+
+        seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
+        multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
+        
+        calculatedPriority = multiplyer*userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*userRelationshipDetails.costOfSeperation/seperationQuestionsScale + (multiplyer*self.getUserMotivationGap(userId=userId, motivationId=motivationId)/ ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovScore))
+        
+        # normalize - get the % of 100
+        normalizedPriorityValue = calculatedPriority / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        return normalizedPriorityValue
+
+    def getUserMotivationGap (self, userId, motivationId):
+        userDetails = self.getUser(userId)
+
+        gapFactor = 0
+        # motivationData = next((x for x in userDetails.motivations if x.motivationId == motivationId), None)
+        if (motivationId in userDetails.motivations):
+            gapFactor = userDetails.motivations[motivationId].gapFactor
+
+        return gapFactor
 
     def calculateConflictMoovPriority(self, userId, counterpartsIds):
-        return 0
+        if (len(counterpartsIds) != 2):
+            # return avergage priority
+            return ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+
+        multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
+        seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
+
+        firstUserRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartsIds[0])
+        secondUserRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartsIds[1])
+
+        if (firstUserRelationshipDetails is None or secondUserRelationshipDetails is None):
+            # missing relationship details - return avergage priority
+            return ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+
+        firstCPCalculatedPriority = multiplyer*firstUserRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*firstUserRelationshipDetails.costOfSeperation/seperationQuestionsScale
+        secondCPCalculatedPriority = multiplyer*secondUserRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*secondUserRelationshipDetails.costOfSeperation/seperationQuestionsScale
+
+        # normalize - get the % of 100
+        normalizedPriorityValue = (firstCPCalculatedPriority / (multiplyer*2) + secondCPCalculatedPriority / (multiplyer*2))/2 * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        return normalizedPriorityValue
 
     def getActiveMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         return self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
@@ -384,3 +453,14 @@ class MoovLogic(metaclass=Singleton):
     
     def getInterestedusers(self, userId):
         return self.dataBaseInstance.getInterestedusers(userId)
+
+    def insertOrUpdateRelationshipDetails (self, userId, counterpartId, costOfSeperation, chanceOfSeperation):
+        relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation, timestamp=datetime.datetime.utcnow())
+
+        self.insertOrUpdateRelationship(relationshipDetails)
+
+    def insertOrUpdateRelationship (self, relationshipData):
+        self.dataBaseInstance.insertOrUpdateRelationship(relationshipData= relationshipData)
+
+    def getRelationshipData (self, userId, counterpartId):
+        self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)

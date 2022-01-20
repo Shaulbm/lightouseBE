@@ -1,5 +1,7 @@
 from hashlib import new
 import threading
+from tkinter import W
+from wave import Wave_write
 from pymongo import MongoClient
 from pymongo.common import partition_node
 from environmentProvider import EnvKeys
@@ -7,7 +9,7 @@ import environmentProvider as ep
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData
-from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData
+from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData, UserRelationshipData
 from questionsData import QuestionData
 from singleton import Singleton
 from discoveryData import UserDiscoveryJourneyData, DiscoveryBatchData
@@ -173,23 +175,22 @@ class MoovDBInstance(metaclass=Singleton):
         return conflictsMoovs
 
     def getIssueMoov (self, id, userContext: UserContextData):
-        # db = self.getDatabase()
-        # moovsCollection = db["moovs"]
+        db = self.getDatabase()
+        moovsCollection = db["moovs"]
 
-        # moovDataJSON = moovsCollection.find_one({"id" : id})
+        moovDataJSON = moovsCollection.find_one({"id" : id})
 
-        # if (moovDataJSON is None):
-        #     return None
+        if (moovDataJSON is None):
+            return None
 
-        # moovTextsDic = None
-        # if (userContext.locale is not None):
-        #     moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+        moovTextsDic = None
+        if (userContext is not None):
+            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
 
-        # newMoov = IssueMoovData()
-        # newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
+        newMoov = IssueMoovData()
+        newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
-        # return newMoov 
-        pass
+        return newMoov 
 
     def getBaseMoov (self, id, userContext: UserContextData):
         db = self.getDatabase()
@@ -628,7 +629,10 @@ class MoovDBInstance(metaclass=Singleton):
         return issueDetails
 
     def getIssue(self, id, userContext: UserContextData, name = ""):
-        return self.getIssueByDetails(id=id, locale=userContext.locale, gender = userContext.gender, name = name)
+        if (userContext is None):
+            return self.getIssueByDetails(id=id, locale=Locale.UNKNOWN, gender = Gender.MALE, name = name)
+        else:
+            return self.getIssueByDetails(id=id, locale=userContext.locale, gender = userContext.gender, name = name)
 
 
     def insertOrUpdateConflict(self, currConflictData):
@@ -1098,3 +1102,36 @@ class MoovDBInstance(metaclass=Singleton):
             #the conflict already exists - update the issue
             conflictDataFilter = {"id" : moovInstance.id}
             activeMoovsCollection.replace_one(conflictDataFilter, moovInstance.toJSON())
+
+    def insertOrUpdateRelationship (self, relationshipData):
+        db = self.getDatabase()
+        relationshipsCollection = db["relationships"]
+
+        foundRelationship = relationshipsCollection.find_one({"userId":relationshipData.userId, "counterpartId":relationshipData.counterpartId})
+
+        if (foundRelationship is not None):
+            #the relationship already exists - update the relationship but also back up to history
+            
+            questionDataFilter = {"userId":relationshipData.userId, "counterpartId":relationshipData.counterpartId}
+            relationshipsCollection.replace_one(questionDataFilter, relationshipData.toJSON())
+
+            historicRelationshipsCollection = db["historicRelationships"]
+            historicRelationshipsCollection.insert_one(foundRelationship)
+
+        else:
+            #this is a new user
+            relationshipsCollection.insert_one(relationshipData.toJSON())
+
+    def getRelationshipData (self, userId, counterpartId):
+        db = self.getDatabase()
+        relationsheepsCollection = db["relationships"]
+
+        foundRelationship = relationsheepsCollection.find_one({"userId":relationshipData.userId, "counterpartId":relationshipData.counterpartId})
+
+        relationshipDetails = None
+
+        if (foundRelationship is not None):
+            relationshipDetails = UserRelationshipData()
+            relationshipDetails.fromJSON(foundRelationship)
+
+        return relationshipDetails

@@ -1,3 +1,5 @@
+from cmath import cos
+import datetime
 import json
 import bson
 import jsonpickle
@@ -16,8 +18,6 @@ class Locale:
 class Gender:
     MALE = 1
     FEMALE = 2
-
-
 
 class TextData:
     def __init__(self, parentId = "", Id = "", contentText = ""):
@@ -45,7 +45,7 @@ class UserMotivationData:
     def __init__(self, motivationId = "", journeyScore = 0.0, gapFactor = 0.0):
         self.motivationId = motivationId
         self.journeyScore = journeyScore
-        self.gapFactor = gapFactor     
+        self.gapFactor = gapFactor
 
 class UserData:
     def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, mailAddress = "", motivations = {}, personsOfInterest = []):
@@ -80,11 +80,12 @@ class UserData:
         self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
         self.mailAddress = jsonData["mailAddress"]
+        self.motivations = {}
 
         if len(jsonData["motivations"]) > 0:
-            self.motivations = jsonData["motivations"].copy()
-        else:
-            self.motivations = {}
+            for key, value in jsonData["motivations"].items():
+                currMotivationDetails = UserMotivationData(motivationId=key, journeyScore=value["journeyScore"], gapFactor=value["gapFactor"])
+                self.motivations[currMotivationDetails.motivationId] = currMotivationDetails
 
         if len(jsonData["personsOfInterest"]) > 0:
             self.personsOfInterest = jsonData["personsOfInterest"].copy()
@@ -172,6 +173,28 @@ class UserImageData:
     def fromJSON (self, jsonData):
         self.userId = jsonData["userId"]
         self.image = jsonpickle.loads(jsonData["image"])
+
+class UserRelationshipData:
+    def __init__(self, userId = "", counterpartId = "", costOfSeperation = 0, chanceOfSeperation = 0, timeStamp = datetime.datetime.utcnow()):
+        self.userId = userId
+        self.counterpartId = counterpartId
+        self.costOfSeperation = costOfSeperation
+        self.chanceOfSeperation = chanceOfSeperation
+        self.timeStamp = timeStamp
+
+    def toJSON (self):
+        userDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (userDataJSON)
+
+        return jsonObject 
+
+    def fromJSON (self, jsonData):
+        self.userId = jsonData["userId"]
+        self.counterpartId = jsonData["counterpartId"]
+        self.costOfSeperation = jsonData["costOfSeperation"]
+        self.seperationChanceEstimation = jsonData["chanceOfSeperation"]
+        self.timeStamp = jsonData["timeStamp"]
 
 class OrgData:
     def __init__(self, id = "", name = "", url = ""):

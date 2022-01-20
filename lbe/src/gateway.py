@@ -296,3 +296,11 @@ def get_conflict_moovs (request: Request, conflictId):
     conflictMoovs = dbActions.getConflictMoovs(conflictId=conflictId, userContext=userContextDetails)
     
     return conflictMoovs
+
+@router.get("/updateRelationship")
+def activate_conflict_moov(request: Request, userId, CounterpartId, costOfSeperation, chanceOfSeperation):
+    dbActions = MoovLogic()
+    
+    returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=userId, counterpartId=CounterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation)
+    
+    return returnValue

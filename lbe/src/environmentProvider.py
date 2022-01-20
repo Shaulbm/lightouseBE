@@ -23,6 +23,11 @@ class EnvKeys:
     supressMailNotifications = "supressMailNotifications"
     hoursToNotifyBeforMoovsOverdue = "hoursToNotifyMoversOverDue"
     daysToAccomplishActiveMoov = "daysToAccomplishActiveMoov"
+    seperationQuestionsScale = "seperationQuestionsScale"
+    priorityMultiplayer = "priorityMultiplayer" 
+    baseMoovPriority = "baseMoovPriority"
+    baseMoovScore = "baseMoovScore"
+    motivationGapBase = "motivationGapBase"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
