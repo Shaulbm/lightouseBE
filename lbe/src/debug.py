@@ -8,7 +8,7 @@ import time
 import uuid
 from moovDB import MoovDBInstance
 import ExportJourney
-from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData
+from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData, UserRelationshipData
 from os import path
 import base64
 import cache
@@ -318,6 +318,8 @@ db.setUserContextData("U001")
 #     time.sleep(3)
 
 issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
-moovs = db.getMoovsForIssueAndCounterpart("UA06", "IS001", userContext)
-
+# moovs = db.getMoovsForIssueAndCounterpart("UA06", "IS001", userContext)
+# relationshipDetails = UserRelationshipData('U001', 'UA06', 3, 2)
+# db.insertOrUpdateRelationship(relationshipDetails)
+activeMoov = db.activateIssueMoov('MO0002', 'U001', 'UA06', userContext=userContext)
 print ("Done")

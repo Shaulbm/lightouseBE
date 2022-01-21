@@ -1126,7 +1126,7 @@ class MoovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         relationsheepsCollection = db["relationships"]
 
-        foundRelationship = relationsheepsCollection.find_one({"userId":relationshipData.userId, "counterpartId":relationshipData.counterpartId})
+        foundRelationship = relationsheepsCollection.find_one({"userId":userId, "counterpartId":counterpartId})
 
         relationshipDetails = None
 

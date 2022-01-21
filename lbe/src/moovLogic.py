@@ -173,10 +173,14 @@ class MoovLogic(metaclass=Singleton):
         return issueMoovs
 
     def calculateMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
-        userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovScore)
+        userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         
+        calculatedScore = 0
+        calculatedScore += moov.score
+        calculatedScore +=  relatedMotivation.impact 
+        calculatedScore += multiplyer*userMotivationGap
         calculatedScore = moov.score + relatedMotivation.impact + multiplyer*userMotivationGap
         
         # normalize - get the % of 100
@@ -359,7 +363,7 @@ class MoovLogic(metaclass=Singleton):
         return file_used
 
     def activateIssueMoov (self, moovId, userId, counterpartId, userContext: UserContextData):
-        moovDetails = self.getIssueMoov(moovId)
+        moovDetails = self.getIssueMoov(moovId, userContext= None)
 
         moovInstancePriority = self.calculateIssueMoovPriority(userId = userId, counterpartId = counterpartId, motivationId=moovDetails.motivationId)
         return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
@@ -377,7 +381,7 @@ class MoovLogic(metaclass=Singleton):
         seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         
-        calculatedPriority = multiplyer*userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*userRelationshipDetails.costOfSeperation/seperationQuestionsScale + (multiplyer*self.getUserMotivationGap(userId=userId, motivationId=motivationId)/ ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovScore))
+        calculatedPriority = multiplyer*userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*userRelationshipDetails.costOfSeperation/seperationQuestionsScale + (multiplyer*self.getUserMotivationGap(userId=counterpartId, motivationId=motivationId)/ ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase))
         
         # normalize - get the % of 100
         normalizedPriorityValue = calculatedPriority / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
@@ -463,4 +467,4 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateRelationship(relationshipData= relationshipData)
 
     def getRelationshipData (self, userId, counterpartId):
-        self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)
+        return self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)
