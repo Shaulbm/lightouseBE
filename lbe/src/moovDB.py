@@ -847,7 +847,9 @@ class MoovDBInstance(metaclass=Singleton):
                 currentUserDetails.fromJSON(currentFoundUser)
 
                 if (currentUserDetails.id != requestingUser.id):
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    userPartialDetails = UserPartialData()
+                    userPartialDetails.fromFullDetails(currentUserDetails)
+                    foundSubordinatesDataList.append (userPartialDetails)
 
             return foundSubordinatesDataList
 
@@ -886,8 +888,9 @@ class MoovDBInstance(metaclass=Singleton):
             for currentSubordinate in foundSubordinatesList:
                 if (currentSubordinate.name != requestingUser.id):
                     #the manager is also part of the nodes list and should be ignored
-                    currentUserDetails = self.getUser(id=currentSubordinate.name)
-                    foundSubordinatesDataList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, orgId=currentUserDetails.orgId, motivations=currentUserDetails.motivations))
+                    userPartialDetails = UserPartialData()
+                    userPartialDetails.fromFullDetails(currentSubordinate)
+                    foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
 

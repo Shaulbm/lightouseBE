@@ -355,8 +355,9 @@ class MoovLogic(metaclass=Singleton):
         poiIdList = requestingUser.personsOfInterest 
 
         for currPOI in poiIdList:
-            currentUserDetails = self.getUser(id=currPOI)
-            peopleOfInterestList.append (UserPartialData(id = currentUserDetails.id, firstName = currentUserDetails.firstName, familyName=currentUserDetails.familyName, orgId=currentUserDetails.orgId, gender=currentUserDetails.gender, locale= currentUserDetails.locale, isRTL= currentUserDetails.isRTL, motivations=currentUserDetails.motivations))
+            userPartialData = UserPartialData()
+            userPartialData.fromFullDetails(self.getUser(id=currPOI))
+            peopleOfInterestList.append (userPartialData)
 
         return peopleOfInterestList
 
