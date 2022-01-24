@@ -660,7 +660,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         conflictssTextsDic = None
         
-        if (userContext.locale != Locale.UNKNOWN):
+        if (userContext is not None):
             # get id's for text quesry
             parentsIds = []
             parentsIds.append(conflictDataJSON["id"])            

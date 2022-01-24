@@ -6,7 +6,8 @@ from typing import Text
 from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
-from moovData import IssueMoovData
+from lbe.src.issuesData import ConflictData
+from moovData import IssueMoovData, ConflictMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData, UserRelationshipData
@@ -147,7 +148,13 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateConflictMoov(moovDataObj)
 
     def getConflictMoovs (self, conflictId, userContext: UserContextData):
-        return self.dataBaseInstance.getConflictMoovs (conflictId=conflictId, userContext=userContext)
+        moovs = self.dataBaseInstance.getConflictMoovs (conflictId=conflictId, userContext=userContext)
+
+        for currMoov in moovs:
+            # moovConflictDetails = self.getConflict(conflictId, userContext=None)
+            # currently the conflict moov score is already set to the conflict score in MoovDB. good enough for this stage.
+            moovConflictDetails = None
+            currMoov.score = self.calculateConflictMoovScore(currMoov, moovConflictDetails)
 
     def getConflictsMoovsForUsers (self, teamMemberId, counterpartId, userContext: UserContextData):
         return self.dataBaseInstance.getConflictsMoovsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, userContext=userContext)
@@ -168,18 +175,18 @@ class MoovLogic(metaclass=Singleton):
             relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
             
             if relatedMotivation is not None:
-                currMoov.score = self.calculateMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
+                currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
 
         return issueMoovs
 
-    def calculateMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
+    def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
         userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         
         calculatedScore = 0
         calculatedScore += moov.score
-        calculatedScore +=  relatedMotivation.impact 
+        calculatedScore += relatedMotivation.impact 
         calculatedScore += multiplyer*userMotivationGap
         calculatedScore = moov.score + relatedMotivation.impact + multiplyer*userMotivationGap
         
@@ -187,6 +194,9 @@ class MoovLogic(metaclass=Singleton):
         normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
         return normalizedScore
 
+    def calculateConflictMoovScore(self, moov : ConflictMoovData, conflictDetails : ConflictData):
+        # return conflictDetails.score
+        return moov.score
 
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
@@ -302,7 +312,7 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateConflict(currConflictData=currConflictData)
 
     def getConflict(self, id, userContext: UserContextData):
-        return self.dataBaseInstance.getConflict()
+        return self.dataBaseInstance.getConflict(id, userContext=userContext)
 
     def getConflictsForUsers (self, teamMemberId, counterpartId, partialData: bool, userContext : UserContextData):
         return self.dataBaseInstance.getConflictsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, partialData=partialData, userContext=userContext)
@@ -404,6 +414,7 @@ class MoovLogic(metaclass=Singleton):
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
+
 
         firstUserRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartsIds[0])
         secondUserRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartsIds[1])
