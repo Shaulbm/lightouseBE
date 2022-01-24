@@ -6,7 +6,7 @@ from typing import Text
 from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
-from lbe.src.issuesData import ConflictData
+from issuesData import ConflictData
 from moovData import IssueMoovData, ConflictMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
