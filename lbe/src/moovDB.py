@@ -889,7 +889,7 @@ class MoovDBInstance(metaclass=Singleton):
                 if (currentSubordinate.name != requestingUser.id):
                     #the manager is also part of the nodes list and should be ignored
                     userPartialDetails = UserPartialData()
-                    userPartialDetails.fromFullDetails(currentSubordinate)
+                    userPartialDetails.fromFullDetails(self.getUser(currentSubordinate.name))
                     foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
