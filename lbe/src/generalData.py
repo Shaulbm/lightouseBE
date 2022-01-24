@@ -106,7 +106,7 @@ class UserPartialData:
         self.orgId = orgId
         self.motivations = motivations.copy()
         self.activeMoovsCount = activeMoovsNo
-        self.recommendedMoovsNo = recommendedMoovsNo
+        self.recommendedMoovsCount = recommendedMoovsNo
 
     def toJSON (self):
         userDataJSON = jsonpickle.encode(self, unpicklable=False)
