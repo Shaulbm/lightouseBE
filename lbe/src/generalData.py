@@ -3,7 +3,6 @@ import datetime
 import json
 import bson
 import jsonpickle
-from numpy import full
 
 class UserRoles:
     NONE = 0
