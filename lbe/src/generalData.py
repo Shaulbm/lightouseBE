@@ -95,7 +95,7 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = []):
+    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
@@ -105,6 +105,8 @@ class UserPartialData:
         self.color = color
         self.orgId = orgId
         self.motivations = motivations.copy()
+        self.activeMoovsCount = activeMoovsNo
+        self.recommendedMoovsNo = recommendedMoovsNo
 
     def toJSON (self):
         userDataJSON = jsonpickle.encode(self, unpicklable=False)
@@ -114,6 +116,7 @@ class UserPartialData:
         return jsonObject 
 
     def fromJSON (self, jsonData):
+        # active and recommended Moovs number are not in the DB hence will not be read from JSON
         self.id = jsonData["id"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
@@ -129,6 +132,7 @@ class UserPartialData:
             self.motivations = {}
 
     def fromFullDetails (self, fullUserDetails : UserData):
+        # active and recommended moovs are not in the full data and will not be copied
         self.id = fullUserDetails.id
         self.firstName = fullUserDetails.firstName
         self.familyName = fullUserDetails.familyName

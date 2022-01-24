@@ -849,6 +849,7 @@ class MoovDBInstance(metaclass=Singleton):
                 if (currentUserDetails.id != requestingUser.id):
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(currentUserDetails)
+                    userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
                     foundSubordinatesDataList.append (userPartialDetails)
 
             return foundSubordinatesDataList
@@ -890,6 +891,7 @@ class MoovDBInstance(metaclass=Singleton):
                     #the manager is also part of the nodes list and should be ignored
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(self.getUser(currentSubordinate.name))
+                    userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
                     foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
@@ -982,6 +984,16 @@ class MoovDBInstance(metaclass=Singleton):
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
+
+    def getActiveMoovsCountToCounterpart (self, userId, counterpartId):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        activeMoovFilter = {"userId":userId, "counterpartsIds": counterpartId}
+
+        activeMoovsCount = activeMoovsCollection.find(activeMoovFilter).count()
+
+        return activeMoovsCount
 
     def getPastMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         db = self.getDatabase()

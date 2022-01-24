@@ -355,9 +355,11 @@ class MoovLogic(metaclass=Singleton):
         poiIdList = requestingUser.personsOfInterest 
 
         for currPOI in poiIdList:
-            userPartialData = UserPartialData()
-            userPartialData.fromFullDetails(self.getUser(id=currPOI))
-            peopleOfInterestList.append (userPartialData)
+            userPartialDetails = UserPartialData()
+            userPartialDetails.fromFullDetails(self.getUser(id=currPOI))
+            userPartialDetails.activeMoovsCount = self.dataBaseInstance.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
+
+            peopleOfInterestList.append (userPartialDetails)
 
         return peopleOfInterestList
 
