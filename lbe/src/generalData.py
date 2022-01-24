@@ -3,6 +3,7 @@ import datetime
 import json
 import bson
 import jsonpickle
+from numpy import full
 
 class UserRoles:
     NONE = 0
@@ -48,7 +49,7 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
         self.id = id
         self.parentId = parentId
         self.firstName = firstName
@@ -58,6 +59,7 @@ class UserData:
         self.gender = gender
         self.locale = locale
         self.isRTL = isRTL
+        self.color = color
         self.mailAddress = mailAddress
         self.motivations = motivations.copy()
         self.personsOfInterest = personsOfInterest.copy()
@@ -79,6 +81,7 @@ class UserData:
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
+        self.color = jsonData["color"]
         self.mailAddress = jsonData["mailAddress"]
         self.motivations = {}
 
@@ -93,13 +96,14 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, orgId = "", motivations = []):
+    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = []):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
         self.gender = gender
         self.locale = locale
         self.isRTL = isRTL
+        self.color = color
         self.orgId = orgId
         self.motivations = motivations.copy()
 
@@ -117,6 +121,7 @@ class UserPartialData:
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
+        self.color = jsonData["color"]
         self.orgId = jsonData["orgId"]
 
         if len(jsonData["motivations"]) > 0:
@@ -131,6 +136,7 @@ class UserPartialData:
         self.gender = fullUserDetails.gender
         self.locale = fullUserDetails.locale
         self.isRTL = fullUserDetails.isRTL
+        self.color = fullUserDetails.color
         self.orgId = fullUserDetails.orgId
 
         if len(fullUserDetails.motivations) > 0:

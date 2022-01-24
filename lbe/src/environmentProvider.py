@@ -1,7 +1,9 @@
 import datetime
 import os
+from random import random
 from singleton import Singleton
 import json
+import random
 
 ENVIRONMENT_FILE_PATH = "c:/dev/data/env/env.json"
 
@@ -13,6 +15,9 @@ def shouldSuppressNotifications ():
         return True
     else:
         return False
+
+def generateRandomUserColor():
+    return EnvironmentProvider.getInstance().generateRandomUserColor()
 
 class EnvKeys:
     courier = "courier"
@@ -31,6 +36,7 @@ class EnvKeys:
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
+    userColors = ['#3D59E9','#607D8B', '#E91E63', '#FA982B', '#673AB7', '#F44336', '#4CAF50', '#3F50B5', '#8BC34A', '#2CA9F5', '#795548', '#CDDC39']
 
     def __init__(self):
         self.modificationTimeStamp = 0.0
@@ -53,4 +59,8 @@ class EnvironmentProvider (metaclass=Singleton):
     def getAttribute(self, className, keyName):
         self.invalidateValues()
         return self.environmentValues[className][keyName] 
+
+    def generateRandomUserColor(self):
+        colorIdx = random.randint(0, len(self.userColors)-1)
+        return self.userColors[colorIdx]
 

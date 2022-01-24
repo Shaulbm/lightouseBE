@@ -201,13 +201,16 @@ class MoovLogic(metaclass=Singleton):
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
     
-    def insertOrUpdateUserDetails (self, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
-        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
+    def insertOrUpdateUserDetails (self, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, color = 0, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+        newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, color=color, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
     def insertOrUpdateUser (self, currUserData):
         # get user details prior to potentially adding it to the DB
         existingUser = self.getUser(currUserData.id)
+
+        if existingUser is None:
+            currUserData.color = self.generateUserColor()
 
         self.dataBaseInstance.insertOrUpdateUser(currUserData=currUserData)
 
@@ -215,6 +218,9 @@ class MoovLogic(metaclass=Singleton):
             #this is a new user - so we need to set a default password for him, and send a welcome email
             self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword))
             self.notificationsProvider.sendWelcomeMail(userDetails=currUserData)
+
+    def generateUserColor(self):
+        return ep.generateRandomUserColor()
 
     def setMotivationsToUSer (self, id, motivations):
         self.dataBaseInstance.setMotivationsToUSer(id=id, motivations=motivations)
