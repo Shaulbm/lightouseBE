@@ -344,6 +344,6 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 #     currUser.color = ep.generateRandomUserColor()
 #     db.insertOrUpdateUser(currUser)
 
-users = db.getUserPeopleOfInterest('U001')
+users = db.getUserCircle('U001')
 
 print ("Done")

@@ -359,7 +359,7 @@ class MoovLogic(metaclass=Singleton):
             userPartialDetails = UserPartialData()
             userPartialDetails.fromFullDetails(self.getUser(id=currPOI))
             userPartialDetails.activeMoovsCount = self.dataBaseInstance.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
-
+            userPartialDetails.recommendedMoovsCount = self.dataBaseInstance.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
             peopleOfInterestList.append (userPartialDetails)
 
         return peopleOfInterestList
@@ -477,7 +477,7 @@ class MoovLogic(metaclass=Singleton):
             self.notificationsProvider.sendDiscoveryDoneMail(notifyTo=userToNotify, userWhoEndedDiscoveryDetails=currUser)    
     
     def getInterestedusers(self, userId):
-        return self.dataBaseInstance.getInterestedusers(userId)
+        return self.dataBaseInstance.getInterestedUsers(userId)
 
     def insertOrUpdateRelationshipDetails (self, userId, counterpartId, costOfSeperation, chanceOfSeperation):
         relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation, timestamp=datetime.datetime.utcnow())

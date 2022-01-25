@@ -831,6 +831,7 @@ class MoovDBInstance(metaclass=Singleton):
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(currentUserDetails)
                     userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
+                    userPartialDetails.recommendedMoovsCount = self.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)                    
                     foundSubordinatesDataList.append (userPartialDetails)
 
             return foundSubordinatesDataList
@@ -873,12 +874,13 @@ class MoovDBInstance(metaclass=Singleton):
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(self.getUser(currentSubordinate.name))
                     userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
+                    userPartialDetails.recommendedMoovsCount = self.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
                     foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
 
     #return the users that the given UserId is in their POI
-    def getInterestedusers(self, userId):
+    def getInterestedUsers(self, userId):
         db = self.getDatabase()
         usersCollection = db["users"]
 
@@ -893,6 +895,10 @@ class MoovDBInstance(metaclass=Singleton):
             foundUsersDetails.append(currUserDetails)
 
         return foundUsersDetails
+
+    def getRecommnededMoovsAboveThresholdCount(self, userId, counterpartId):
+        # TBD 
+        return 1
 
     def activateIssueMoov (self, moovId, userId, counterpartId, priority, userContext: UserContextData):
         db = self.getDatabase();
