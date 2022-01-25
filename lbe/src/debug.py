@@ -13,6 +13,7 @@ from os import path
 import base64
 import cache
 import schedule
+import environmentProvider as ep
 
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
@@ -321,5 +322,28 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 # moovs = db.getMoovsForIssueAndCounterpart("UA06", "IS001", userContext)
 # relationshipDetails = UserRelationshipData('U001', 'UA06', 3, 2)
 # db.insertOrUpdateRelationship(relationshipDetails)
-activeMoov = db.activateIssueMoov('MO0002', 'U001', 'UA06', userContext=userContext)
+# activeMoov = db.activateIssueMoov('MO0002', 'U001', 'UA06', userContext=userContext)
+
+
+# users = []
+# users.append(db.getUser("U001"))
+# users.append(db.getUser("UA01"))
+# users.append(db.getUser("UA02"))
+# users.append(db.getUser("UA03"))
+# users.append(db.getUser("UA04"))
+# users.append(db.getUser("UA05"))
+# users.append(db.getUser("UA06"))
+# users.append(db.getUser("UA07"))
+# users.append(db.getUser("UA08"))
+# users.append(db.getUser("UA09"))
+# users.append(db.getUser("UA10"))
+# users.append(db.getUser("UA11"))
+# users.append(db.getUser("UA12"))
+
+# for currUser in users:
+#     currUser.color = ep.generateRandomUserColor()
+#     db.insertOrUpdateUser(currUser)
+
+users = db.getUserPeopleOfInterest('U001')
+
 print ("Done")

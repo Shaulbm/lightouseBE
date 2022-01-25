@@ -19,6 +19,10 @@ class Gender:
     MALE = 1
     FEMALE = 2
 
+class DiscoveryStatus:
+    UNDISCOVERED = 0
+    DISCOVERED = 1
+
 class TextData:
     def __init__(self, parentId = "", Id = "", contentText = ""):
         self.parentId = parentId
@@ -48,11 +52,12 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
+    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
         self.id = id
         self.parentId = parentId
         self.firstName = firstName
         self.familyName = familyName
+        self.discoveryStatus = discoveryStatus
         self.orgId = orgId
         self.role = role
         self.gender = gender
@@ -75,6 +80,7 @@ class UserData:
         self.parentId = jsonData["parentId"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
+        self.discoveryStatus = int(jsonData["discoveryStatus"])
         self.orgId = jsonData["orgId"]
         self.role = jsonData["role"]
         self.gender = jsonData["gender"]
@@ -95,10 +101,11 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
+    def __init__(self, id = "", firstName = "", familyName = "", discoveryStatus = DiscoveryStatus.UNDISCOVERED, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
+        self.discoveryStatus = discoveryStatus
         self.gender = gender
         self.locale = locale
         self.isRTL = isRTL
@@ -120,6 +127,7 @@ class UserPartialData:
         self.id = jsonData["id"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
+        self.discoveryStatus = int(jsonData["discoveryStatus"])
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
@@ -136,6 +144,7 @@ class UserPartialData:
         self.id = fullUserDetails.id
         self.firstName = fullUserDetails.firstName
         self.familyName = fullUserDetails.familyName
+        self.discoveryStatus = fullUserDetails.discoveryStatus
         self.gender = fullUserDetails.gender
         self.locale = fullUserDetails.locale
         self.isRTL = fullUserDetails.isRTL

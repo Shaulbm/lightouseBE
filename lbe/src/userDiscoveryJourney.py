@@ -3,7 +3,7 @@ from threading import current_thread
 from pymongo import response
 from pymongo.mongo_client import MongoClient
 from discoveryData import UserDiscoveryJourneyData, JourneyResolutionData, UserDiscoveryJourneyState
-from generalData import UserContextData, UserMotivationData
+from generalData import UserContextData, UserMotivationData, DiscoveryStatus
 from discoveryData import DiscoveryBatchData
 from moovLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
@@ -321,6 +321,10 @@ def endUserJourney (userId, userMotivationScoreBoard):
 
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
+
+    userDetails = dbInstance.getUser(userId)
+    userDetails.discoveryStatus = DiscoveryStatus.DISCOVERED
+    dbInstance.insertOrUpdateUser(userDetails)
 
     # call Logic to perform post journey actions
     dbInstance.userJourneyEnded(userId)

@@ -10,7 +10,7 @@ from issuesData import ConflictData
 from moovData import IssueMoovData, ConflictMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
-from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData, UserRelationshipData
+from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData, UserRelationshipData, DiscoveryStatus
 from singleton import Singleton
 from loguru import logger
 import datetime
@@ -211,6 +211,7 @@ class MoovLogic(metaclass=Singleton):
 
         if existingUser is None:
             currUserData.color = self.generateUserColor()
+            currUserData.discoveryStatus = DiscoveryStatus.UNDISCOVERED
 
         self.dataBaseInstance.insertOrUpdateUser(currUserData=currUserData)
 

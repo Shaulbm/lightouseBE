@@ -364,25 +364,6 @@ class MoovDBInstance(metaclass=Singleton):
 
         return motivationsIds
 
-    # def userLogin(self, userMail, password):
-    #     userDetails : UserData = self.getDBUserByMail(mail=userMail)
-
-    #     # TBD verify password
-    #     # for now password is always true
-
-    #     partialUserDetails = None
-
-    #     if (userDetails is not None):
-    #         hashedPassword = hashlib.sha256(password.encode('utf-8'))
-    #         if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
-    #             partialUserDetails = UserPartialData()
-    #             partialUserDetails.fromFullDetails(userDetails)
-    #         else:
-    #             # raise error 404
-    #             pass
-        
-    #     return partialUserDetails
-
     def getUserPassword (self, userId):
         db = self.getDatabase()
         usersCollection = db["usersCreds"]
