@@ -306,10 +306,10 @@ def activate_conflict_moov(request: Request, userId, CounterpartId, costOfSepera
     return returnValue
 
 @router.get("/getTopRecommendedMoovs")
-def get_top_recommended_moovs (request: Request, userId, CounterpartId):
+def get_top_recommended_moovs (request: Request, userId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userId, counterpartId=CounterpartId, userContext=userContextDetails)
+    topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return topRecommendedMoovs
