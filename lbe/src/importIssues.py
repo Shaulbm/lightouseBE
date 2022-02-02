@@ -15,10 +15,10 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 ISSUES_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
-ISSUES_RANGE_NAME = 'Issues!A1:K10'
+ISSUES_RANGE_NAME = 'Issues!A1:K11'
 SUBJECTS_RANGE_NAME = 'Subjects!A1:G4'
 RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:G22'
-CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G43'
+CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G73'
 CONFLICTS_RANGE_NAME='Conflicts!A1:H6'
 
 def main():

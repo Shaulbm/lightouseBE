@@ -344,6 +344,7 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 #     currUser.color = ep.generateRandomUserColor()
 #     db.insertOrUpdateUser(currUser)
 
-users = db.getUserCircle('U001')
+# users = db.getUserCircle('U001')
+moovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', userContext)
 
 print ("Done")

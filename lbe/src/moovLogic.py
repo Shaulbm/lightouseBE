@@ -489,3 +489,23 @@ class MoovLogic(metaclass=Singleton):
 
     def getRelationshipData (self, userId, counterpartId):
         return self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)
+
+    def getTopRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext : UserContextData):
+        allRecommendedMoovs = self.getALlRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+
+        sortedRecommendedMoovs = sorted(allRecommendedMoovs, key=lambda x: x.score, reverse=True)
+
+        topRecommendedMoovsToReturn = ep.getAttribute(EnvKeys.moovs, EnvKeys.topRecommendedMoovsNo)
+        recommendedMoovsThreshold = ep.getAttribute(EnvKeys.moovs, EnvKeys.topRecommendedMoovThreshold)
+
+        topRecommendedMoovs = sortedRecommendedMoovs[:topRecommendedMoovsToReturn]
+
+        topRecommendedMoovs = [rm for rm in topRecommendedMoovs if rm.score > recommendedMoovsThreshold]
+
+        return topRecommendedMoovs 
+        
+
+    def getALlRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext: UserContextData):
+        recommendedMoovs = self.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
+
+        return recommendedMoovs

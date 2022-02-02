@@ -25,6 +25,7 @@ class EnvKeys:
     defaults = "defaults"
     initialUserPassword = "initialUserPassword" 
     behaviour = "behaviour"
+    moovs = "moovs"
     supressMailNotifications = "supressMailNotifications"
     hoursToNotifyBeforMoovsOverdue = "hoursToNotifyMoversOverDue"
     daysToAccomplishActiveMoov = "daysToAccomplishActiveMoov"
@@ -33,6 +34,10 @@ class EnvKeys:
     baseMoovPriority = "baseMoovPriority"
     baseMoovScore = "baseMoovScore"
     motivationGapBase = "motivationGapBase"
+    topMoovThreshold = "topMoovThreshold"
+    topRecommendedMoovThreshold = "topRecommendedMoovThreshold"
+    recommendedMoovsIssueId = "recommendedMoovsIssueId"
+    topRecommendedMoovsNo = "topRecommendedMoovsNo"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
