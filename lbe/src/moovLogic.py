@@ -504,7 +504,6 @@ class MoovLogic(metaclass=Singleton):
 
         return topRecommendedMoovs 
         
-
     def getALlRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext: UserContextData):
         recommendedMoovs = self.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
 

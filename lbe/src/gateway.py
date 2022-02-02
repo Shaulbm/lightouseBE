@@ -304,3 +304,12 @@ def activate_conflict_moov(request: Request, userId, CounterpartId, costOfSepera
     returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=userId, counterpartId=CounterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation)
     
     return returnValue
+
+@router.get("/getTopRecommendedMoovs")
+def get_top_recommended_moovs (request: Request, userId, CounterpartId):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+    
+    topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userId, counterpartId=CounterpartId, userContext=userContextDetails)
+    
+    return topRecommendedMoovs
