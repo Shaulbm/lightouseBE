@@ -459,7 +459,8 @@ class MoovLogic(metaclass=Singleton):
         return normalizedPriorityValue
 
     def getActiveMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
-        activeMoovs = self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+        counterpartDetails = self.getUser(id=counterpartId)
+        activeMoovs = self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartDetails=counterpartDetails, userContext=userContext)
 
         #  calculate steps to moov 
         for activeMoov in activeMoovs:
@@ -471,7 +472,8 @@ class MoovLogic(metaclass=Singleton):
         return activeMoovs
 
     def getPastMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
-        return self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+        counterpartDetails = self.getUser(counterpartId)
+        return self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartDetails=counterpartDetails, userContext=userContext)
 
     def getActiveMoovsForUser (self, userId, userContext: UserContextData):
         activeMoovs = self.dataBaseInstance.getActiveMoovsForUser(userId=userId, userContext=userContext)
