@@ -345,6 +345,72 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 #     db.insertOrUpdateUser(currUser)
 
 # users = db.getUserCircle('U001')
-moovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', userContext)
+# moovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', userContext)
+
+# user: UserData = db.getUser('UA01')
+# user.personsOfInterest = ['UA02']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA02')
+# user.personsOfInterest = ['UA01','UA03']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA03')
+# user.personsOfInterest = ['UA01','UA02','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA04')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA05')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA06')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA07')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA08')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA09')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA10']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA10')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA09','UA11']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA11')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA09','UA10','UA12']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user: UserData = db.getUser('UA12')
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA09','UA10','UA11','U001']
+# user.parentId = ""
+# db.insertOrUpdateUser(user)
+
+# user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA09','UA10','UA11','UA12']
+
+# coi = db.getUserCircle('UA02')
+
+moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
 
 print ("Done")

@@ -7,7 +7,7 @@ from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
-from moovData import IssueMoovData, ConflictMoovData
+from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
 from generalData import UserData, UserPartialData, UserRoles, UserCircleData, Gender, Locale, UserContextData, UserCredData, UserRelationshipData, DiscoveryStatus
@@ -171,13 +171,31 @@ class MoovLogic(metaclass=Singleton):
 
         issueDetails = self.getIssue(issueId, userContext = None)
 
+        extendedIssueMoovs = []
+
         for currMoov in issueMoovs:
             relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
             
             if relatedMotivation is not None:
                 currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
 
-        return issueMoovs
+            # create steps for moov
+            extendedMoov = ExtendedIssueMoovData()
+            extendedMoov.fromIssueMoov(currMoov)
+            extendedMoov.steps = self.getStepsToMoov (currMoov)
+            extendedIssueMoovs.append(extendedMoov)
+
+        return extendedIssueMoovs
+
+    def getStepsToMoov (self, moovData : BaseMoovData):
+        moovSteps = moovData.howTo.split('*')
+
+        if (moovSteps[0] == ''):
+            # it might be that the first char is '*' - this creates an empty step
+            del(moovSteps[0])
+
+        return moovSteps
+
 
     def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
         userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
@@ -441,16 +459,42 @@ class MoovLogic(metaclass=Singleton):
         return normalizedPriorityValue
 
     def getActiveMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
-        return self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+        activeMoovs = self.dataBaseInstance.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+
+        #  calculate steps to moov 
+        for activeMoov in activeMoovs:
+            extendedMoovDetails = ExtendedIssueMoovData() 
+            extendedMoovDetails.fromBase(activeMoov.moovData)
+            extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
+            activeMoov.moovData = extendedMoovDetails
+
+        return activeMoovs
 
     def getPastMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         return self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
     def getActiveMoovsForUser (self, userId, userContext: UserContextData):
-        return self.dataBaseInstance.getActiveMoovsForUser(userId=userId, userContext=userContext)
+        activeMoovs = self.dataBaseInstance.getActiveMoovsForUser(userId=userId, userContext=userContext)
+
+        #  calculate steps to moov
+        for activeMoov in activeMoovs:
+            extendedMoovDetails = ExtendedIssueMoovData() 
+            extendedMoovDetails.fromBase(activeMoov.moovData)
+            extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
+            activeMoov.moovData = extendedMoovDetails
+
+        return activeMoovs    
 
     def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId):
-        return self.dataBaseInstance.getActiveMoovByMoovUserAndCounterpart (userId=userId, moovId=moovId, counterpartId=counterpartId)
+        activeMoov = self.dataBaseInstance.getActiveMoovByMoovUserAndCounterpart (userId=userId, moovId=moovId, counterpartId=counterpartId)
+
+        #  calculate steps to moov
+        extendedMoovDetails = ExtendedIssueMoovData() 
+        extendedMoovDetails.fromBase(activeMoov.moovData)
+        extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
+        activeMoov.moovData = extendedMoovDetails 
+
+        return activeMoov
 
     def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
         self.dataBaseInstance.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=isEndedByTimer)

@@ -66,6 +66,34 @@ class IssueMoovData(BaseMoovData):
         self.issueId = jsonData["issueId"]
         self.motivationId = jsonData["motivationId"]
 
+class ExtendedIssueMoovData(IssueMoovData):
+    def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", steps = [], contributor = "", reasoning=""):
+        super().__init__(id = id, issueId=issueId, motivationId=motivationId, score=score, image=image, contributor=contributor, name=name, description=description, howTo=howTo, reasoning=reasoning)
+        self.steps = steps.copy()
+
+    def buildFromJSON(self, jsonData, localedTextDic = None):
+        super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
+
+        self.steps = []
+        if (len(jsonData["steps"]) > 0):
+            self.steps = jsonData["steps"].copy()
+
+    def fromBase(self, moovData : BaseMoovData):
+        self.id = moovData.id
+        self.score = moovData.score
+        self.image = moovData.image
+        self.name = moovData.name
+        self.description = moovData.description
+        self.howTo = moovData.howTo
+        self.contributor = moovData.contributor
+        self.reasoning = moovData.reasoning 
+
+    def fromIssueMoov(self, moovData:IssueMoovData):
+        self.fromBase(moovData=moovData)
+        self.issueId = moovData.issueId
+        self.motivationId = moovData.motivationId
+
+
 class MoovInstance:
     def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = ""):
         self.id = id
