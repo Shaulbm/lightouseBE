@@ -74,7 +74,9 @@ class MoovDBInstance(metaclass=Singleton):
             # if name is not empty, replace <<NAME>> or <<>> with the given name value
             if (name != ""):
                 tempText = currText["text"].replace("<<NAME>>", name)
-                textDic[currText["id"]] = tempText.replace("<<>>", name)
+                tempText = tempText.replace("<<>>", name)
+                tempText = tempText.replace("<< >>", name)
+                textDic[currText["id"]] = tempText
             else:
                 textDic[currText["id"]] = currText["text"]
 
