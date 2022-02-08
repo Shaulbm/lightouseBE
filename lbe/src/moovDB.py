@@ -71,9 +71,10 @@ class MoovDBInstance(metaclass=Singleton):
         textDic = {}
 
         for currText in allTextsArray:
-            # if name is not empty, replace <<NAME>> with the given name value
+            # if name is not empty, replace <<NAME>> or <<>> with the given name value
             if (name != ""):
                 textDic[currText["id"]] = currText["text"].replace("<<NAME>>", name)
+                textDic[currText["id"]] = currText["text"].replace("<<>>", name)
             else:
                 textDic[currText["id"]] = currText["text"]
 
