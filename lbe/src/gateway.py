@@ -298,7 +298,7 @@ def get_conflict_moovs (request: Request, conflictId):
     return conflictMoovs
 
 @router.get("/updateRelationship")
-def activate_conflict_moov(request: Request, userId, CounterpartId, costOfSeperation, chanceOfSeperation):
+def update_relationship_data(request: Request, userId, CounterpartId, costOfSeperation, chanceOfSeperation):
     dbActions = MoovLogic()
     
     returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=userId, counterpartId=CounterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation)
@@ -313,3 +313,11 @@ def get_top_recommended_moovs (request: Request, userId, counterpartId):
     topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return topRecommendedMoovs
+
+@router.get("/isMissingRelationshipData")
+def is_missing_relationship_data(request: Request, userId, CounterpartId):
+    dbActions = MoovLogic()
+    
+    returnValue = dbActions.missingRelationshipData(userId=userId, counterpartId=CounterpartId)
+    
+    return returnValue

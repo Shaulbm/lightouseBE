@@ -38,6 +38,7 @@ class EnvKeys:
     topRecommendedMoovThreshold = "topRecommendedMoovThreshold"
     recommendedMoovsIssueId = "recommendedMoovsIssueId"
     topRecommendedMoovsNo = "topRecommendedMoovsNo"
+    relationshipDataTTLDays = "relationshipDataTTLDays"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None

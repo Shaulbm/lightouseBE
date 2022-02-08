@@ -490,6 +490,18 @@ class MoovLogic(metaclass=Singleton):
     def getRelationshipData (self, userId, counterpartId):
         return self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)
 
+    def missingRelationshipData (self, userId, counterpartId):
+        existingRelationShipData = self.getRelationshipData(userId=userId, counterpartId=counterpartId)
+
+        missingRelationshipDataRetVal = True
+
+        if (existingRelationShipData is not None):
+            relationshipTimeSpan = datetime.timedelta(datetime.datetime.utcnow, existingRelationShipData.timestamp)
+            if (relationshipTimeSpan < datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.relationshipDataTTLDays))):
+                missingRelationshipDataRetVal = False
+
+        return missingRelationshipDataRetVal
+
     def getTopRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext : UserContextData):
         allRecommendedMoovs = self.getALlRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
