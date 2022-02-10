@@ -410,13 +410,15 @@ class MoovLogic(metaclass=Singleton):
         moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
         return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
 
-    def extendAcctiveMoov(self, activeMoovId, newEndDate):
+    def extendAcctiveMoov(self, activeMoovId):
         activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
 
         if (activeMoovDetails is not None):
-            activeMoovDetails.plannedEndDate = newEndDate
+            activeMoovDetails.plannedEndDate = activeMoovDetails.plannedEndDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.moovs, EnvKeys.extendActiveMoovTimeDays))
             activeMoovDetails.isOverdue = False
             self.insertOrUpdateActiveMoov(activeMoovDetails=activeMoovDetails)
+
+        return activeMoovDetails
 
     def getActiveMoov (self, activeMoovId):
         return self.dataBaseInstance.getActiveMoov(id=activeMoovId)

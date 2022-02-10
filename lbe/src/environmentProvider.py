@@ -39,6 +39,7 @@ class EnvKeys:
     recommendedMoovsIssueId = "recommendedMoovsIssueId"
     topRecommendedMoovsNo = "topRecommendedMoovsNo"
     relationshipDataTTLDays = "relationshipDataTTLDays"
+    extendActiveMoovTimeDays = "extendActiveMoovTimeDays"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
