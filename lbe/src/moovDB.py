@@ -922,10 +922,35 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.priority = priority
         newActiveMoov.startDate = datetime.datetime.utcnow()
         newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
-        
-        activeMoovsCollection.insert_one(newActiveMoov.toJSON())
+
+        self.insertOrUpdateActiveMoov(newActiveMoov)        
 
         return newActiveMoov
+
+    def insertOrUpdateActiveMoov (self, activeMoov : MoovInstance):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        foundActiveMoov = activeMoovsCollection.find_one({"id":activeMoov.id})
+
+        if foundActiveMoov is not None:
+            activeMoovDataFilter = {"id":activeMoov.id}
+            activeMoovsCollection.replace_one(activeMoovDataFilter, activeMoov.toJSON())
+        else:
+            activeMoovsCollection.insert_one(activeMoov.toJSON())
+
+    def getActiveMoov (self, id):
+        db = self.getDatabase()
+        activeMoovsCollection = db["activeMoovs"]
+
+        foundActiveMoov = activeMoovsCollection.find_one({"id":id})
+
+        activeMoovDetails = None
+        if foundActiveMoov is not None:
+            activeMoovDetails = MoovInstance()
+            activeMoovDetails.buildFromJSON(foundActiveMoov)
+
+        return activeMoovDetails
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, priority, userContext: UserContextData):
         db = self.getDatabase()

@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from starlette.requests import Request
 from starlette.types import Scope
 from moovLogic import MoovLogic
@@ -81,7 +81,7 @@ import environmentProvider as ep
 # print (motivations)
 
 def job():
-    print ('in job, time is ', str(datetime.utcnow()))
+    print ('in job, time is ', str(datetime.datetime.utcnow()))
 
 def createUsers(dbInstance):
     #               U001
@@ -411,6 +411,10 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 
 # coi = db.getUserCircle('UA02')
 
-moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
+# moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
+
+activeMoov = db.getActiveMoov('AM_8')
+db.extendAcctiveMoov('AM_8', (datetime.datetime.utcnow() + datetime.timedelta(days=7)))
+newActiveMoov = db.getActiveMoov('AM_8')
 
 print ("Done")
