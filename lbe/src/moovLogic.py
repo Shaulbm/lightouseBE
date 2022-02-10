@@ -414,7 +414,7 @@ class MoovLogic(metaclass=Singleton):
         activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
 
         if (activeMoovDetails is not None):
-            activeMoovDetails.plannedEndDate = activeMoovDetails.plannedEndDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.moovs, EnvKeys.extendActiveMoovTimeDays))
+            activeMoovDetails.plannedEndDate = datetime.datetime.utcnow() + datetime.timedelta(days=ep.getAttribute(EnvKeys.moovs, EnvKeys.extendActiveMoovTimeDays))
             activeMoovDetails.isOverdue = False
             self.insertOrUpdateActiveMoov(activeMoovDetails=activeMoovDetails)
 
