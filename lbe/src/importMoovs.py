@@ -7,6 +7,7 @@ from google.oauth2.credentials import Credentials
 from moovData import IssueMoovData, ConflictMoovData
 from moovLogic import MoovLogic
 from generalData import TextData
+import re
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -15,6 +16,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
 MOOVS_RANGE_NAME = 'MoovsDetails!A1:R144'
 CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
+
 def main():
     """Shows basic usage of the Sheets API.
     Prints values from a sample spreadsheet.
@@ -116,15 +118,15 @@ def insertMoov(moovDataDict):
     currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en>>"])
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en>>"].replace('•', '*'))
     currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma>>"])
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma>>"].replace('•', '*'))
     currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe>>"])
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe>>"].replace('•', '*'))
     currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 

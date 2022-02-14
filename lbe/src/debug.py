@@ -397,7 +397,7 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 # user.parentId = ""
 # db.insertOrUpdateUser(user)
 
-# user: UserData = db.getUser('UA11')
+# user: UserData = db.getUser('U001')
 # user.personsOfInterest = ['UA01','UA02','UA03','UA04','UA05','UA06','UA07','UA08','UA09','UA10','UA12']
 # user.parentId = ""
 # db.insertOrUpdateUser(user)
@@ -413,8 +413,11 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 
 # moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
 
-activeMoov = db.getActiveMoov('AM_8')
-db.extendAcctiveMoov('AM_8', (datetime.datetime.utcnow() + datetime.timedelta(days=7)))
-newActiveMoov = db.getActiveMoov('AM_8')
+# activeMoov = db.getActiveMoov('AM_8')
+# db.extendAcctiveMoov('AM_8', (datetime.datetime.utcnow() + datetime.timedelta(days=7)))
+# newActiveMoov = db.getActiveMoov('AM_8')
+
+# a = "•בקש מ<<>> שיספר לך מהי התדירות הנכונה לו לדווח על התקדמות/החלטות/תוצאות שלו. הבהר לו את חשיבות העדכונים. •סכמו יחד על מתכונת שתאפשר לך ולאחרים לחוש בנוח, ובו זמנית תגרום לו לחוש שלא יושבים לו על הצוואר. •הגדירו את ערוץ התקשורת (מייל/הודעה/פגישה/בע״פ), ש(יאפשר לו לבחור את הדרך המיטבית עבורו - להוריד) הנוח והטוב עבורו. חשוב שהערוץ שתבחרו ייתן מענה גם לצרכים הניהוליים שלך ושל הגורמים הרלוונטיים האחרים. •קבעו את תדירות הדיווח: מתי אתה וגורמים רלוונטיים אחרים צריכים לקבל את המידע אודות התקדמות המשימה (האם נדרש דיווח במהלך הביצוע או ניתן להסתפק בעדכון על השלמת ביצוע?).•דגלים אדומים: הגדירו מתי ובאילו נסיבות נדרש להתריע על בעיה. קבעו באיזה צורות תעשה ההתרעה (אימייל? ווטסאפ? שיחת פנים אל פנים? וכד')."
+# b = a.replace('•', '*')
 
 print ("Done")

@@ -21,6 +21,11 @@ class LoginData(BaseModel):
     userMail: str
     password: str
 
+class EndMoovData(BaseModel):
+    activeMoovId: str
+    feedbackScore: int
+    feedbackText: str
+
 def set_user_context(userId):
     dbActions = MoovLogic()
     return dbActions.setUserContextData(userId)
@@ -226,11 +231,11 @@ def activate_conflict_moov(request: Request, moovId, userId, firstCounterpartId,
     
     return returnValue
 
-@router.get("/endMoov")
-def end_moov (request: Request, activeMoovId, feedbackScore, feedbackText):
+@router.post("/endMoov")
+def end_moov (request: Request, endMoovDetails: EndMoovData):
     dbActions = MoovLogic()
     
-    returnValue = dbActions.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=False)
+    returnValue = dbActions.endMoov(activeMoovId=endMoovDetails.activeMoovId, feedbackScore=endMoovDetails.feedbackScore, feedbackText=endMoovDetails.feedbackText, isEndedByTimer=False)
     
     return returnValue
 
