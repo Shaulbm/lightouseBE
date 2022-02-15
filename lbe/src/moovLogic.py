@@ -483,6 +483,9 @@ class MoovLogic(metaclass=Singleton):
         for activeMoov in activeMoovs:
             extendedMoovDetails = ExtendedIssueMoovData() 
             extendedMoovDetails.fromBase(activeMoov.moovData)
+            self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
             activeMoov.counterpartFirstName = counterpartDetails.firstName
@@ -501,11 +504,14 @@ class MoovLogic(metaclass=Singleton):
 
         #  calculate steps to moov
         for activeMoov in activeMoovs:
+            counterpartDetails = self.getUser(activeMoov.counterpartId)
             extendedMoovDetails = ExtendedIssueMoovData() 
             extendedMoovDetails.fromBase(activeMoov.moovData)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
-            counterpartDetails = self.getUser(activeMoov.counterpartId)
+            self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
             activeMoov.counterpartFirstName = counterpartDetails.firstName
             activeMoov.counterpartLastName = counterpartDetails.familyName
             activeMoov.counterpartColor = counterpartDetails.color
@@ -592,3 +598,10 @@ class MoovLogic(metaclass=Singleton):
         recommendedMoovs = self.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
 
         return recommendedMoovs
+
+    def setNameInText (self, text, name):
+        tempText = text.replace("<<NAME>>", name)
+        tempText = tempText.replace("<<>>", name)
+        tempText = tempText.replace("<< >>", name)
+
+        return tempText
