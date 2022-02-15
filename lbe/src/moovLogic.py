@@ -488,6 +488,7 @@ class MoovLogic(metaclass=Singleton):
             activeMoov.counterpartFirstName = counterpartDetails.firstName
             activeMoov.counterpartLastName = counterpartDetails.familyName
             activeMoov.counterpartColor = counterpartDetails.color
+            activeMoov.isImportant = (activeMoov.priority >= ep.getAttribute() )
 
         return activeMoovs
 
@@ -508,6 +509,7 @@ class MoovLogic(metaclass=Singleton):
             activeMoov.counterpartFirstName = counterpartDetails.firstName
             activeMoov.counterpartLastName = counterpartDetails.familyName
             activeMoov.counterpartColor = counterpartDetails.color
+            activeMoov.isImportant = (activeMoov.priority >= ep.getAttribute())
 
         return activeMoovs    
 

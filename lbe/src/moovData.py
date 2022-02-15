@@ -143,9 +143,10 @@ class MoovInstance:
         #     self.counterpartsIds = []
 
 class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority= 0, startDate= "", endDate="", plannedEndDate =  datetime.utcnow(), feedbackScore = 0, feedbackText = "", moovData = None, counterpartFirstName ="", counterpartLastName = "", counterpartColor=""):
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority= 0, startDate= "", endDate="", plannedEndDate =  datetime.utcnow(), feedbackScore = 0, feedbackText = "", moovData = None, counterpartFirstName ="", counterpartLastName = "", counterpartColor="", isImportant = false):
         super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId, priority=priority, startDate=startDate, endDate=endDate, plannedEndDate=plannedEndDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
         self.moovData = moovData
         self.counterpartFirstName = counterpartFirstName
         self.counterpartLastName = counterpartLastName
         self.counterpartColor = counterpartColor
+        self.isImportant = isImportant
