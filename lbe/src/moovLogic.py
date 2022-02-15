@@ -483,9 +483,9 @@ class MoovLogic(metaclass=Singleton):
         for activeMoov in activeMoovs:
             extendedMoovDetails = ExtendedIssueMoovData() 
             extendedMoovDetails.fromBase(activeMoov.moovData)
-            self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
-            self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
-            self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)
+            extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
             activeMoov.counterpartFirstName = counterpartDetails.firstName
@@ -509,9 +509,9 @@ class MoovLogic(metaclass=Singleton):
             extendedMoovDetails.fromBase(activeMoov.moovData)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
-            self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
-            self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
-            self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
+            extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
             activeMoov.counterpartFirstName = counterpartDetails.firstName
             activeMoov.counterpartLastName = counterpartDetails.familyName
             activeMoov.counterpartColor = counterpartDetails.color
