@@ -7,7 +7,6 @@ from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
-from lbe.src.moovData import ExtendedMoovInstance
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
