@@ -918,7 +918,7 @@ class MoovDBInstance(metaclass=Singleton):
         newActiveMoov.id = "AM_" + str(self.getNextCount())
         newActiveMoov.moovId = moovId
         newActiveMoov.userId = userId
-        newActiveMoov.counterpartsIds.append(counterpartId)
+        newActiveMoov.counterpartId = counterpartId
         newActiveMoov.priority = priority
         newActiveMoov.startDate = datetime.datetime.utcnow()
         newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
@@ -953,34 +953,35 @@ class MoovDBInstance(metaclass=Singleton):
         return activeMoovDetails
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, priority, userContext: UserContextData):
-        db = self.getDatabase()
-        activeMoovsCollection = db["activeMoovs"]
+        # db = self.getDatabase()
+        # activeMoovsCollection = db["activeMoovs"]
 
-        #Check if there is an already moovId with userId and teamMember Id that is active
-        existingMoov = self.getActiveMoovByMoovUserAndMultipleCounterparts(userId=userId, moovId=moovId, counterpartsIds=counterpartsIds)
+        # #Check if there is an already moovId with userId and teamMember Id that is active
+        # existingMoov = self.getActiveMoovByMoovUserAndMultipleCounterparts(userId=userId, moovId=moovId, counterpartsIds=counterpartsIds)
 
-        if existingMoov is not None:
-            #rasie error active Moov already exists
-            return existingMoov
+        # if existingMoov is not None:
+        #     #rasie error active Moov already exists
+        #     return existingMoov
 
-        newActiveMoov = MoovInstance()
-        newActiveMoov.id = "AM_" + str(self.getNextCount())
-        newActiveMoov.moovId = moovId
-        newActiveMoov.userId = userId
-        newActiveMoov.counterpartsIds = counterpartsIds.copy()
-        newActiveMoov.priority = priority
-        newActiveMoov.startDate = datetime.datetime.utcnow()
-        newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
+        # newActiveMoov = MoovInstance()
+        # newActiveMoov.id = "AM_" + str(self.getNextCount())
+        # newActiveMoov.moovId = moovId
+        # newActiveMoov.userId = userId
+        # newActiveMoov.counterpartsIds = counterpartsIds.copy()
+        # newActiveMoov.priority = priority
+        # newActiveMoov.startDate = datetime.datetime.utcnow()
+        # newActiveMoov.plannedEndDate = newActiveMoov.startDate + datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.daysToAccomplishActiveMoov))
         
-        activeMoovsCollection.insert_one(newActiveMoov.toJSON())
+        # activeMoovsCollection.insert_one(newActiveMoov.toJSON())
 
-        return newActiveMoov
+        # return newActiveMoov
+        pass
 
     def getActiveMoovsToCounterpart (self, userId, counterpartDetails:UserData, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"userId":userId, "counterpartsIds": counterpartDetails.id}
+        activeMoovFilter = {"userId":userId, "counterpartId": counterpartDetails.id}
 
         activeMoovsDataJSONList = activeMoovsCollection.find(activeMoovFilter)
 
@@ -992,6 +993,7 @@ class MoovDBInstance(metaclass=Singleton):
             foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
             foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, counterpartName = counterpartDetails.firstName, userContext=userContext)
+
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
@@ -1010,7 +1012,7 @@ class MoovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         historicMoovsCollection = db["historicMoovs"]
 
-        historicMoovFilter = {"userId":userId, "counterpartsIds": counterpartDetails.id}
+        historicMoovFilter = {"userId":userId, "counterpartId": counterpartDetails.id}
 
         historicMoovsDataJSONList = historicMoovsCollection.find(historicMoovFilter)
 
@@ -1051,7 +1053,7 @@ class MoovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": counterpartId}
+        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartId": counterpartId}
 
         activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
 
@@ -1064,20 +1066,21 @@ class MoovDBInstance(metaclass=Singleton):
         return foundActiveMoov
 
     def getActiveMoovByMoovUserAndMultipleCounterparts(self, userId, moovId, counterpartsIds):
-        db = self.getDatabase()
-        activeMoovsCollection = db["activeMoovs"]
+        # db = self.getDatabase()
+        # activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": {"$all": counterpartsIds}}
+        # activeMoovFilter = {"userId":userId, "moovId":moovId,"counterpartsIds": {"$all": counterpartsIds}}
 
-        activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
+        # activeMoovJSONData = activeMoovsCollection.find_one(activeMoovFilter)
 
-        if (activeMoovJSONData is None):
-            return None
+        # if (activeMoovJSONData is None):
+        #     return None
 
-        foundActiveMoov = MoovInstance()
-        foundActiveMoov.buildFromJSON(activeMoovJSONData)
+        # foundActiveMoov = MoovInstance()
+        # foundActiveMoov.buildFromJSON(activeMoovJSONData)
    
-        return foundActiveMoov
+        # return foundActiveMoov
+        pass
 
     def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
         db = self.getDatabase()
@@ -1126,8 +1129,8 @@ class MoovDBInstance(metaclass=Singleton):
 
         if (foundMoov is not None):
             #the conflict already exists - update the issue
-            conflictDataFilter = {"id" : moovInstance.id}
-            activeMoovsCollection.replace_one(conflictDataFilter, moovInstance.toJSON())
+            moovsDataFilter = {"id" : moovInstance.id}
+            activeMoovsCollection.replace_one(moovsDataFilter, moovInstance.toJSON())
 
     def insertOrUpdateRelationship (self, relationshipData):
         db = self.getDatabase()

@@ -95,10 +95,10 @@ class ExtendedIssueMoovData(IssueMoovData):
 
 
 class MoovInstance:
-    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = ""):
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = ""):
         self.id = id
         self.userId = userId
-        self.counterpartsIds = counterpartsIds.copy()
+        self.counterpartId = counterpartId
         self.moovId = moovId
         self.priority = priority
         self.startDate = startDate
@@ -135,13 +135,17 @@ class MoovInstance:
         self.notifiedUserForOverdue = bool(jsonData["notifiedUserForOverdue"])
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
+        self.counterpartId = jsonData["counterpartId"]
 
-        if len(jsonData["counterpartsIds"]) > 0:
-            self.counterpartsIds = jsonData["counterpartsIds"].copy()
-        else:
-            self.counterpartsIds = []
+        # if len(jsonData["counterpartsIds"]) > 0:
+        #     self.counterpartsIds = jsonData["counterpartsIds"].copy()
+        # else:
+        #     self.counterpartsIds = []
 
 class ExtendedMoovInstance(MoovInstance):
-    def __init__(self, id = "", userId = "", counterpartsIds = [], moovId = "", priority= 0, startDate= "", endDate="", plannedEndDate =  datetime.utcnow(), feedbackScore = 0, feedbackText = "", moovData = None):
-        super().__init__(id=id, userId=userId,counterpartsIds=counterpartsIds,moovId=moovId, priority=priority, startDate=startDate, endDate=endDate, plannedEndDate=plannedEndDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority= 0, startDate= "", endDate="", plannedEndDate =  datetime.utcnow(), feedbackScore = 0, feedbackText = "", moovData = None, counterpartFirstName ="", counterpartLastName = "", counterpartColor=""):
+        super().__init__(id=id, userId=userId,counterpartId=counterpartId,moovId=moovId, priority=priority, startDate=startDate, endDate=endDate, plannedEndDate=plannedEndDate, feedbackScore=feedbackScore, feedbackText=feedbackText)
         self.moovData = moovData
+        self.counterpartFirstName = counterpartFirstName
+        self.counterpartLastName = counterpartLastName
+        self.counterpartColor = counterpartColor

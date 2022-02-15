@@ -7,6 +7,7 @@ from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
+from lbe.src.moovData import ExtendedMoovInstance
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
@@ -407,8 +408,9 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
-        moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
-        return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
+        # moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
+        # return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
+        pass
 
     def extendAcctiveMoov(self, activeMoovId):
         activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
@@ -484,6 +486,9 @@ class MoovLogic(metaclass=Singleton):
             extendedMoovDetails.fromBase(activeMoov.moovData)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
+            activeMoov.counterpartFirstName = counterpartDetails.firstName
+            activeMoov.counterpartLastName = counterpartDetails.familyName
+            activeMoov.counterpartColor = counterpartDetails.color
 
         return activeMoovs
 
@@ -500,6 +505,10 @@ class MoovLogic(metaclass=Singleton):
             extendedMoovDetails.fromBase(activeMoov.moovData)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
+            counterpartDetails = self.getUser(activeMoov.counterpartId)
+            activeMoov.counterpartFirstName = counterpartDetails.firstName
+            activeMoov.counterpartLastName = counterpartDetails.familyName
+            activeMoov.counterpartColor = counterpartDetails.color
 
         return activeMoovs    
 
