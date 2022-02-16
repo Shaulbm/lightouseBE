@@ -504,7 +504,6 @@ class MoovLogic(metaclass=Singleton):
 
         #  calculate steps to moov
         for activeMoov in activeMoovs:
-            print (activeMoov.toJSON())
             counterpartDetails = self.getUser(activeMoov.counterpartId)
             extendedMoovDetails = ExtendedIssueMoovData() 
             extendedMoovDetails.fromBase(activeMoov.moovData)
