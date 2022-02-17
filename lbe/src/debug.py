@@ -225,7 +225,7 @@ db = MoovLogic()
 # dbInstance_1.setUserPassword("U001", "123456")
 # userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
 
-userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
+userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_EN_US, isRTL=False)
 # usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userContext)
 # scope = Scope()
 # scope["type"] = "http"
@@ -412,6 +412,7 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 # coi = db.getUserCircle('UA02')
 
 # moovInstances = db.getActiveMoovsToCounterpart('U001', 'UA06', userContext)
+# MoovInstances = db.getActiveMoovsForUser('U001', userContext)
 
 # activeMoov = db.getActiveMoov('AM_8')
 # db.extendAcctiveMoov('AM_8', (datetime.datetime.utcnow() + datetime.timedelta(days=7)))
@@ -419,5 +420,7 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 
 # a = "•בקש מ<<>> שיספר לך מהי התדירות הנכונה לו לדווח על התקדמות/החלטות/תוצאות שלו. הבהר לו את חשיבות העדכונים. •סכמו יחד על מתכונת שתאפשר לך ולאחרים לחוש בנוח, ובו זמנית תגרום לו לחוש שלא יושבים לו על הצוואר. •הגדירו את ערוץ התקשורת (מייל/הודעה/פגישה/בע״פ), ש(יאפשר לו לבחור את הדרך המיטבית עבורו - להוריד) הנוח והטוב עבורו. חשוב שהערוץ שתבחרו ייתן מענה גם לצרכים הניהוליים שלך ושל הגורמים הרלוונטיים האחרים. •קבעו את תדירות הדיווח: מתי אתה וגורמים רלוונטיים אחרים צריכים לקבל את המידע אודות התקדמות המשימה (האם נדרש דיווח במהלך הביצוע או ניתן להסתפק בעדכון על השלמת ביצוע?).•דגלים אדומים: הגדירו מתי ובאילו נסיבות נדרש להתריע על בעיה. קבעו באיזה צורות תעשה ההתרעה (אימייל? ווטסאפ? שיחת פנים אל פנים? וכד')."
 # b = a.replace('•', '*')
+
+moovInstance=db.getPastMoovsToMoovAndCounterpart('U001', 'UA06', 'MO0091', userContext)
 
 print ("Done")

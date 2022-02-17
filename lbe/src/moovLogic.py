@@ -499,6 +499,10 @@ class MoovLogic(metaclass=Singleton):
         counterpartDetails = self.getUser(counterpartId)
         return self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartDetails=counterpartDetails, userContext=userContext)
 
+    def getPastMoovsToMoovAndCounterpart(self, userId, counterpartId, moovId, userContext: UserContextData):
+        counterpartDetails = self.getUser(counterpartId)
+        return self.dataBaseInstance.getPastMoovsToMoovAndCounterpart(userId=userId, counterpartDetails=counterpartDetails, moovId=moovId, userContext=userContext)
+
     def getActiveMoovsForUser (self, userId, userContext: UserContextData):
         activeMoovs = self.dataBaseInstance.getActiveMoovsForUser(userId=userId, userContext=userContext)
 

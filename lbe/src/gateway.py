@@ -257,6 +257,15 @@ def get_past_moovs_to_counterpart (request: Request, userId, counterpartId):
     
     return activeMoovs
 
+@router.get("/pastMoovsForMoovAndCounterpart")
+def get_past_moovs_to_moov_and_counterpart (request: Request, userId, counterpartId, moovId):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+    
+    activeMoovs = dbActions.getPastMoovsToMoovAndCounterpart(userId=userId, counterpartId=counterpartId, moovId=moovId, userContext=userContextDetails)
+    
+    return activeMoovs
+
 
 @router.get("/activeMoovsForUser")
 def get_active_moovs_for_user (request: Request, userId):
