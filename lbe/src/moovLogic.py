@@ -436,8 +436,9 @@ class MoovLogic(metaclass=Singleton):
         motivationGapPart = 0
 
         if userRelationshipDetails is None:
-            seperationChancePart = ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
-            seperationCostPart = ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+            # set to 50% 
+            seperationChancePart = 0.5
+            seperationCostPart = 0.5
         else:
             seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
             seperationChancePart = userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale
