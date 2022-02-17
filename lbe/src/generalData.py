@@ -101,10 +101,11 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", discoveryStatus = DiscoveryStatus.UNDISCOVERED, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
+    def __init__(self, id = "", firstName = "", familyName = "", mailAddress="", discoveryStatus = DiscoveryStatus.UNDISCOVERED, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
+        self.mailAddress = mailAddress
         self.discoveryStatus = discoveryStatus
         self.gender = gender
         self.locale = locale
@@ -127,6 +128,7 @@ class UserPartialData:
         self.id = jsonData["id"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
+        self.mailAddress = jsonData["mailAddress"]
         self.discoveryStatus = int(jsonData["discoveryStatus"])
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
@@ -144,6 +146,7 @@ class UserPartialData:
         self.id = fullUserDetails.id
         self.firstName = fullUserDetails.firstName
         self.familyName = fullUserDetails.familyName
+        self.mailAddress = fullUserDetails.mailAddress
         self.discoveryStatus = fullUserDetails.discoveryStatus
         self.gender = fullUserDetails.gender
         self.locale = fullUserDetails.locale
