@@ -428,18 +428,26 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateActiveMoov(activeMoov=activeMoovDetails)
 
     def calculateIssueMoovPriority(self, userId, counterpartId, motivationId):
+        # multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         userRelationshipDetails : UserRelationshipData = self.getRelationshipData(userId=userId, counterpartId=counterpartId)
 
-        if userRelationshipDetails is None:
-            return ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+        seperationChancePart = 0
+        seperationCostPart = 0
+        motivationGapPart = 0
 
-        seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
-        multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
-        
-        calculatedPriority = multiplyer*userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale + multiplyer*userRelationshipDetails.costOfSeperation/seperationQuestionsScale + (multiplyer*self.getUserMotivationGap(userId=counterpartId, motivationId=motivationId)/ ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase))
+        if userRelationshipDetails is None:
+            seperationChancePart = ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+            seperationCostPart = ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority) / 2
+        else:
+            seperationQuestionsScale = ep.getAttribute(EnvKeys.behaviour,EnvKeys.seperationQuestionsScale)
+            seperationChancePart = userRelationshipDetails.seperationChanceEstimation/seperationQuestionsScale
+            seperationCostPart = userRelationshipDetails.costOfSeperation/seperationQuestionsScale
+
+        motivationGapPart = self.getUserMotivationGap(userId=counterpartId, motivationId=motivationId)/ ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
+        calculatedPriority = seperationChancePart + seperationCostPart + motivationGapPart
         
         # normalize - get the % of 100
-        normalizedPriorityValue = calculatedPriority / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        normalizedPriorityValue = calculatedPriority / 3 * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
         return normalizedPriorityValue
 
     def getUserMotivationGap (self, userId, motivationId):
