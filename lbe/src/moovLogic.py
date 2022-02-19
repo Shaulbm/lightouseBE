@@ -2,6 +2,7 @@ from itertools import count
 from sqlite3 import Timestamp
 import threading
 from typing import Text
+from fastapi import HTTPException
 
 from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
@@ -618,3 +619,29 @@ class MoovLogic(metaclass=Singleton):
         tempText = tempText.replace("<< >>", name)
 
         return tempText
+
+    def updateUserDetails(self, id, locale, gender):
+        userDetails = self.getUser(id)
+
+        if (userDetails is None):
+            raise HTTPException(status_code=404, detail="user not found")
+
+        userDetails.locale = locale
+        userDetails.gender = gender
+
+        self.insertOrUpdateUser(userDetails)
+
+        return userDetails
+
+    def updateUserPassword(self, id, oldPassword, newPassword):
+        userDetails = self.getUser(id)
+
+        if (userDetails is None):
+            raise HTTPException(status_code=404, detail="user not found")
+
+        if (userDetails is not None):
+            hashedPassword = hashlib.sha256(oldPassword.encode('utf-8'))
+            if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
+                self.setUserPassword(id, newPassword)
+            else:
+                raise HTTPException(status_code=401, detail="wrong password")

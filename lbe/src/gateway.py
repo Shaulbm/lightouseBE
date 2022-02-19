@@ -26,6 +26,16 @@ class EndMoovData(BaseModel):
     feedbackScore: int
     feedbackText: str
 
+class UpdateUserData(BaseModel):
+    userId: str
+    locale: str
+    gender: int
+
+class UpdatePasswordData(BaseModel):
+    userId: str
+    oldPassword: str
+    newPassword: str
+
 def set_user_context(userId):
     dbActions = MoovLogic()
     return dbActions.setUserContextData(userId)
@@ -341,5 +351,21 @@ def extend_activeM_moov(request:Request, activeMoovId):
     dbActions = MoovLogic()
 
     returnValue = dbActions.extendAcctiveMoov(activeMoovId=activeMoovId)
+
+    return returnValue
+
+@router.post("/updateUserDetails")
+def update_user_details(request:Request, userDetails: UpdateUserData):
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.updateUserDetails(userDetails.userId, userDetails.locale, userDetails.gender)
+
+    return returnValue
+
+@router.post("/updateUserPassword")
+def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.updateUserPassword(passwordDetails.userId, passwordDetails.oldPassword, passwordDetails.newPassword)
 
     return returnValue
