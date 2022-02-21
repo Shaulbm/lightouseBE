@@ -523,6 +523,7 @@ class MoovLogic(metaclass=Singleton):
             extendedMoovDetails.fromBase(activeMoov.moovData)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
+            extendedMoovDetails.name = self.setNameInText(text=extendedMoovDetails.name, name=counterpartDetails.firstName)
             extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
             extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
             extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
