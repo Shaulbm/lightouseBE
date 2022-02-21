@@ -644,5 +644,6 @@ class MoovLogic(metaclass=Singleton):
             hashedPassword = hashlib.sha256(oldPassword.encode('utf-8'))
             if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
                 self.setUserPassword(id, newPassword)
+                return ""
             else:
                 raise HTTPException(status_code=401, detail="wrong password")
