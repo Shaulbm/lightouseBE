@@ -41,6 +41,8 @@ class EnvKeys:
     relationshipDataTTLDays = "relationshipDataTTLDays"
     extendActiveMoovTimeDays = "extendActiveMoovTimeDays"
     importanctPriorityThershold = "importanctPriorityThershold"
+    pastMoovScorePenaltyDays = "pastMoovScorePenaltyDays"
+    pastMoovScorePenaltyValue = "pastMoovScorePenaltyValue" 
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None

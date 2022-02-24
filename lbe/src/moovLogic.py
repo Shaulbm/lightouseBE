@@ -1,3 +1,4 @@
+from imp import release_lock
 from itertools import count
 from sqlite3 import Timestamp
 import threading
@@ -174,11 +175,16 @@ class MoovLogic(metaclass=Singleton):
 
         extendedIssueMoovs = []
 
+        pastMoovs = self.getPastMoovsToCounterpart(userId = userContext.userId, counterpartId = counterpartId, userContext = userContext)
+
         for currMoov in issueMoovs:
             relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
             
             if relatedMotivation is not None:
                 currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
+                if self.doesMoovHaveRelevantHistory(pastMoovs=pastMoovs, moovId=currMoov.id):
+                    # if the moov was done in the last X days then the score should be penallize
+                    currMoov.score = currMoov.score * ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyValue)
 
             # create steps for moov
             extendedMoov = ExtendedIssueMoovData()
@@ -187,6 +193,19 @@ class MoovLogic(metaclass=Singleton):
             extendedIssueMoovs.append(extendedMoov)
 
         return extendedIssueMoovs
+
+    def doesMoovHaveRelevantHistory(self, pastMoovs, moovId):
+        relevantPastMoovs = [moov for moov in pastMoovs if moov.moovId == moovId]
+
+        foundRelevantPastMoovs = False
+
+        for pastMoov in relevantPastMoovs:
+            timeFromMoovEnd = datetime.datetime.utcnow() - pastMoov.endDate
+            if timeFromMoovEnd.days < ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyDays):
+                foundRelevantPastMoovs = True
+                break
+        
+        return foundRelevantPastMoovs
 
     def getStepsToMoov (self, moovData : BaseMoovData):
         moovSteps = moovData.howTo.split('*')
