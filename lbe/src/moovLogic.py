@@ -108,7 +108,8 @@ class MoovLogic(metaclass=Singleton):
 
         for currMoov in foundMoovs:
             userContext = self.getUserContextData(currMoov.userId)
-            currMoovData = self.getBaseMoov(currMoov.moovId, userContext)
+            counterpartDetails = self.getUser(currMoov.counterpartId)
+            currMoovData = self.getBaseMoov(id=currMoov.moovId, counterpartDetails= counterpartDetails , userContext=userContext)
 
             userDetails = self.getUser(currMoov.userId)
                              
@@ -164,12 +165,12 @@ class MoovLogic(metaclass=Singleton):
     def getIssueMoov (self, id, userContext: UserContextData):
         return self.getDatabase().getIssueMoov(id=id, userContext=userContext)
 
-    def getBaseMoov (self, id, userContext: UserContextData):
-        return self.dataBaseInstance.getBaseMoov(id=id, userContext=userContext)
-
+    def getBaseMoov (self, id, counterpartDetails, userContext: UserContextData):
+        return self.dataBaseInstance.getBaseMoov(id=id, counterpartDetails=counterpartDetails, userContext=userContext)
 
     def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
-        issueMoovs :list (IssueMoovData) = self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=issueId, userContext=userContext)
+        counterpartDetails = self.getUser(counterpartId)
+        issueMoovs :list (IssueMoovData) = self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartDetails=counterpartDetails, issueId=issueId, userContext=userContext)
 
         issueDetails = self.getIssue(issueId, userContext = None)
 
@@ -533,19 +534,20 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getPastMoovsToMoovAndCounterpart(userId=userId, counterpartDetails=counterpartDetails, moovId=moovId, userContext=userContext)
 
     def getActiveMoovsForUser (self, userId, userContext: UserContextData):
-        activeMoovs = self.dataBaseInstance.getActiveMoovsForUser(userId=userId, userContext=userContext)
+        activeMoovs = self.dataBaseInstance.getPartialActiveMoovsForUser(userId=userId, userContext=userContext)
 
         #  calculate steps to moov
         for activeMoov in activeMoovs:
             counterpartDetails = self.getUser(activeMoov.counterpartId)
+            moovDetails = self.getBaseMoov(id=activeMoov.moovId, counterpartDetails=counterpartDetails, userContext=userContext)
             extendedMoovDetails = ExtendedIssueMoovData() 
-            extendedMoovDetails.fromBase(activeMoov.moovData)
+            extendedMoovDetails.fromBase(moovDetails)
             extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
             activeMoov.moovData = extendedMoovDetails
-            extendedMoovDetails.name = self.setNameInText(text=extendedMoovDetails.name, name=counterpartDetails.firstName)
-            extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
-            extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
-            extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
+            # extendedMoovDetails.name = self.setNameInText(text=extendedMoovDetails.name, name=counterpartDetails.firstName)
+            # extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            # extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            # extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)            
             activeMoov.counterpartFirstName = counterpartDetails.firstName
             activeMoov.counterpartLastName = counterpartDetails.familyName
             activeMoov.counterpartColor = counterpartDetails.color

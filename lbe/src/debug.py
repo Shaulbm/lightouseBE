@@ -225,7 +225,7 @@ db = MoovLogic()
 # dbInstance_1.setUserPassword("U001", "123456")
 # userDetails = dbInstance_1.userLogin("UA01@testUser.com", "123456")
 
-userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_EN_US, isRTL=False)
+# userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_EN_US, isRTL=False)
 # usersConflicts = dbInstance_1.getConflictsForUsers('UA06', 'UA08', False, userContext)
 # scope = Scope()
 # scope["type"] = "http"
@@ -318,7 +318,7 @@ db.setUserContextData("U001")
 #     index += 1
 #     time.sleep(3)
 
-issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
+# issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 # moovs = db.getMoovsForIssueAndCounterpart("UA06", "IS001", userContext)
 # relationshipDetails = UserRelationshipData('U001', 'UA06', 3, 2)
 # db.insertOrUpdateRelationship(relationshipDetails)
@@ -428,7 +428,9 @@ issue = db.getIssueForCounterpart("IS001", "UA06", userContext=userContext)
 # db.updateUserDetails('U001', 'en-US', 1)
 # db.updateUserPassword('U001', '654321', '123456')
 
-moovs = db.getMoovsForIssueAndCounterpart('UA06', 'IS001', userContext=userContext)
-# activeMoov = db.activateIssueMoov('MO0044', 'U001', 'UA06', userContext=userContext)
+userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
+moovs = db.getMoovsForIssueAndCounterpart('UA06', 'IS003', userContext=userContext)
+
+activeMoov = db.activateIssueMoov('MO0003', 'U001', 'UA06', userContext=userContext)
 # db.endMoov('AM_9', 3, 'none', False)
 print ("Done")

@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
-MOOVS_RANGE_NAME = 'MoovsDetails!A1:R144'
+MOOVS_RANGE_NAME = 'MoovsDetails!A1:AD144'
 CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
 
 def main():
@@ -60,30 +60,33 @@ def main():
             #create motivations
             insertMoov(currMoov)
 
-    result = sheet.values().get(spreadsheetId=MOOVS_SPREADSHEET_ID,
-                                range=CONFLICT_MOOVS_RANGE_NAME).execute()
-    values = result.get('values', [])
+    # result = sheet.values().get(spreadsheetId=MOOVS_SPREADSHEET_ID,
+    #                             range=CONFLICT_MOOVS_RANGE_NAME).execute()
+    # values = result.get('values', [])
 
-    if not values:
-        print('No data found.')
-    else:
-        print('Name, Major:')
-        keysRow = values[0]
-        #skip the first row (keys row)
-        for currRow in values[1:]:
-            zip_iterator = zip (keysRow, currRow)
-            currMoov = dict(zip_iterator)
+    # if not values:
+    #     print('No data found.')
+    # else:
+    #     print('Name, Major:')
+    #     keysRow = values[0]
+    #     #skip the first row (keys row)
+    #     for currRow in values[1:]:
+    #         zip_iterator = zip (keysRow, currRow)
+    #         currMoov = dict(zip_iterator)
 
-            #create motivations
-            insertConflictMoov(currMoov)
+    #         #create motivations
+    #         insertConflictMoov(currMoov)
 
 def insertMoov(moovDataDict):
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 
-    heb_ma_LocaleCollection = db["locale_he_ma"]
-    heb_fe_LocaleCollection = db["locale_he_fe"]
-    eng_LocaleCollection = db["locale_en"]
+    heb_mg_fe_fe_LocaleCollection = db["locale_mg_he_fe_fe"]
+    heb_mg_fe_ma_LocaleCollection = db["locale_mg_he_fe_ma"]
+    heb_mg_ma_ma_LocaleCollection = db["locale_mg_he_ma_ma"]
+    heb_mg_ma_fe_LocaleCollection = db["locale_mg_he_ma_fe"]
+    eng_mg_fe_LocaleCollection = db["locale_mg_en_fe"]
+    eng_mg_ma_LocaleCollection = db["locale_mg_en_ma"]
 
     newMoov = IssueMoovData()
     newMoov.id = moovDataDict["id"]
@@ -97,50 +100,60 @@ def insertMoov(moovDataDict):
     newMoov.howTo = newMoov.id + "_3"
     newMoov.reasoning = newMoov.id + "_4"
     
-    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<en>>"])
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<en_fe>>"])
+    dbInstance.insertOrUpdateText(eng_mg_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<en_ma>>"])
+    dbInstance.insertOrUpdateText(eng_mg_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_ma_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_ma_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_fe_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_fe_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_ma>>"])
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.name, moovDataDict["name <<he_fe>>"])
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<en_fe>>"])
+    dbInstance.insertOrUpdateText(eng_mg_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<en_ma>>"])
+    dbInstance.insertOrUpdateText(eng_mg_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_ma_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_ma_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_fe_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_fe_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<en>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_ma>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en_fe>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(eng_mg_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en_ma>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(eng_mg_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma_ma>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(heb_mg_ma_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma_fe>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(heb_mg_ma_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe_fe>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe_ma>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(heb_mg_fe_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.description, moovDataDict["description <<he_fe>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<en>>"].replace('•', '*'))
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma>>"].replace('•', '*'))
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe>>"].replace('•', '*'))
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_ma>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_fe>>"])
-    currentTextData.text = currentTextData.text.replace('<<>>', '<<NAME>>')
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en_fe>>"])
+    dbInstance.insertOrUpdateText(eng_mg_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en_ma>>"])
+    dbInstance.insertOrUpdateText(eng_mg_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_ma_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_ma_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_ma_fe_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_fe_ma>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
+    currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<he_fe_fe>>"])
+    dbInstance.insertOrUpdateText(heb_mg_fe_fe_LocaleCollection, currentTextData)
 
 
     dbInstance.insertOrUpdateMoov(newMoov)

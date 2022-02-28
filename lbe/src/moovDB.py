@@ -1,4 +1,5 @@
 from hashlib import new
+from re import LOCALE
 import threading
 from tkinter import W
 from wave import Wave_write
@@ -104,6 +105,56 @@ class MoovDBInstance(metaclass=Singleton):
         #default
         return db ["locale_en"]
 
+    def getMGTextDataByParent(self, parentId, locale, firstGender, secondGender, name=""):
+        textDataCollection = self.getMGTextCollectionByLocale(locale=locale, firstGender=firstGender, secondGender=secondGender)
+            
+        allTextsArray = textDataCollection.find ({"parentId" : parentId})
+
+        textDic = {}
+
+        for currText in allTextsArray:
+            # if name is not empty, replace <<NAME>> or <<>> with the given name value
+            if (name != ""):
+                tempText = currText["text"].replace("<<NAME>>", name)
+                tempText = tempText.replace("<<>>", name)
+                tempText = tempText.replace("<< >>", name)
+                textDic[currText["id"]] = tempText
+            else:
+                textDic[currText["id"]] = currText["text"]
+
+        return textDic
+
+    def geMGtTextDataByParents (self, parentsIds, locale, firstGender, secondGender, name=""):
+        resultTextDict = {}
+        for currParrentId in parentsIds:
+            resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, firstGender, secondGender, name)
+
+        return resultTextDict
+
+    #multi gender locale support 
+    def getMGTextCollectionByLocale(self, locale, firstGender, secondGender):
+        db = self.getDatabase()
+
+        if locale == Locale.LOCALE_HE_IL:
+            if firstGender == Gender.FEMALE:
+                if secondGender == Gender.FEMALE:
+                    return db["locale_mg_he_fe_fe"]
+                elif secondGender == Gender.MALE:
+                    return db["locale_mg_he_fe_ma"]
+            elif firstGender == Gender.MALE:
+                if secondGender == Gender.FEMALE:
+                    return db["locale_mg_he_ma_fe"]
+                elif secondGender == Gender.MALE:
+                    return db["locale_mg_he_ma_ma"]
+        elif locale == Locale.LOCALE_EN_US:
+            if secondGender == Gender.FEMALE:
+                return db["locale_mg_en_fe"]
+            elif secondGender == Gender.MALE:
+                return db["locale_mg_en_ma"]
+        
+        #default
+        return db ["locale_mg_en_ma"]
+
     def insertOrUpdateMotivation (self, motivationDataObj):
         db = self.getDatabase()
         motivationsCollection = db["motivations"]
@@ -188,14 +239,15 @@ class MoovDBInstance(metaclass=Singleton):
 
         moovTextsDic = None
         if (userContext is not None):
-            moovTextsDic = self.getTextDataByParent(id, userContext.locale)
+            # In this context gender is not an issue 
+            moovTextsDic = self.getMGTextDataByParent(id, Gender.MALE, Gender.MALE, userContext.locale)
 
         newMoov = IssueMoovData()
         newMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
         return newMoov 
 
-    def getBaseMoov (self, id, counterpartName, userContext: UserContextData):
+    def getBaseMoov (self, id, counterpartDetails, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
 
@@ -206,22 +258,21 @@ class MoovDBInstance(metaclass=Singleton):
 
         moovTextsDic = None
         if (userContext is not None):
-            moovTextsDic = self.getTextDataByParent(parentId=id, locale=userContext.locale, gender=userContext.gender, name=counterpartName)
+            moovTextsDic = self.getMGTextDataByParent(parentId=id, locale=userContext.locale, firstGender=userContext.gender, secondGender=counterpartDetails.gender, name=counterpartDetails.firstName)
 
         foundMoov = BaseMoovData()
         foundMoov.buildFromJSON(moovDataJSON, moovTextsDic)
 
         return foundMoov 
 
-    def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
+    def getMoovsForIssueAndCounterpart (self, counterpartDetails, issueId, userContext: UserContextData):
         db = self.getDatabase()
         moovsCollection = db["moovs"]
-        requestedUser = self.getUser(counterpartId)
 
-        if (requestedUser.motivations is None or requestedUser.motivations.__len__ == 0):
+        if (counterpartDetails.motivations is None or counterpartDetails.motivations.__len__ == 0):
             return {}
 
-        userMotivationsIds = list(requestedUser.motivations.keys())
+        userMotivationsIds = list(counterpartDetails.motivations.keys())
 
         moovFilter = {"issueId":issueId,"motivationId": {"$in":userMotivationsIds}}
         motivationsDataJSONList = moovsCollection.find(moovFilter)
@@ -231,7 +282,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, requestedUser.gender, name=requestedUser.firstName)
+            moovTextsDic = self.getMGTextDataByParent(parentId= currMoovJSONData["id"], locale= userContext.locale, firstGender= userContext.gender, secondGender= counterpartDetails.gender, name= counterpartDetails.firstName)            
             newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -992,7 +1043,7 @@ class MoovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, counterpartName = counterpartDetails.firstName, userContext=userContext)
+            foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, counterpartDetails = counterpartDetails, userContext=userContext)
 
             foundActiveMoovs.append(foundAcvtiveMoov)
    
@@ -1023,7 +1074,7 @@ class MoovDBInstance(metaclass=Singleton):
         for currHistoricMoovJSONData in historicMoovsDataJSONList:
             foundHistoricMoov = ExtendedMoovInstance()
             foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
-            foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails.firstName, userContext)
+            foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails, userContext)
             foundHistoricMoovs.append(foundHistoricMoov)
    
         return foundHistoricMoovs
@@ -1043,12 +1094,12 @@ class MoovDBInstance(metaclass=Singleton):
         for currHistoricMoovJSONData in historicMoovsDataJSONList:
             foundHistoricMoov = ExtendedMoovInstance()
             foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
-            foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails.firstName, userContext)
+            foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails, userContext)
             foundHistoricMoovs.append(foundHistoricMoov)
    
         return foundHistoricMoovs
 
-    def getActiveMoovsForUser (self, userId, userContext: UserContextData):
+    def getPartialActiveMoovsForUser (self, userId, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -1063,7 +1114,6 @@ class MoovDBInstance(metaclass=Singleton):
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
             foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
-            foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, "", userContext)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
