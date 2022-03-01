@@ -10,6 +10,7 @@ class MotivationData:
         self.longDescription = ""
         self.additionalData = ""
         self.imageUrl = ""
+        self.color = ""
         self.tailResolution = ""
 
     def buildFromJSON (self, jsonData, localedTextDic):
@@ -23,6 +24,7 @@ class MotivationData:
             self.shortDescription = localedTextDic[jsonData["shortDescription"]]
             self.longDescription = localedTextDic[jsonData["longDescription"]]
             self.imageUrl = jsonData["imageUrl"]
+            self.color = jsonData["color"]
             self.tailResolution = localedTextDic[jsonData["tailResolution"]]
         except Exception as err:
             #log this
@@ -44,6 +46,7 @@ class MotivationPartialData:
         self.name = ""
         self.shortDescription = ""
         self.imageUrl = ""
+        self.color = ""
 
     def buildFromJSON (self, jsonData, localedTextDic):
         try:
@@ -51,6 +54,7 @@ class MotivationPartialData:
             self.name =  localedTextDic[jsonData["name"]]
             self.shortDescription = localedTextDic[jsonData["shortDescription"]]
             self.imageUrl = jsonData["imageUrl"]
+            self.color = jsonData["color"]
         except Exception as err:
             #log this
             raise TypeError(str.format("failed to load motivation data from JSON, data is {0}, error is {1}", jsonData, err))

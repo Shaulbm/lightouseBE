@@ -8,3 +8,4 @@ jsonpickle
 loguru
 schedule
 trycourier
+uvicorn

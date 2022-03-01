@@ -4,16 +4,16 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-import mongoDB
 from motivationsData import MotivationData
 from generalData import TextData
+from moovLogic import MoovLogic
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1JBx_pa3Em_uJBn9LJVcT6TJ9nfiPp8zl1X86tZ-GjEE'
-SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:P60'
+SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:O31'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -23,8 +23,8 @@ def main():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # if os.path.exists('token.json'):
+    #     creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
@@ -59,9 +59,8 @@ def main():
             insertMotivation(currMotivation)
 
 def insertMotivation(motivationDataDict):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
-    motivationsCollection = db["motivations"]
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -74,6 +73,7 @@ def insertMotivation(motivationDataDict):
     newMotivation.longDescription = newMotivation.id + "_3"
     newMotivation.tailResolution = newMotivation.id + "_4"
     newMotivation.imageUrl = motivationDataDict["imageUrl"]
+    newMotivation.color =motivationDataDict["color"]
 
     currentTextData = TextData(newMotivation.id, newMotivation.name, motivationDataDict["name <<en>>"])
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
