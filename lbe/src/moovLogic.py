@@ -542,7 +542,7 @@ class MoovLogic(metaclass=Singleton):
             moovDetails = self.getBaseMoov(id=activeMoov.moovId, counterpartDetails=counterpartDetails, userContext=userContext)
             extendedMoovDetails = ExtendedIssueMoovData() 
             extendedMoovDetails.fromBase(moovDetails)
-            extendedMoovDetails.steps = self.getStepsToMoov(activeMoov.moovData)
+            extendedMoovDetails.steps = self.getStepsToMoov(extendedMoovDetails)
             activeMoov.moovData = extendedMoovDetails
             # extendedMoovDetails.name = self.setNameInText(text=extendedMoovDetails.name, name=counterpartDetails.firstName)
             # extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
