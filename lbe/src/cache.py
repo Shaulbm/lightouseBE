@@ -97,7 +97,7 @@ class Cache:
                 userDetails = foundUserCacheDetails.userDetails
     
         if userDetails is None:
-            # no motivation data was found (or it was not valid) - create a cache entry
+            # no user data was found (or it was not valid) - create a cache entry
             userDetails = self.db.getUser(id=userId)
             userCacheData = UserDetailsCacheData(userDetails)
 
@@ -108,3 +108,23 @@ class Cache:
                 self.usersLock.writer_release()
 
         return userDetails
+
+    # basically - for now, just remove from cache
+    def setUserDirty(self, userId):
+
+        self.usersLock.reader_acquire()  
+        foundUserCacheDetails = None
+        try: 
+            if (userId in self.usersCache):
+                foundUserCacheDetails = self.usersCache[userId]
+        finally:
+            self.usersLock.reader_release()
+
+        if foundUserCacheDetails is not None:
+            # found user in cache - remove it
+            self.usersLock.writer_acquire()
+            try:
+                self.usersCache.pop(userId)
+            finally:
+                self.usersLock.writer_release()
+    

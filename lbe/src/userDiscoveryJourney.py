@@ -39,6 +39,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     newDiscoveryJourney.currBatch = ""
 
     dbInstance.insertOrUpdateDiscoveryJourney(newDiscoveryJourney)
+    dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
 
     return newDiscoveryJourney.id
 
@@ -321,10 +322,7 @@ def endUserJourney (userId, userMotivationScoreBoard):
 
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
-
-    userDetails = dbInstance.getUser(userId)
-    userDetails.discoveryStatus = DiscoveryStatus.DISCOVERED
-    dbInstance.insertOrUpdateUser(userDetails)
+    dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.DISCOVERED)
 
     # call Logic to perform post journey actions
     dbInstance.userJourneyEnded(userId)

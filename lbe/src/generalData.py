@@ -22,6 +22,7 @@ class Gender:
 class DiscoveryStatus:
     UNDISCOVERED = 0
     DISCOVERED = 1
+    ONGOING = 2
 
 class TextData:
     def __init__(self, parentId = "", Id = "", contentText = ""):

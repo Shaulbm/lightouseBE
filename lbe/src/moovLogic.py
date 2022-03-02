@@ -259,6 +259,16 @@ class MoovLogic(metaclass=Singleton):
             self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword))
             self.notificationsProvider.sendWelcomeMail(userDetails=currUserData)
 
+        # update cache that user was changed
+        self.dbCache.setUserDirty(currUserData.id)
+
+    def setUserDiscoveryStatus(self, userId, discoveryStatus):
+        userDetails = self.getUser(userId)
+
+        if (userDetails is not None):
+            userDetails.discoveryStatus = discoveryStatus
+            self.insertOrUpdateUser(userDetails)
+
     def generateUserColor(self):
         return ep.generateRandomUserColor()
 

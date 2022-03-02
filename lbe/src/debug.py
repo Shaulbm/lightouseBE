@@ -429,8 +429,10 @@ db.setUserContextData("U001")
 # db.updateUserPassword('U001', '654321', '123456')
 
 userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
-moovs = db.getMoovsForIssueAndCounterpart('UA06', 'IS003', userContext=userContext)
+# moovs = db.getMoovsForIssueAndCounterpart('UA06', 'IS003', userContext=userContext)
 
-activeMoov = db.activateIssueMoov('MO0003', 'U001', 'UA06', userContext=userContext)
+# activeMoov = db.activateIssueMoov('MO0003', 'U001', 'UA06', userContext=userContext)
 # db.endMoov('AM_9', 3, 'none', False)
+# motivations = db.getAllMotivations(userContext=userContext)
+activeMoovs = db.getActiveMoovsForUser('U001', userContext=userContext)
 print ("Done")
