@@ -27,6 +27,7 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
         existingDiscoveryJourney.userResponses = {}
 
         dbInstance.insertOrUpdateDiscoveryJourney(existingDiscoveryJourney)
+        dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
         return existingDiscoveryJourney.id
 
 
