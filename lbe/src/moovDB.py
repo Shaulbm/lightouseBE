@@ -1053,7 +1053,7 @@ class MoovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
-        activeMoovFilter = {"userId":userId, "counterpartsIds": counterpartId}
+        activeMoovFilter = {"userId":userId, "counterpartId": counterpartId}
 
         activeMoovsCount = activeMoovsCollection.find(activeMoovFilter).count()
 

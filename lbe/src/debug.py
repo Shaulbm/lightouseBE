@@ -434,5 +434,6 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # activeMoov = db.activateIssueMoov('MO0003', 'U001', 'UA06', userContext=userContext)
 # db.endMoov('AM_9', 3, 'none', False)
 # motivations = db.getAllMotivations(userContext=userContext)
-activeMoovs = db.getActiveMoovsForUser('U001', userContext=userContext)
+# activeMoovs = db.getActiveMoovsForUser('U001', userContext=userContext)
+users = db.getUserCircle('U001')
 print ("Done")
