@@ -345,10 +345,10 @@ def get_top_recommended_moovs (request: Request, userId, counterpartId):
     return topRecommendedMoovs
 
 @router.get("/isMissingRelationshipData")
-def is_missing_relationship_data(request: Request, userId, CounterpartId):
+def is_missing_relationship_data(request: Request, userId, counterpartId):
     dbActions = MoovLogic()
     
-    returnValue = dbActions.missingRelationshipData(userId=userId, counterpartId=CounterpartId)
+    returnValue = dbActions.missingRelationshipData(userId=userId, counterpartId=counterpartId)
     
     return returnValue
 
