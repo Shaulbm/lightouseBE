@@ -435,5 +435,6 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # db.endMoov('AM_9', 3, 'none', False)
 # motivations = db.getAllMotivations(userContext=userContext)
 # activeMoovs = db.getActiveMoovsForUser('U001', userContext=userContext)
-users = db.getUserCircle('U001')
+# users = db.getUserCircle('U001')
+relationship = db.insertOrUpdateRelationshipDetails("U001", "UA03", 3, 5)
 print ("Done")

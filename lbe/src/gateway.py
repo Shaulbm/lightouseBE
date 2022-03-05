@@ -34,8 +34,8 @@ class UpdateUserData(BaseModel):
 class RelationshipData (BaseModel):
     userId: str
     counterpartId: str
-    costOfSeperation: str
-    chanceOfSeperation: str
+    costOfSeperation: int
+    chanceOfSeperation: int
 
 class UpdatePasswordData(BaseModel):
     userId: str
