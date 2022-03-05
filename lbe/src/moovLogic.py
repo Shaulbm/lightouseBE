@@ -620,7 +620,7 @@ class MoovLogic(metaclass=Singleton):
         missingRelationshipDataRetVal = True
 
         if (existingRelationShipData is not None):
-            relationshipTimeSpan = datetime.timedelta(datetime.datetime.utcnow, existingRelationShipData.timestamp)
+            relationshipTimeSpan = datetime.timedelta(datetime.datetime.utcnow, existingRelationShipData.timeStamp)
             if (relationshipTimeSpan < datetime.timedelta(days=ep.getAttribute(EnvKeys.behaviour, EnvKeys.relationshipDataTTLDays))):
                 missingRelationshipDataRetVal = False
 
