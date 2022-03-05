@@ -436,5 +436,8 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # motivations = db.getAllMotivations(userContext=userContext)
 # activeMoovs = db.getActiveMoovsForUser('U001', userContext=userContext)
 # users = db.getUserCircle('U001')
-relationship = db.insertOrUpdateRelationshipDetails("U001", "UA03", 3, 5)
+# relationship = db.insertOrUpdateRelationshipDetails("U001", "UA03", 3, 5)
+# db.insertOrUpdateRelationshipDetails('U001', 'UA07', 3, 5)
+result = db.missingRelationshipData('U001', 'UA07')
+
 print ("Done")
