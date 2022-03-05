@@ -1,4 +1,4 @@
-from fastapi import Header, APIRouter, Request
+from fastapi import Header, APIRouter, Request, Response
 from fastapi.responses import FileResponse
 from fastapi import HTTPException
 from pymongo.common import MIN_SUPPORTED_SERVER_VERSION
@@ -331,9 +331,9 @@ def get_conflict_moovs (request: Request, conflictId):
 def update_relationship_data(request: Request, relationshipDetails: RelationshipData):
     dbActions = MoovLogic()
     
-    returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=relationshipDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
+    dbActions.insertOrUpdateRelationshipDetails(userId=relationshipDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
     
-    return returnValue
+    return Response(status_code=201)
 
 @router.get("/getTopRecommendedMoovs")
 def get_top_recommended_moovs (request: Request, userId, counterpartId):
