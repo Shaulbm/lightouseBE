@@ -31,6 +31,12 @@ class UpdateUserData(BaseModel):
     locale: str
     gender: int
 
+class RelationshipData (BaseModel):
+    userId: str
+    counterpartId: str
+    costOfSeperation: str
+    chanceOfSeperation: str
+
 class UpdatePasswordData(BaseModel):
     userId: str
     oldPassword: str
@@ -321,11 +327,11 @@ def get_conflict_moovs (request: Request, conflictId):
     
     return conflictMoovs
 
-@router.get("/updateRelationship")
-def update_relationship_data(request: Request, userId, CounterpartId, costOfSeperation, chanceOfSeperation):
+@router.post("/updateRelationship")
+def update_relationship_data(request: Request, relationshipDetails: RelationshipData):
     dbActions = MoovLogic()
     
-    returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=userId, counterpartId=CounterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation)
+    returnValue = dbActions.insertOrUpdateRelationshipDetails(userId=relationshipDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
     
     return returnValue
 
