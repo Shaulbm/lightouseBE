@@ -1223,6 +1223,8 @@ class MoovDBInstance(metaclass=Singleton):
             #this is a new user
             relationshipsCollection.insert_one(relationshipData.toJSON())
 
+        return relationshipData
+
     def getRelationshipData (self, userId, counterpartId):
         db = self.getDatabase()
         relationsheepsCollection = db["relationships"]

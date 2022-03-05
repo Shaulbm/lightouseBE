@@ -606,10 +606,10 @@ class MoovLogic(metaclass=Singleton):
     def insertOrUpdateRelationshipDetails (self, userId, counterpartId, costOfSeperation, chanceOfSeperation):
         relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation, timeStamp=datetime.datetime.utcnow())
 
-        self.insertOrUpdateRelationship(relationshipDetails)
+        return self.insertOrUpdateRelationship(relationshipDetails)
 
     def insertOrUpdateRelationship (self, relationshipData):
-        self.dataBaseInstance.insertOrUpdateRelationship(relationshipData= relationshipData)
+        return self.dataBaseInstance.insertOrUpdateRelationship(relationshipData= relationshipData)
 
     def getRelationshipData (self, userId, counterpartId):
         return self.dataBaseInstance.getRelationshipData (userId=userId, counterpartId=counterpartId)
