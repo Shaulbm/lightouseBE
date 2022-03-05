@@ -1213,6 +1213,9 @@ class MoovDBInstance(metaclass=Singleton):
             questionDataFilter = {"userId":relationshipData.userId, "counterpartId":relationshipData.counterpartId}
             relationshipsCollection.replace_one(questionDataFilter, relationshipData.toJSON())
 
+            # remove the _id key so that Mongo will create a new id
+            del (foundRelationship["_id"])
+
             historicRelationshipsCollection = db["historicRelationships"]
             historicRelationshipsCollection.insert_one(foundRelationship)
 
