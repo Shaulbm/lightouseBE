@@ -333,8 +333,7 @@ def update_relationship_data(request: Request, relationshipDetails: Relationship
     
     dbActions.insertOrUpdateRelationshipDetails(userId=relationshipDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
     
-    # return Response(status_code=201)
-    return None
+    return Response(status_code=201)
 
 @router.get("/getTopRecommendedMoovs")
 def get_top_recommended_moovs (request: Request, userId, counterpartId):
