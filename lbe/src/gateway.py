@@ -385,6 +385,6 @@ def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
 def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
     dbActions = MoovLogic()
 
-    retrunValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
+    returnValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
 
     return returnValue
