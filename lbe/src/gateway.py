@@ -60,7 +60,7 @@ def get_user_context(request: Request):
     return userContextDetails
 
 @router.get("/motivation")
-def get_motivation(request: Request, id, locale):
+def get_motivation(request: Request, id):
     userContextDetails = get_user_context(request)
 
     dbActions = MoovLogic()
