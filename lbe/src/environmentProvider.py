@@ -16,6 +16,13 @@ def shouldSuppressNotifications ():
     else:
         return False
 
+def shouldSupressNotificationsToAdmin ():
+    if (EnvironmentProvider.getInstance().getAttribute(EnvKeys.behaviour, EnvKeys.supressMailNotificationToAdmin) == 1):
+        return True
+    else:
+        return False
+
+
 def generateRandomUserColor():
     return EnvironmentProvider.getInstance().generateRandomUserColor()
 
@@ -27,6 +34,7 @@ class EnvKeys:
     behaviour = "behaviour"
     moovs = "moovs"
     supressMailNotifications = "supressMailNotifications"
+    supressMailNotificationToAdmin = "shouldSupressMailNotificationToAdmin"
     hoursToNotifyBeforMoovsOverdue = "hoursToNotifyMoversOverDue"
     daysToAccomplishActiveMoov = "daysToAccomplishActiveMoov"
     seperationQuestionsScale = "seperationQuestionsScale"
@@ -43,6 +51,8 @@ class EnvKeys:
     importanctPriorityThershold = "importanctPriorityThershold"
     pastMoovScorePenaltyDays = "pastMoovScorePenaltyDays"
     pastMoovScorePenaltyValue = "pastMoovScorePenaltyValue" 
+    feedback = "feedback"
+    sendFeedbackRecipient = "sendTo"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None

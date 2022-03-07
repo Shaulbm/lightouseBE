@@ -76,3 +76,23 @@ class NotificationsProvider(metaclass=Singleton):
             "email": moovOwner.mailAddress
           }
         )
+
+    def sendUserFeedback(self, userId, userMail, issue, text):
+      if ep.shouldSupressNotificationsToAdmin():
+        return
+      
+      recipient = ep.getAttribute(EnvKeys.feedback, EnvKeys.sendFeedbackRecipient)
+
+      resp = self.client.send(
+        event="feedback-received",
+        recipient=recipient,
+        data={
+          "userId": userId,
+          "userMail": userMail,
+          "issue" : issue,
+          "text" : text
+        },
+        profile={
+          "email": recipient
+        }
+        )

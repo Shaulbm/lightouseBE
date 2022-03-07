@@ -681,3 +681,7 @@ class MoovLogic(metaclass=Singleton):
                 return ""
             else:
                 raise HTTPException(status_code=401, detail="wrong password")
+
+    def sendUserFeedback(self, userId, issue, text):
+        userDetails = self.getUser(userId)
+        return self.notificationsProvider.sendUserFeedback(userId=userId, userMail=userDetails.mailAddress, issue=issue, text=text)

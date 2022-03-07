@@ -37,6 +37,11 @@ class RelationshipData (BaseModel):
     costOfSeperation: int
     chanceOfSeperation: int
 
+class UserFeedbackData(BaseModel):
+    userId: str
+    issue: str
+    text: str
+
 class UpdatePasswordData(BaseModel):
     userId: str
     oldPassword: str
@@ -373,5 +378,13 @@ def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
     dbActions = MoovLogic()
 
     returnValue = dbActions.updateUserPassword(passwordDetails.userId, passwordDetails.oldPassword, passwordDetails.newPassword)
+
+    return returnValue
+
+@router.post("/sendFeedback")
+def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
+    dbActions = MoovLogic()
+
+    retrunValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
 
     return returnValue
