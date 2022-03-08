@@ -45,44 +45,51 @@ class MoovLogic(metaclass=Singleton):
 
     def setUserContextData(self, userId):
 
-        self.userContextLock.acquire()
-        try:
-            if (userId in self.usersContext):
-                userContextDetails = self.usersContext[userId]
-                if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
-                    self.usersContext.pop(userId)
-                else: 
-                    # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
-                    return userContextDetails
+        # self.userContextLock.acquire()
+        # try:
+        #     if (userId in self.usersContext):
+        #         userContextDetails = self.usersContext[userId]
+        #         if ((datetime.datetime.utcnow() - userContextDetails.timeStamp) > datetime.timedelta(hours=12)):
+        #             self.usersContext.pop(userId)
+        #         else: 
+        #             # print ("in setUserContextData - user context found and is ", userContextDetails.toJSON())
+        #             return userContextDetails
             
-            # userId is not found / found and removed since TTL was breached
-            userDetails = self.getUser(userId)
-            userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
+        #     # userId is not found / found and removed since TTL was breached
+        #     userDetails = self.getUser(userId)
+        #     userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, locale=userDetails.locale)
 
-            userContextDetails.timeStamp = datetime.datetime.utcnow()
-            self.usersContext[userId] = userContextDetails
-        finally:
-            self.userContextLock.release()
+        #     userContextDetails.timeStamp = datetime.datetime.utcnow()
+        #     self.usersContext[userId] = userContextDetails
+        # finally:
+        #     self.userContextLock.release()
 
-        print ('in setUserContextData - new user Context created and is ', userContextDetails.toJSON())
-        return userContextDetails
+        # print ('in setUserContextData - new user Context created and is ', userContextDetails.toJSON())
+        # return userContextDetails
+        pass
+
 
     def getUserContextData(self, userId):
         
         # print ('in getUserContextData user id is ', userId)
         userContextDetails = None
 
-        self.userContextLock.acquire()
-        try:
-            if (userId  in self.usersContext):
+        # self.userContextLock.acquire()
+        # try:
+        #     if (userId  in self.usersContext):
             
-                userContextDetails = self.usersContext[userId]
-            # print ('found user context and is ', userContextDetails.toJSON())
-        finally:
-            self.userContextLock.release()
+        #         userContextDetails = self.usersContext[userId]
+        #     # print ('found user context and is ', userContextDetails.toJSON())
+        # finally:
+        #     self.userContextLock.release()
 
-        if (userContextDetails is None):
-            userContextDetails = self.setUserContextData(userId)
+        # if (userContextDetails is None):
+        #     userContextDetails = self.setUserContextData(userId)
+
+        userDetails = self.getUser(userId)
+
+        if userDetails:
+            userContextDetails = UserContextData(userId=userId, firstName=userDetails.firstName, lastName=userDetails.familyName, gender=userDetails.gender, locale=userDetails.locale, isRTL=userDetails.isRTL)
 
         return userContextDetails
 

@@ -428,7 +428,8 @@ db.setUserContextData("U001")
 # db.updateUserDetails('U001', 'en-US', 1)
 # db.updateUserPassword('U001', '654321', '123456')
 
-userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
+# userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.LOCALE_HE_IL, isRTL=False)
+userContext = db.getUserContextData('U001')
 # moovs = db.getMoovsForIssueAndCounterpart('UA06', 'IS003', userContext=userContext)
 
 # activeMoov = db.activateIssueMoov('MO0003', 'U001', 'UA06', userContext=userContext)
@@ -439,6 +440,8 @@ userContext = UserContextData("U001", "Shaul", "Ben Maor", Gender.MALE, Locale.L
 # relationship = db.insertOrUpdateRelationshipDetails("U001", "UA03", 3, 5)
 # db.insertOrUpdateRelationshipDetails('U001', 'UA07', 3, 5)
 # result = db.missingRelationshipData('U001', 'UA07')
-res = db.sendUserFeedback('U001', "moov", "חסר לי משהו - אין לי מושג מה")
+# res = db.sendUserFeedback('U001', "moov", "חסר לי משהו - אין לי מושג מה")
 
+# motivation = db.getMotivation('M003', userContext=userContext)
+activeMoovs = db.getActiveMoovsForUser('U001',userContext=userContext)
 print ("Done")
