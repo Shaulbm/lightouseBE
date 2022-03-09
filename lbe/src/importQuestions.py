@@ -6,8 +6,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from questionsData import QuestionData, ResponseData
-import mongoDB
 from generalData import TextData
+from moovLogic import MoovLogic
 
 # If modifying these scopes, delete the file token.json.
 # SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -16,7 +16,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1YOdX9KDiPrM21-olNz1Mgl5lfMQPyMz1J4LvVRQ6iow'
 QUESTIONS_RANGE_NAME = 'Questions!A1:L98'
-RESPONSES_RANGE_NAME = 'Responses!A1:I247'
+RESPONSES_RANGE_NAME = 'Responses!A1:I252'
+
+GAP_QUESTIONS_BASE_ID = 'QM00'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -70,14 +72,17 @@ def main():
 
             #select the reponses for this question
 
-            currResponses = [r.copy() for r in responsesArray if r["questionId"] == currQuestion["id"]]
+            if (currQuestion["type"] != '3'):
+                currResponses = [r.copy() for r in responsesArray if r["questionId"] == currQuestion["id"]]
+            else:
+                currResponses = [r.copy() for r in responsesArray if r["questionId"] == GAP_QUESTIONS_BASE_ID]
 
             #create motivations
             insertQuestion(currQuestion, currResponses)
 
 def insertQuestion(questionsDataDict, responsesDataDictArray):
-    dbInstance = mongoDB.MoovDBInstance()
-    db = dbInstance.getDatabase()
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
 
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
@@ -110,7 +115,7 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
         newResponse.id = currResponseData["id"]
         newResponse.idx = int(currResponseData["idx"])
         newResponse.dependency = currResponseData["dependency"]
-        newResponse.questionId = currResponseData["questionId"]
+        newResponse.questionId = newQuestion.id
         newResponse.motivationId = currResponseData["motivationId"]
         newResponse.motivationScore = float(currResponseData["motivationScore"])
         newResponse.responseText = newResponse.id + "_1"
@@ -125,7 +130,7 @@ def insertQuestion(questionsDataDict, responsesDataDictArray):
         dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
         newQuestion.possibleResponses.append(newResponse)
-
+    
     dbInstance.insertOrUpdateQuestion(newQuestion)
 
 if __name__ == '__main__':

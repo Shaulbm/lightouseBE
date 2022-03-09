@@ -139,14 +139,14 @@ def getQuestionsBatch (userId, userContext : UserContextData):
     questionsList = []
 
     if (nextBatchDetails is None):
-        #no next batches exists verify that there is no tail - if there is, resolve it, if not - do nothing, return an empty questions list
+        #no next batches exists verify that there is no tail - if there is, resolve it, if not - go to net phase
         motivationScoreBoard = summerizeUserResults(discoveryJourneyDetails, userContext=None)
 
-        motivationsTail = getUserScoreBoardTail(motivationScoreBoard)
+        journeyResolutionDetails = getUserScoreBoardResolutionDetails(motivationScoreBoard)
 
-        if motivationsTail.motivationsToResovleCount > 0:
-            #the results are not valid - we need atie breaker (resolve the tail)
-            tailResQuestion = createTailResolutionQuestion(motivationsTail, userContext=userContext)
+        if journeyResolutionDetails.motivationsToResovleCount > 0:
+            #the results are not valid - we need a tie breaker (resolve the tail)
+            tailResQuestion = createTailResolutionQuestion(journeyResolutionDetails, userContext=userContext)
 
             questionsList.append(tailResQuestion) 
 
@@ -154,14 +154,16 @@ def getQuestionsBatch (userId, userContext : UserContextData):
             discoveryJourneyDetails.currBatch = tailResQuestion.batchId
             discoveryJourneyDetails.tailResolutionQuestionId = tailResQuestion.id
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
+
         elif discoveryJourneyDetails.state == UserDiscoveryJourneyState.STANDARD_QUESTIONER or discoveryJourneyDetails.state == UserDiscoveryJourneyState.TAIL_RESOLUTION:
-            # user is done with the questioneer (either with or without tail)
-            questionsList = createGapScoringQuestions(motivationsTail, userContext)
+            # user is done with the standard questioneer - create gap scoring questions
+            questionsList = createGapScoringQuestions(journeyResolutionDetails, userContext)
 
             discoveryJourneyDetails.state = UserDiscoveryJourneyState.GAP_SCORING
             dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
+
         else:
-            # no tail and no more batches - check if we were in gap
+            # no tail and no more batches - check if we were in gap scoring phase - if so, end journey
             if (discoveryJourneyDetails.state == UserDiscoveryJourneyState.GAP_SCORING):
                 sortedScoreBoard = dict(sorted(motivationScoreBoard.items(), key=lambda item: item[1], reverse= True))
 
@@ -207,6 +209,14 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
+
+    if (currQuestionDetails.type == QuestionsType.MOTIVATION_GAP):
+        responseDetails = next((x for x in currQuestionDetails.possibleResponses if x.id == responseId), None)
+        
+        if (responseDetails is None):
+            return
+
+        discoveryJourneyDetails.motivationsGap[currQuestionDetails.motivationId] = convertResponseScoreToMotivationGapScore(score=responseDetails.motivationScore) 
 
     dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
@@ -279,7 +289,7 @@ def summerizeUserResults (userDiscoveryJourney, userContext : UserContextData):
 
     return motivationsScoreBoard
 
-def getUserScoreBoardTail (userMotivationsScoreBoard):
+def getUserScoreBoardResolutionDetails (userMotivationsScoreBoard):
     #returns true if there are clear top 5 motivations, false other wise
     sortedScoreBoard = dict(sorted(userMotivationsScoreBoard.items(), key=lambda item: item[1], reverse= True))
     scoreList = list(sortedScoreBoard.values())
@@ -310,8 +320,8 @@ def getUserScoreBoardTail (userMotivationsScoreBoard):
       
         currScoreIndex += 1
 
-    tailResult = JourneyResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTopList)
-    return tailResult
+    resolutionDetails = JourneyResolutionData(motivationsToResolveCount=motivationsToResolveCount, motivationsList=motivationsTopList)
+    return resolutionDetails
 
 def endUserJourney (userId, userMotivationScoreBoard):
     #end the journey and update the user data with the top 5 motivations

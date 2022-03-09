@@ -555,7 +555,11 @@ class MoovDBInstance(metaclass=Singleton):
             questionTextsDic = None
             if (userContext.locale != Locale.UNKNOWN):
                 # get id's for text quesry
-                questionTextsDic = self.getTextDataByParent(foundQuestion["id"], userContext.locale, userContext.gender)
+                parentsIds = ([p["id"] for p in foundQuestion["possibleResponses"]])
+                parentsIds.append(foundQuestion["id"])
+
+                # get localed text
+                questionTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
 
             currQuestionDetails = QuestionData()
             currQuestionDetails.buildFromJSON(foundQuestion, questionTextsDic)

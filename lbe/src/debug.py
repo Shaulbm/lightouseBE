@@ -8,6 +8,7 @@ import time
 import uuid
 from moovDB import MoovDBInstance
 import ExportJourney
+import userDiscoveryJourney
 from generalData import UserRoles, Locale, Gender, UserImageData, UserData, UserContextData, UserRelationshipData
 from os import path
 import base64
@@ -443,5 +444,6 @@ userContext = db.getUserContextData('U001')
 # res = db.sendUserFeedback('U001', "moov", "חסר לי משהו - אין לי מושג מה")
 
 # motivation = db.getMotivation('M003', userContext=userContext)
-activeMoovs = db.getActiveMoovsForUser('U001',userContext=userContext)
+# activeMoovs = db.getActiveMoovsForUser('U001',userContext=userContext)
+# questions = userDiscoveryJourney.getQuestionsBatch(''
 print ("Done")

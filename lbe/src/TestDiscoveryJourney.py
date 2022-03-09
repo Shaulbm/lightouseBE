@@ -13,7 +13,7 @@ from questionsData import QuestionsType
 from moovLogic import MoovLogic
 import userDiscoveryJourney as discovery
 
-TESTS_NUMBER = 250
+TESTS_NUMBER = 50
 
 class reportResponseData:
     def __init__(self, id = "", idx = 0, questionId = "", motivationId = ""):
@@ -88,8 +88,11 @@ def main():
                     currQuestionIdx +=1
                     continue
 
-                if currQuestion.batchId !="B99" and currQuestion.batchId != "B100":
-                     # this is a regular question (not tail or motivation gap) 
+                print ('curr question id is', currQuestion.id)
+
+                # if currQuestion.batchId !="B99" and currQuestion.batchId != "B100":
+                if currQuestion.batchId !="B99":
+                     # this is a regular or motivation gap question (not tail) 
                     currQuestionPossibleResponses = []
                     for currResponse in currQuestion.possibleResponses:
                         if currQuestion.setId != lastSetId or (currQuestion.setId == lastSetId and currResponse.dependency != lastResponseId):
@@ -127,18 +130,18 @@ def main():
                         currUserResponseReport.motivationId = currResponseData.motivationId
 
                         currUserJourneyReport.userResponses.append (currUserResponseReport)
-                elif currQuestion.batchId == 'B100':
-                    #this is motivation gap question
-                    motivationGapScore = random.randint(1, 5)
-                    discovery.setUserScoredResponse(userId=userId, questionId=currQuestion.id, score=motivationGapScore, userContext=userContext)
+                # elif currQuestion.batchId == 'B100':
+                #     #this is motivation gap question
+                #     motivationGapScore = random.randint(1, 5)
+                #     discovery.setUserScoredResponse(userId=userId, questionId=currQuestion.id, score=motivationGapScore, userContext=userContext)
                     
-                    currUserResponseReport = reportResponseData()
-                    currUserResponseReport.questionId = currQuestion.id
-                    currUserResponseReport.id = currQuestion.id
-                    currUserResponseReport.idx = motivationGapScore
-                    currUserResponseReport.motivationId = currQuestion.motivationId
+                #     currUserResponseReport = reportResponseData()
+                #     currUserResponseReport.questionId = currQuestion.id
+                #     currUserResponseReport.id = currQuestion.id
+                #     currUserResponseReport.idx = motivationGapScore
+                #     currUserResponseReport.motivationId = currQuestion.motivationId
 
-                    currUserJourneyReport.userResponses.append (currUserResponseReport)
+                #     currUserJourneyReport.userResponses.append (currUserResponseReport)
                 
                 currQuestionIdx +=1
 

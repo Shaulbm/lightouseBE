@@ -281,6 +281,8 @@ class MoovLogic(metaclass=Singleton):
 
     def setMotivationsToUSer (self, id, motivations):
         self.dataBaseInstance.setMotivationsToUSer(id=id, motivations=motivations)
+        # update cache that user was changed
+        self.dbCache.setUserDirty(id)
 
     def getMotivation (self, id, userContext: UserContextData):
         motivationDetails = self.dbCache.getMotivationDetailsById(motivationId=id, userContext=userContext)
