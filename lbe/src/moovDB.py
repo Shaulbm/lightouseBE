@@ -9,7 +9,7 @@ from environmentProvider import EnvKeys
 import environmentProvider as ep
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
-from motivationsData import MotivationData, MotivationPartialData
+from motivationsData import MotivationData, MotivationPartialData, InsightTypeData, InsightsUserType, MotivationInsightData
 from generalData import UserData, UserPartialData, UserRoles, Gender, Locale, UserContextData, UserCredData, UserRelationshipData
 from questionsData import QuestionData
 from singleton import Singleton
@@ -64,7 +64,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return counterValue
 
-    def getTextDataByParent (self, parentId, locale, gender, name=""):
+    def getTextDataByParent (self, parentId, locale, gender=Gender.MALE, name=""):
         textDataCollection = self.getTextCollectionByLocale(locale, gender)
             
         allTextsArray = textDataCollection.find ({"parentId" : parentId})
@@ -83,7 +83,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return textDic
 
-    def getTextDataByParents (self, parentsIds, locale, gender, name=""):
+    def getTextDataByParents (self, parentsIds, locale, gender=Gender.MALE, name=""):
         resultTextDict = {}
         for currParrentId in parentsIds:
             resultTextDict = resultTextDict | self.getTextDataByParent(currParrentId, locale, gender, name)
@@ -155,18 +155,111 @@ class MoovDBInstance(metaclass=Singleton):
         #default
         return db ["locale_mg_en_ma"]
 
-    def insertOrUpdateMotivation (self, motivationDataObj):
+    def insertOrUpdateMotivation (self, motivationDetails):
         db = self.getDatabase()
         motivationsCollection = db["motivations"]
-        motivationDataJSON = motivationsCollection.find_one({"id" : motivationDataObj.id})
+        motivationDataJSON = motivationsCollection.find_one({"id" : motivationDetails.id})
 
         if (motivationDataJSON is not None):
             #object found
-            motivationFilter = {'id':motivationDataObj.id}
-            motivationsCollection.replace_one (motivationFilter, motivationDataObj.toJSON())
+            motivationFilter = {'id':motivationDetails.id}
+            motivationsCollection.replace_one (motivationFilter, motivationDetails.toJSON())
         else:
             # this is a new motivation
-            motivationsCollection.insert_one(motivationDataObj.toJSON())
+            motivationsCollection.insert_one(motivationDetails.toJSON())
+
+    def insertOrUpdateMotivationInsight (self, insightDetails):
+        db = self.getDatabase()
+        insightsCollection = db["motivationsInsights"]
+        insightDataJSON = insightsCollection.find_one({"id" : insightDetails.id})
+
+        if (insightDataJSON is not None):
+            #object found
+            insightFilter = {'id':insightDetails.id}
+            insightsCollection.replace_one (insightFilter, insightDetails.toJSON())
+        else:
+            # this is a new insight
+            insightsCollection.insert_one(insightDetails.toJSON())
+
+    def insertOrUpdateInsightType (self, insightTypeDetails):
+        db = self.getDatabase()
+        insightsTypesCollection = db["motivationsInsightsTypes"]
+        insightTypeDataJSON = insightsTypesCollection.find_one({"id" : insightTypeDetails.id})
+
+        if (insightTypeDataJSON is not None):
+            #object found
+            insightFilter = {'id':insightTypeDetails.id}
+            insightsTypesCollection.replace_one (insightFilter, insightTypeDetails.toJSON())
+        else:
+            # this is a new insight
+            insightsTypesCollection.insert_one(insightTypeDetails.toJSON())
+
+    def getInsightsForCounterpart (self, counterpartDetails, userContext : UserContextData):
+        db = self.getDatabase()
+        insightsCollection = db["motivationsInsights"]
+
+        if (counterpartDetails.motivations is None or counterpartDetails.motivations.__len__ == 0):
+            return {}
+
+        counterpartMotivationsIds = list(counterpartDetails.motivations.keys())
+
+        insightsFilter = {"type":InsightsUserType.TEAM_MEMBER,"motivationId": {"$in":counterpartMotivationsIds}}
+        insightsDataJSONList = insightsCollection.find(insightsFilter)
+
+        if (insightsDataJSONList is None):
+            return None
+
+        foundInsights = []
+        for currInsightJSONData in insightsDataJSONList:
+            insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender = counterpartDetails.gender, name= counterpartDetails.firstName)            
+            newInisight = MotivationInsightData()
+            newInisight.buildFromJSON(currInsightJSONData, insightTextsDic)
+            foundInsights.append(newInisight)
+
+        return foundInsights        
+
+    def getInsightsForSelf (self, userDetails, userContext : UserContextData):
+        db = self.getDatabase()
+        insightsCollection = db["motivationsInsights"]
+
+        if (userDetails.motivations is None or userDetails.motivations.__len__ == 0):
+            return {}
+
+        userMotivationsIds = list(userDetails.motivations.keys())
+
+        insightsFilter = {"type":InsightsUserType.SELF,"motivationId": {"$in":userMotivationsIds}}
+        insightsDataJSONList = insightsCollection.find(insightsFilter)
+
+        if (insightsDataJSONList is None):
+            return None
+
+        foundInsights = []
+        for currInsightJSONData in insightsDataJSONList:
+            insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender = userDetails.gender, name= userDetails.firstName)            
+            newInisight = MotivationInsightData()
+            newInisight.buildFromJSON(currInsightJSONData, insightTextsDic)
+            foundInsights.append(newInisight)
+
+        return foundInsights      
+
+    def getInsightsTypes (self, targetUser : InsightsUserType, userContext : UserContextData):
+        db = self.getDatabase()
+        insightsTypesCollection = db["motivationsInsightsTypes"]
+
+        insightsFilter = {"type":targetUser}
+        insightsDataJSONList = insightsTypesCollection.find(insightsFilter)
+
+        if (insightsDataJSONList is None):
+            return None
+
+        foundInsightsTypes = []
+        for currInsightTypeJSONData in insightsDataJSONList:
+            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale)            
+            newInsightType = InsightTypeData()
+            newInsightType.buildFromJSON(currInsightTypeJSONData, insightTypeTextsDic)
+            foundInsightsTypes.append(newInsightType)
+
+        return foundInsightsTypes   
 
     def insertOrUpdateMoov (self, moovDataObj):
         db = self.getDatabase()

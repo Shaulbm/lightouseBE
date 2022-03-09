@@ -445,5 +445,8 @@ userContext = db.getUserContextData('U001')
 
 # motivation = db.getMotivation('M003', userContext=userContext)
 # activeMoovs = db.getActiveMoovsForUser('U001',userContext=userContext)
-# questions = userDiscoveryJourney.getQuestionsBatch(''
+
+# insights = db.getInsightsForCounterpart('UA06', userContext)
+insights = db.getInsightsForSelf(userContext)
+
 print ("Done")

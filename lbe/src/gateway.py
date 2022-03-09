@@ -365,6 +365,24 @@ def extend_activeM_moov(request:Request, activeMoovId):
 
     return returnValue
 
+@router.get("/insightsForCounterpart")
+def inights_for_counterpart(request:Request, counterpartId):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.getInsightsForCounterpart(counterpartId==counterpartId, userContext=userContextDetails)
+
+    return returnValue
+
+@router.get("/insightsForSelf")
+def inights_for_self(request:Request):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.getInsightsForSelf(userContext=userContextDetails)
+
+    return returnValue
+
 @router.post("/updateUserDetails")
 def update_user_details(request:Request, userDetails: UpdateUserData):
     dbActions = MoovLogic()
@@ -388,3 +406,4 @@ def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
     returnValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
 
     return returnValue
+

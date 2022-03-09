@@ -4,7 +4,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from motivationsData import MotivationData
+from motivationsData import InsightTypeData, MotivationInsightData, MotivationData
 from generalData import TextData
 from moovLogic import MoovLogic
 
@@ -14,6 +14,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1JBx_pa3Em_uJBn9LJVcT6TJ9nfiPp8zl1X86tZ-GjEE'
 SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:O31'
+INSIGHTS_RANGE_NAME = 'MotivationsInsights!A1:K91'
+INSIGHTS_TYPES_RANGE_NAME = 'Insights!A1:E4'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -43,20 +45,43 @@ def main():
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
                                 range=SAMPLE_RANGE_NAME).execute()
-    values = result.get('values', [])
+    motivationsValues = result.get('values', [])
 
-    if not values:
+    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                range=INSIGHTS_RANGE_NAME).execute()
+    insightsValues = result.get('values', [])
+
+    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                            range=INSIGHTS_TYPES_RANGE_NAME).execute()
+    insightsTypesValues = result.get('values', [])
+
+    if not insightsValues or not motivationsValues or not insightsTypesValues:
         print('No data found.')
-    else:
-        print('Name, Major:')
-        keysRow = values[0]
-        #skip the first row (keys row)
-        for currRow in values[1:]:
-            zip_iterator = zip (keysRow, currRow)
-            currMotivation = dict(zip_iterator)
+        return
 
-            #create motivations
-            insertMotivation(currMotivation)
+    reponseKeyRow = insightsTypesValues[0]
+    for currRow in insightsTypesValues[1:]:
+        zip_iterator = zip(reponseKeyRow, currRow)
+        currInsightType = dict(zip_iterator)
+
+        insertInsightType(currInsightType)
+
+    reponseKeyRow = insightsValues[0]
+    for currRow in insightsValues[1:]:
+        zip_iterator = zip(reponseKeyRow, currRow)
+        currInsight = dict(zip_iterator)
+
+        insertMotivationInsight(currInsight)
+
+    print('Name, Major:')
+    keysRow = motivationsValues[0]
+    #skip the first row (keys row)
+    for currRow in motivationsValues[1:]:
+        zip_iterator = zip (keysRow, currRow)
+        currMotivation = dict(zip_iterator)
+    
+        #create motivation
+        insertMotivation(currMotivation)
 
 def insertMotivation(motivationDataDict):
     dbInstance = MoovLogic()
@@ -112,6 +137,66 @@ def insertMotivation(motivationDataDict):
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     dbInstance.insertOrUpdateMotivation(newMotivation)
+
+def insertMotivationInsight(insightDataDict):
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
+
+    heb_ma_LocaleCollection = db["locale_he_ma"]
+    heb_fe_LocaleCollection = db["locale_he_fe"]
+    eng_LocaleCollection = db["locale_en"]
+
+    insightDetails = MotivationInsightData()
+    insightDetails.id = insightDataDict["id"]
+    insightDetails.motivationId = insightDataDict["motivationId"]
+    insightDetails.insightId = insightDataDict["insightId"]
+    insightDetails.type = int(insightDataDict["type"])
+    insightDetails.shortDescription = insightDetails.id + "_1"
+    insightDetails.longDescription = insightDetails.id + "_2"
+
+    currentTextData = TextData(insightDetails.id, insightDetails.shortDescription, insightDataDict["shortDescription <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightDetails.id, insightDetails.shortDescription, insightDataDict["shortDescription <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightDetails.id, insightDetails.shortDescription, insightDataDict["shortDescription <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
+
+    dbInstance.insertOrUpdateMotivationInsight(insightDetails=insightDetails)
+
+def insertInsightType(insightTypeDataDict):
+    dbInstance = MoovLogic()
+    db = dbInstance.getDatabase().getDatabase()
+
+    heb_ma_LocaleCollection = db["locale_he_ma"]
+    heb_fe_LocaleCollection = db["locale_he_fe"]
+    eng_LocaleCollection = db["locale_en"]
+
+    insightTypeDetails =InsightTypeData()
+    insightTypeDetails.id = insightTypeDataDict["id"]
+    insightTypeDetails.type = int(insightTypeDataDict["type"])
+    insightTypeDetails.text = insightTypeDetails.id + "_1"
+
+    currentTextData = TextData(insightTypeDetails.id, insightTypeDetails.text, insightTypeDataDict["text <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightTypeDetails.id, insightTypeDetails.text, insightTypeDataDict["text <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData) 
+
+    currentTextData = TextData(insightTypeDetails.id, insightTypeDetails.text, insightTypeDataDict["text <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
+
+    dbInstance.insertOrUpdateInsightType (insightTypeDetails)
 
 if __name__ == '__main__':
     main()

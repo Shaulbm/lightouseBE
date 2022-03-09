@@ -18,3 +18,5 @@ mongoimport --mode=upsert --collection=activeMoovs --db=moov --file="c:\\dev\\da
 mongoimport --mode=upsert --collection=counter --db=moov --file="c:\\dev\\data\\MoovDB\\counter.json"
 mongoimport --mode=upsert --collection=conflicts --db=moov --file="c:\\dev\\data\\MoovDB\\conflicts.json"
 mongoimport --mode=upsert --collection=usersCreds --db=moov --file="c:\\dev\\data\\MoovDB\\usersCreds.json"
+mongoimport --mode=upsert --collection=motivationsInsights --db=moov --file="c:\\dev\\data\\MoovDB\\motivationsInsights.json"
+mongoimport --mode=upsert --collection=motivationsInsightsTypes --db=moov --file="c:\\dev\\data\\MoovDB\\motivationsInsightsTypes.json"

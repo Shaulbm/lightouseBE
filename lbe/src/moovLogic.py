@@ -9,6 +9,7 @@ from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
+from motivationsData import InsightsUserType, InsightAggregationData
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
 from moovDB import MoovDBInstance
@@ -148,8 +149,55 @@ class MoovLogic(metaclass=Singleton):
 
         return resultTextDict
 
-    def insertOrUpdateMotivation (self, motivationDataObj):
-        self.dataBaseInstance.insertOrUpdateMotivation (motivationDataObj)
+    def insertOrUpdateMotivation (self, motivationDetails):
+        self.dataBaseInstance.insertOrUpdateMotivation (motivationDetails)
+
+    def insertOrUpdateMotivationInsight (self, insightDetails):
+        self.dataBaseInstance.insertOrUpdateMotivationInsight (insightDetails)
+
+    def insertOrUpdateInsightType (self, insightTypeDetails):
+        self.dataBaseInstance.insertOrUpdateInsightType(insightTypeDetails)
+
+    def getInsightsForCounterpart(self, counterpartId, userContext: UserContextData):
+        counterpartDetails = self.getUser(counterpartId)
+        insights = self.dataBaseInstance.getInsightsForCounterpart (counterpartDetails, userContext)
+
+        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.TEAM_MEMBER , userContext)
+
+        aggregatedInsights = []
+
+        for currInsight in insightsTypes:
+            currAggInsihgt = InsightAggregationData()
+
+            filterdInsights = [x for x in insights if x.insightId == currInsight.id]
+
+            currAggInsihgt.insightType = currInsight
+            currAggInsihgt.insights = filterdInsights.copy()
+
+            aggregatedInsights.append(currAggInsihgt)
+
+        return aggregatedInsights
+
+    def getInsightsForSelf(self, userContext: UserContextData):
+        userDetails = self.getUser(userContext.userId)
+        insights = self.dataBaseInstance.getInsightsForSelf (userDetails, userContext)
+
+        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.SELF , userContext)
+
+        aggregatedInsights = []
+
+        for currInsight in insightsTypes:
+            currAggInsihgt = InsightAggregationData()
+
+            filterdInsights = [x for x in insights if x.insightId == currInsight.id]
+
+            currAggInsihgt.insightType = currInsight
+            currAggInsihgt.insights = filterdInsights.copy()
+
+            aggregatedInsights.append(currAggInsihgt)
+
+        return aggregatedInsights
+
 
     def insertOrUpdateMoov (self, moovDataObj):
         self.dataBaseInstance.insertOrUpdateMoov(moovDataObj)

@@ -18,3 +18,5 @@ mongoexport --collection=activeMoovs --db=moov --out="c:\\dev\\data\\MoovDB\\act
 mongoexport --collection=counter --db=moov --out="c:\\dev\\data\\MoovDB\\counter.json"
 mongoexport --collection=conflicts --db=moov --out="c:\\dev\\data\\MoovDB\\conflicts.json"
 mongoexport --collection=usersCreds --db=moov --out="c:\\dev\\data\\MoovDB\\usersCreds.json"
+mongoexport --collection=motivationsInsights --db=moov --out="c:\\dev\\data\\MoovDB\\motivationsInsights.json"
+mongoexport --collection=motivationsInsightsTypes --db=moov --out="c:\\dev\\data\\MoovDB\\motivationsInsightsTypes.json"
