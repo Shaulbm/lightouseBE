@@ -370,7 +370,7 @@ def inights_for_counterpart(request:Request, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
 
-    returnValue = dbActions.getInsightsForCounterpart(counterpartId==counterpartId, userContext=userContextDetails)
+    returnValue = dbActions.getInsightsForCounterpart(counterpartId=counterpartId, userContext=userContextDetails)
 
     return returnValue
 
