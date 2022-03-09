@@ -160,6 +160,7 @@ class MoovLogic(metaclass=Singleton):
 
     def getInsightsForCounterpart(self, counterpartId, userContext: UserContextData):
         counterpartDetails = self.getUser(counterpartId)
+        print ('counterpart id is {0}, counterpartDetails.firstName {1}', counterpartId, counterpartDetails.firstName)
         insights = self.dataBaseInstance.getInsightsForCounterpart (counterpartDetails, userContext)
 
         insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.TEAM_MEMBER , userContext)
