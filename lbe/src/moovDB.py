@@ -254,12 +254,14 @@ class MoovDBInstance(metaclass=Singleton):
             return None
 
         counterpartName = ""
+        counterpartGender = Gender.Male
         if (counterpartDetails is not None):
             counterpartName = counterpartDetails.firstName
+            counterpartGender = counterpartDetails.gender
 
         foundInsightsTypes = []
         for currInsightTypeJSONData in insightsDataJSONList:
-            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale, name=counterpartName)            
+            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale, name=counterpartName, gender= counterpartGender)            
             newInsightType = InsightTypeData()
             newInsightType.buildFromJSON(currInsightTypeJSONData, insightTypeTextsDic)
             foundInsightsTypes.append(newInsightType)
