@@ -254,7 +254,7 @@ class MoovDBInstance(metaclass=Singleton):
             return None
 
         counterpartName = ""
-        counterpartGender = Gender.Male
+        counterpartGender = Gender.MALE
         if (counterpartDetails is not None):
             counterpartName = counterpartDetails.firstName
             counterpartGender = counterpartDetails.gender
