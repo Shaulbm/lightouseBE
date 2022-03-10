@@ -163,7 +163,7 @@ class MoovLogic(metaclass=Singleton):
 
         insights = self.dataBaseInstance.getInsightsForCounterpart (counterpartDetails, userContext)
 
-        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.TEAM_MEMBER , userContext)
+        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.TEAM_MEMBER , userContext, counterpartDetails=counterpartDetails)
 
         aggregatedInsights = []
 

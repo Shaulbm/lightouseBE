@@ -1,3 +1,4 @@
+from ast import Not
 from hashlib import new
 from re import LOCALE
 import threading
@@ -242,7 +243,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundInsights      
 
-    def getInsightsTypes (self, targetUser : InsightsUserType, userContext : UserContextData):
+    def getInsightsTypes (self, targetUser : InsightsUserType, userContext : UserContextData, counterpartDetails = None):
         db = self.getDatabase()
         insightsTypesCollection = db["motivationsInsightsTypes"]
 
@@ -252,9 +253,13 @@ class MoovDBInstance(metaclass=Singleton):
         if (insightsDataJSONList is None):
             return None
 
+        counterpartName = ""
+        if (counterpartDetails is not None):
+            counterpartName = counterpartDetails.firstName
+
         foundInsightsTypes = []
         for currInsightTypeJSONData in insightsDataJSONList:
-            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale)            
+            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale, name=counterpartName)            
             newInsightType = InsightTypeData()
             newInsightType.buildFromJSON(currInsightTypeJSONData, insightTypeTextsDic)
             foundInsightsTypes.append(newInsightType)
