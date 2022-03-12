@@ -67,7 +67,7 @@ def main():
         discovery.startUserJourney(userId)
         
         #3. get next ba    headlineRow = ["userId"]tch
-        questionsBatch = discovery.getQuestionsBatch(userId=userId, userContext=userContext) 
+        questionsBatch = discovery.getQuestionsInBatch(userId=userId, userContext=userContext) 
         
         questionsSetDict = {}
 
@@ -145,7 +145,7 @@ def main():
                 
                 currQuestionIdx +=1
 
-            questionsBatch = discovery.getQuestionsBatch(userId= userId, userContext=userContext)
+            questionsBatch = discovery.getQuestionsInBatch(userId= userId, userContext=userContext)
             
         currentUser = db.getUser(userId)
         currUserJourneyReport.motivations = currentUser.motivations

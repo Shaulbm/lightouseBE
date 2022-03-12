@@ -135,10 +135,10 @@ def continue_user_journey(request: Request, userId):
     return journeyId
 
 
-@router.get("/journeyGetNextBatch")
+@router.get("/journeyGetQuestionsInBatch")
 def get_next_questions_batch(request: Request, userId):
     userContextDetails = get_user_context(request)
-    questionsBatch = userDiscoveryJourney.getQuestionsBatch(userId, userContext=userContextDetails)
+    questionsBatch = userDiscoveryJourney.getQuestionsInBatch(userId, userContext=userContextDetails)
     
     return questionsBatch
 
@@ -404,6 +404,15 @@ def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
     dbActions = MoovLogic()
 
     returnValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
+
+    return returnValue
+
+@router.post("/sendDiscoveryReminder")
+def send_discoveryReminder(request:Request, counterpartId):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.sendDiscoveryReminder(counterpartId = counterpartId, userContext=userContextDetails)
 
     return returnValue
 

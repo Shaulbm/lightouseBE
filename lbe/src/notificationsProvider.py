@@ -12,19 +12,19 @@ class NotificationsProvider(metaclass=Singleton):
       self.authToken = ep.getAttribute(EnvKeys.courier, EnvKeys.courierAuthToken)
       self.client = Courier(auth_token=self.authToken)
 
-    def sendWelcomeMail (self, userDetails : UserData):
+    def sendWelcomeMail (self, userName, userMail, password: str):
       if ep.shouldSuppressNotifications():
         return
 
       resp = self.client.send(
         event="welcome-mail",
-        recipient=userDetails.mailAddress,
+        recipient=userMail,
         data={
-          "firstName": userDetails.firstName,
+          "firstName": userName,
           "defaultPassword" : ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword)
         },
         profile={
-          "email": userDetails.mailAddress
+          "email": userMail
         }
       )
 
@@ -34,15 +34,32 @@ class NotificationsProvider(metaclass=Singleton):
 
       resp = self.client.send(
         event="discoveryDoneForTeamMember",
-        recipient=notifyTo.mailAddress,
+        recipient=notifyTo,
         data={
           "teamMemberName": userWhoEndedDiscoveryDetails.firstName,
           "teamMemberGender" : "him" if userWhoEndedDiscoveryDetails.gender == Gender.MALE else "her"
         },
         profile={
-          "email": notifyTo.mailAddress
+          "email": notifyTo
         }
       )
+
+    def sendDiscoveryReminder(self, notifyToMail, notifyToName, teamManagerName):
+      if ep.shouldSuppressNotifications():
+        return
+
+      resp = self.client.send(
+        event="discovery-done-for-team-member",
+        recipient=notifyToMail,
+        data={
+          "userName": notifyToName,
+          "userManagerName": teamManagerName
+        },
+        profile={
+          "email": notifyToMail
+        }
+      )
+
 
     def sendIssueMoovIsAboutToOverdue(self, moovOwner, moovCounterpart, moovName):
         if ep.shouldSuppressNotifications():
@@ -96,3 +113,23 @@ class NotificationsProvider(metaclass=Singleton):
           "email": recipient
         }
         )
+
+    def sendResetPassword(self, userName, userMail, newPassword):
+      if ep.shouldSupressNotificationsToAdmin():
+        return
+      
+      recipient = ep.getAttribute(EnvKeys.feedback, EnvKeys.sendFeedbackRecipient)
+
+      resp = self.client.send(
+        event="reset-password",
+        recipient=userMail,
+        data={
+          "userName": userName,
+          "newPassword" : newPassword
+        },
+        profile={
+          "email": userMail
+        }
+        )
+
+    

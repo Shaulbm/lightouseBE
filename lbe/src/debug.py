@@ -447,6 +447,14 @@ userContext = db.getUserContextData('U001')
 # activeMoovs = db.getActiveMoovsForUser('U001',userContext=userContext)
 
 # insights = db.getInsightsForCounterpart('UA06', userContext)
-insights = db.getInsightsForSelf(userContext)
+# insights = db.getInsightsForSelf(userContext)
+
+# userDetails = db.userLogin('UA04@testUser.com', '123456')
+# newPass = db.createRandomPassword()
+
+jID = userDiscoveryJourney.continueUserJourney('UA03')
+UA3Context = db.getUserContextData('UA03')
+# batch = userDiscoveryJourney.getCurrentQuestionsBatch('UA03', userContext=UA3Context)
+questions = userDiscoveryJourney.getQuestionsInBatch('UA03', UA3Context)
 
 print ("Done")

@@ -46,12 +46,12 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
 def continueUserJourney (userId):
     dbInstance = MoovLogic()
-    userJourney = dbInstance.getUserDiscoveryJourney(userId)
+    userJourneyId = dbInstance.getUserDiscoveryJourney(userId)
 
-    if userJourney is None:
-        userJourney = startUserJourney(userId=userId)
+    if userJourneyId is None:
+        userJourneyId = startUserJourney(userId=userId)
 
-    return userJourney.id
+    return userJourneyId
 
 def getCurrentQuestionsBatch (userId, userContext: UserContextData):
     dbInstance = MoovLogic()
@@ -66,12 +66,12 @@ def getCurrentQuestionsBatch (userId, userContext: UserContextData):
     if (currBatchDetails is not None):
         return currBatchDetails
 
-    # if the curr batch is none - return the next batch (first)
-    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, batchIdx=currBatchDetails.batchIdx + 1, userContext=userContext)
+    # as the curr batch is none - this will return the first batch
+    nextBatchDetails = dbInstance.getDiscvoeryBatch(journeyId= discoveryJourneyDetails.journeyId, userContext=userContext)
 
     return nextBatchDetails
 
-def getQuestionsBatch (userId, userContext : UserContextData):
+def getQuestionsInBatch (userId, userContext : UserContextData):
     # gets the current user batch from the journey collection and finds the current batch. 
     # gets the journey data and checks whether there are more batches. 
     # if there are - return the next questions batch and update the user journey data 

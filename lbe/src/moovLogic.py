@@ -4,7 +4,9 @@ from sqlite3 import Timestamp
 import threading
 from typing import Text
 from fastapi import HTTPException
-
+import string
+import random
+import uuid
 from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
@@ -300,23 +302,62 @@ class MoovLogic(metaclass=Singleton):
         newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, color=color, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
-    def insertOrUpdateUser (self, currUserData):
-        # get user details prior to potentially adding it to the DB
-        existingUser = self.getUser(currUserData.id)
-
-        if existingUser is None:
-            currUserData.color = self.generateUserColor()
-            currUserData.discoveryStatus = DiscoveryStatus.UNDISCOVERED
-
+    def insertOrUpdateUser (self, currUserData : UserData):
         self.dataBaseInstance.insertOrUpdateUser(currUserData=currUserData)
-
-        if existingUser is None:
-            #this is a new user - so we need to set a default password for him, and send a welcome email
-            self.setUserPassword(userId=currUserData.id, passwordRaw=ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword))
-            self.notificationsProvider.sendWelcomeMail(userDetails=currUserData)
 
         # update cache that user was changed
         self.dbCache.setUserDirty(currUserData.id)
+
+    def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+        # get user details prior to potentially adding it to the DB
+        existingUser = self.getUserByMail(mail=mailAddress)
+        if (existingUser is not None):
+            return existingUser.Id
+
+        userId = uuid.uuid4()
+        newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
+        newUser.color = self.generateUserColor()
+        newUser.discoveryStatus = DiscoveryStatus.UNDISCOVERED
+
+        self.dataBaseInstance.insertOrUpdateUser(currUserData=newUser)
+
+        userPassword = ""
+        if (not setDefaultPassword):
+            userPassword = ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword)
+        else:
+            userPassword = self.createRandomPassword()
+
+        self.setUserPassword(userId=userId, password = userPassword)
+
+        if (notifyNewUser):
+            self.notificationsProvider.sendWelcomeMail(userName=newUser.firstName, userMail=newUser.mailAddress, password=userPassword)
+
+        return newUser.id
+
+    def resetUserPassword(self, userId):
+       # get user details prior to potentially adding it to the DB
+        existingUser = self.getUser(userId)
+
+        if existingUser is None:
+            return
+
+        userPassword = self.createRandomPassword()
+        self.setUserPassword(userId=userId, password = userPassword)
+        self.notificationsProvider.sendResetPassword(userName=existingUser.firstName, userMail=existingUser.mailAddress, newPassword=userPassword)
+
+        # update cache that user was changed
+        self.dbCache.setUserDirty(userId)        
+
+    def createRandomPassword(self):
+        # printing letters
+        letters = string.ascii_letters
+
+        # printing digits
+        letters += string.digits
+
+        newPassword = ( ''.join(random.choice(letters) for i in range(10)) )
+
+        return newPassword
 
     def setUserDiscoveryStatus(self, userId, discoveryStatus):
         userDetails = self.getUser(userId)
@@ -656,7 +697,7 @@ class MoovLogic(metaclass=Singleton):
 
         # notify to all who are interested in this user
         for userToNotify in usersToNotify:
-            self.notificationsProvider.sendDiscoveryDoneMail(notifyTo=userToNotify, userWhoEndedDiscoveryDetails=currUser)    
+            self.notificationsProvider.sendDiscoveryDoneMail(notifyTo=userToNotify.mailAddress, userWhoEndedDiscoveryDetails=currUser)    
     
     def getInterestedusers(self, userId):
         return self.dataBaseInstance.getInterestedUsers(userId)
@@ -743,3 +784,7 @@ class MoovLogic(metaclass=Singleton):
     def sendUserFeedback(self, userId, issue, text):
         userDetails = self.getUser(userId)
         return self.notificationsProvider.sendUserFeedback(userId=userId, userMail=userDetails.mailAddress, issue=issue, text=text)
+
+    def sendDiscoveryReminder(self, counterpartId, userContext : UserContextData):
+        counterpartDetails = self.getUser(counterpartId)
+        return self.notificationsProvider.sendDiscoveryReminder(notifyToMail=counterpartDetails.mailAddress, notifyToName=counterpartDetails.firstName, teamManagerName=userContext.firstName)
