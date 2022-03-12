@@ -1,1 +1,1 @@
-mongoimport --mode=upsert --collection=subjects --db=moov --file="c:\\dev\\data\\MoovDB\\subjects.json"
+mongoimport --mode=upsert --collection=questions --db=moov --file="c:\\dev\\data\\MoovDB\\questions.json"
