@@ -95,7 +95,7 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
             remainingQuestions = []
 
             #the user broke from the journey in the tail resolution part
-            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext=None)
+            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext=userContext)
             
             remainingQuestions.append (lastAnsweredQuestionDetails)
 
@@ -108,7 +108,7 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
                 if (discoveryJourneyDetails.tailResolutionQuestionId == discoveryJourneyDetails.lastAnsweredQuestion):
                     userRespondedLastBatchQuestion = True
             else:
-                questionsList = dbInstance.getQuestionsFromBatch(currBatchDetails.batchId, userContext=None)
+                questionsList = dbInstance.getQuestionsFromBatch(currBatchDetails.batchId, userContext=userContext)
                 lastQuestionIdx = len(questionsList)
                 lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
                 if (lastQuestion is not None and lastQuestion.id == discoveryJourneyDetails.lastAnsweredQuestion):
@@ -121,7 +121,8 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
                 lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext)
 
                 for currQuestion in questionsList:
-                    if currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
+                    # it might be that this is the first answered question - so lastAnsweredQuestion will be None
+                    if lastAnsweredQuestionDetails is None or currQuestion.batchIdx > lastAnsweredQuestionDetails.batchIdx:
                         # if the currQuestions Idx is bigger than the last questions' Idx  - add them to the remaning questions list
                         remainingQuestions.append (currQuestion)
 
