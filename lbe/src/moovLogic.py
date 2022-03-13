@@ -401,6 +401,7 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getAllMotivationsIds()
 
     def userLogin(self, userMail, password):
+        userMail = userMail.lower()
         userDetails : UserData = self.getUserByMail(mail=userMail)
 
         # TBD verify password
