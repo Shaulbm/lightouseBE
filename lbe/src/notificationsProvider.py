@@ -13,15 +13,12 @@ class NotificationsProvider(metaclass=Singleton):
       self.client = Courier(auth_token=self.authToken)
 
     def sendWelcomeMail (self, userName, userMail, password: str):
-      if ep.shouldSuppressNotifications():
-        return
-
       resp = self.client.send(
         event="welcome-mail",
         recipient=userMail,
         data={
           "firstName": userName,
-          "defaultPassword" : ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword)
+          "defaultPassword" : password
         },
         profile={
           "email": userMail
@@ -31,8 +28,8 @@ class NotificationsProvider(metaclass=Singleton):
       return resp
 
     def sendDiscoveryDoneMail(self, notifyTo, userWhoEndedDiscoveryDetails):
-      if ep.shouldSuppressNotifications():
-        return
+      # if ep.shouldSuppressNotifications():
+      #   return
 
       resp = self.client.send(
         event="discoveryDoneForTeamMember",

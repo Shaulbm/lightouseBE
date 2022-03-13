@@ -314,7 +314,7 @@ class MoovLogic(metaclass=Singleton):
         if (existingUser is not None):
             return existingUser.Id
 
-        userId = uuid.uuid4()
+        userId = str(uuid.uuid4())
         newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         newUser.color = self.generateUserColor()
         newUser.discoveryStatus = DiscoveryStatus.UNDISCOVERED
@@ -322,12 +322,12 @@ class MoovLogic(metaclass=Singleton):
         self.dataBaseInstance.insertOrUpdateUser(currUserData=newUser)
 
         userPassword = ""
-        if (not setDefaultPassword):
+        if (setDefaultPassword):
             userPassword = ep.getAttribute(EnvKeys.defaults, EnvKeys.initialUserPassword)
         else:
             userPassword = self.createRandomPassword()
 
-        self.setUserPassword(userId=userId, password = userPassword)
+        self.setUserPassword(userId=userId, passwordRaw = userPassword)
 
         if (notifyNewUser):
             self.notificationsProvider.sendWelcomeMail(userName=newUser.firstName, userMail=newUser.mailAddress, password=userPassword)
