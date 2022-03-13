@@ -28,6 +28,8 @@ class NotificationsProvider(metaclass=Singleton):
         }
       )
 
+      return resp
+
     def sendDiscoveryDoneMail(self, notifyTo, userWhoEndedDiscoveryDetails):
       if ep.shouldSuppressNotifications():
         return
@@ -44,10 +46,9 @@ class NotificationsProvider(metaclass=Singleton):
         }
       )
 
-    def sendDiscoveryReminder(self, notifyToMail, notifyToName, teamManagerName):
-      if ep.shouldSuppressNotifications():
-        return
+      return resp
 
+    def sendDiscoveryReminder(self, notifyToMail, notifyToName, teamManagerName):
       resp = self.client.send(
         event="discovery-done-for-team-member",
         recipient=notifyToMail,
@@ -59,6 +60,8 @@ class NotificationsProvider(metaclass=Singleton):
           "email": notifyToMail
         }
       )
+
+      return resp
 
 
     def sendIssueMoovIsAboutToOverdue(self, moovOwner, moovCounterpart, moovName):
@@ -77,6 +80,7 @@ class NotificationsProvider(metaclass=Singleton):
             "email": moovOwner.mailAddress
           }
         )
+        return resp
 
     def sendConflictMoovIsAboutToOverdue(self, moovOwner, moovName):
         if ep.shouldSuppressNotifications():
@@ -93,6 +97,7 @@ class NotificationsProvider(metaclass=Singleton):
             "email": moovOwner.mailAddress
           }
         )
+        return resp
 
     def sendUserFeedback(self, userId, userMail, issue, text):
       if ep.shouldSupressNotificationsToAdmin():
@@ -112,7 +117,8 @@ class NotificationsProvider(metaclass=Singleton):
         profile={
           "email": recipient
         }
-        )
+      )
+      return resp
 
     def sendResetPassword(self, userName, userMail, newPassword):
       if ep.shouldSupressNotificationsToAdmin():
@@ -130,6 +136,7 @@ class NotificationsProvider(metaclass=Singleton):
         profile={
           "email": userMail
         }
-        )
+      )
+      return resp
 
     

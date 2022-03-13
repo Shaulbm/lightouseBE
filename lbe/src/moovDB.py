@@ -416,6 +416,8 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundUser = usersCollection.find_one({"id":currUserData.id})
 
+        currUserData.mailAddress = currUserData.mailAddress.lower()
+
         if (foundUser is not None):
             #the user already exists - update the user
             userDataFilter = {"id" : currUserData.id}
@@ -571,7 +573,7 @@ class MoovDBInstance(metaclass=Singleton):
         db = self.getDatabase()
         usersCollection = db["users"]
 
-        userFilter = {"mailAddress":mail}
+        userFilter = {"mailAddress":mail.lower()}
 
         userDataJSON = usersCollection.find_one(userFilter)
 

@@ -342,7 +342,7 @@ class MoovLogic(metaclass=Singleton):
             return
 
         userPassword = self.createRandomPassword()
-        self.setUserPassword(userId=userId, password = userPassword)
+        self.setUserPassword(userId=userId, passwordRaw = userPassword)
         self.notificationsProvider.sendResetPassword(userName=existingUser.firstName, userMail=existingUser.mailAddress, newPassword=userPassword)
 
         # update cache that user was changed
