@@ -409,7 +409,6 @@ class MoovLogic(metaclass=Singleton):
         userDetails : UserData = self.getUserByMail(mail=userMail)
 
         # TBD verify password
-        # for now password is always true
 
         partialUserDetails = None
 
@@ -419,9 +418,12 @@ class MoovLogic(metaclass=Singleton):
                 partialUserDetails = UserPartialData()
                 partialUserDetails.fromFullDetails(userDetails)
             else:
+                print ('password do not match')
                 # raise error 404
                 pass
-        
+        else:
+            print ('user not found')
+
         return partialUserDetails
 
     def getUserPassword (self, userId):
