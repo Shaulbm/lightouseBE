@@ -418,7 +418,8 @@ class MoovLogic(metaclass=Singleton):
         if (userDetails is not None):
             hashedPassword = hashlib.sha256(password.encode('utf-8'))
 
-            print('passwords are ', self.getUserPassword(userDetails.id), hashedPassword.hexdigest())
+            print('saved password is ', self.getUserPassword(userDetails.id))
+            print('param password is ',hashedPassword.hexdigest())
 
             if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
                 partialUserDetails = UserPartialData()
