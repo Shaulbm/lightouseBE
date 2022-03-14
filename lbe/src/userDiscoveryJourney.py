@@ -95,9 +95,9 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
             remainingQuestions = []
 
             #the user broke from the journey in the tail resolution part
-            lastAnsweredQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.lastAnsweredQuestion, userContext=userContext)
+            lastAskedQuestionDetails = dbInstance.getQuestion(discoveryJourneyDetails.tailResolutionQuestionId, userContext=None)
             
-            remainingQuestions.append (lastAnsweredQuestionDetails)
+            remainingQuestions.append (lastAskedQuestionDetails)
 
             return remainingQuestions
         else:
