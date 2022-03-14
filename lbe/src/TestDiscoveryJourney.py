@@ -13,7 +13,7 @@ from questionsData import QuestionsType
 from moovLogic import MoovLogic
 import userDiscoveryJourney as discovery
 
-TESTS_NUMBER = 50
+TESTS_NUMBER = 10
 
 class reportResponseData:
     def __init__(self, id = "", idx = 0, questionId = "", motivationId = ""):

@@ -699,8 +699,11 @@ class MoovLogic(metaclass=Singleton):
         currUserDirectManager = self.getUser(currUser.parentId)
         currUserPassivePOI = self.getInterestedusers(currUser.id)
 
-        usersToNotify += currUserPassivePOI
-        usersToNotify.append(currUserDirectManager)        
+        if len(currUserPassivePOI) > 0:
+            usersToNotify += currUserPassivePOI
+        
+        if currUserDirectManager is not None: 
+            usersToNotify.append(currUserDirectManager)        
 
         # notify to all who are interested in this user
         for userToNotify in usersToNotify:
