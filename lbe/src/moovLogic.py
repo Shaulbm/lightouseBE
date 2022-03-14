@@ -327,7 +327,7 @@ class MoovLogic(metaclass=Singleton):
         else:
             userPassword = self.createRandomPassword()
 
-        self.setUserPassword(userId=userId, passwordRaw = userPassword)
+        self.setUserPassword(userId=userId, orgId=newUser.orgId, passwordRaw = userPassword)
 
         if (notifyNewUser):
             self.notificationsProvider.sendWelcomeMail(userName=newUser.firstName, userMail=newUser.mailAddress, password=userPassword)
@@ -342,7 +342,7 @@ class MoovLogic(metaclass=Singleton):
             return
 
         userPassword = self.createRandomPassword()
-        self.setUserPassword(userId=userId, passwordRaw = userPassword)
+        self.setUserPassword(userId=userId, orgId=existingUser.orgId, passwordRaw = userPassword)
         self.notificationsProvider.sendResetPassword(userName=existingUser.firstName, userMail=existingUser.mailAddress, newPassword=userPassword)
 
         # update cache that user was changed
@@ -429,9 +429,9 @@ class MoovLogic(metaclass=Singleton):
     def getUserPassword (self, userId):
         return self.dataBaseInstance.getUserPassword(userId=userId)
 
-    def setUserPassword (self, userId, passwordRaw):
+    def setUserPassword (self, userId,orgId, passwordRaw):
         hashedPassword = hashlib.sha256(passwordRaw.encode('utf-8'))
-        userCredDetails = UserCredData(id=userId, password=hashedPassword.hexdigest())
+        userCredDetails = UserCredData(id=userId, orgId=orgId, password=hashedPassword.hexdigest())
 
         self.dataBaseInstance.setUserPassword(userCredDetails)
 
@@ -782,11 +782,10 @@ class MoovLogic(metaclass=Singleton):
 
         if (userDetails is not None):
             hashedPassword = hashlib.sha256(oldPassword.encode('utf-8'))
-            if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
-                self.setUserPassword(id, newPassword)
-                return ""
-            else:
-                raise HTTPException(status_code=401, detail="wrong password")
+            self.setUserPassword(userId=id, orgId=userDetails.orgId, passwordRaw=newPassword)
+            return ""
+        else:
+            raise HTTPException(status_code=401, detail="wrong password")
 
     def sendUserFeedback(self, userId, issue, text):
         userDetails = self.getUser(userId)

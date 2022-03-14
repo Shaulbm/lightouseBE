@@ -165,8 +165,9 @@ class UserPartialData:
             self.motivations = {}
 
 class UserCredData:
-    def __init__(self, id ="", password=""):
+    def __init__(self, id ="", orgId ="", password=""):
         self.id = id
+        self.orgId = orgId
         self.password = password
         pass
 
@@ -179,6 +180,7 @@ class UserCredData:
 
     def fromJSON (self, jsonData):
         self.id = jsonData["id"]
+        self.orgId = jsonData["orgId"]
         self.password = jsonData["password"]
 
 class UserImageData:

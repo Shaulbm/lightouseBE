@@ -1,1 +1,2 @@
 mongoimport --collection=users --mode=upsert --db=moov --file="c:\\dev\\data\\MoovDB\\usersByOrg.json"
+mongoimport --mode=upsert --collection=usersCreds --db=moov --file="c:\\dev\\data\\MoovDB\\usersCredsByOrg.json"
