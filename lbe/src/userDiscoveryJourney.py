@@ -205,7 +205,12 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
     if discoveryJourneyDetails is None:
         return None
 
-    currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=userContext)
+    # qet question with no context
+    currQuestionDetails = dbInstance.getQuestion(id=questionId)
+
+    if (currQuestionDetails.batchId == 'B99'):
+        # this is a tail resolution Question with a single response
+        return setUserMultipleResponses (userId=userId, questionId=questionId, responses=[responseId])
 
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
