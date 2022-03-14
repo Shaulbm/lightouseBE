@@ -152,7 +152,7 @@ def set_journey_question_response(request: Request, userId, questionId, response
 
 @router.get("/journeySetQuestionMultipleResponse", status_code=200)
 def set_journey_multiple_question_responses(request: Request, userId, questionId, responses):
-    userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responses = responses)
+    userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responsesIds = responses)
 
     return "reposnes were set"
 

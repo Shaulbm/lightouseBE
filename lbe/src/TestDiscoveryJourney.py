@@ -119,8 +119,8 @@ def main():
                 elif currQuestion.batchId == 'B99':
                     #this is tail resolution question
                     responsesList = random.sample(currQuestion.possibleResponses, currQuestion.userResponsesNo)
-                    
-                    discovery.setUserMultipleResponses(userId=userId, questionId=currQuestion.id, responses=responsesList)
+                    responsesIds = [res.id for res in responsesList]
+                    discovery.setUserMultipleResponses(userId=userId, questionId=currQuestion.id, responsesIds=responsesIds)
 
                     for currResponseData in responsesList:
                         currUserResponseReport = reportResponseData()

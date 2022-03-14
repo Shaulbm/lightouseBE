@@ -210,7 +210,7 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
 
     if (currQuestionDetails.batchId == 'B99'):
         # this is a tail resolution Question with a single response
-        return setUserMultipleResponses (userId=userId, questionId=questionId, responses=[responseId])
+        return setUserMultipleResponses (userId=userId, questionId=questionId, responsesIds=[responseId])
 
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
@@ -242,7 +242,7 @@ def setUserScoredResponse (userId, questionId, score, userContext: UserContextDa
         discoveryJourneyDetails.motivationsGap[currQuestionDetails.motivationId] = convertResponseScoreToMotivationGapScore(score=score) 
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
 
-def setUserMultipleResponses (userId, questionId, responses):
+def setUserMultipleResponses (userId, questionId, responsesIds):
     if (TAIL_QUESTION_ID in questionId):
         dbInstance = MoovLogic()
         discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
@@ -251,9 +251,9 @@ def setUserMultipleResponses (userId, questionId, responses):
             return None
 
         # add the responses for questions keys Q999_1, Q999_2 etc.
-        for currResponseIndex, currResponse in enumerate(responses):
+        for currResponseIndex, currResponseId in enumerate(responsesIds):
             currQuestionId = questionId + "_" + str(currResponseIndex)
-            discoveryJourneyDetails.userResponses[currQuestionId] = currResponse.id
+            discoveryJourneyDetails.userResponses[currQuestionId] = currResponseId
             
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
 
