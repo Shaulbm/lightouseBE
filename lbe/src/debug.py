@@ -1,6 +1,10 @@
 import datetime
+import math
+from random import Random
+import random
 from starlette.requests import Request
 from starlette.types import Scope
+from generalData import DiscoveryStatus, UserMotivationData
 from moovLogic import MoovLogic
 import main
 import gateway
@@ -119,6 +123,93 @@ def createUsers(dbInstance):
     dbInstance.setUserPassword("UA10", "123456")
     dbInstance.setUserPassword("UA11", "123456")
     dbInstance.setUserPassword("UA12", "123456")
+
+def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender):
+    newUSerId = dbInstance.createUser(notifyNewUser=True, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
+
+    # prepData
+    motivationsIdList = dbInstance.getAllMotivationsIds()
+    userMotivationDataList = []
+    for currMotivaitonId in motivationsIdList:
+        userMotivationData = UserMotivationData()
+        userMotivationData.motivationId = currMotivaitonId
+        userMotivationData.journeyScore = (math.floor ((random.uniform (a=2.6, b=5.2))*10))/10.0
+        userMotivationData.gapFactor = random.randint(1,5)
+
+        userMotivationDataList.append(userMotivationData)
+
+    #Sub 1
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'sveta@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='סבטה', familyName='שיפרין', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 2
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'guy@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='גיא', familyName='כהן', mailAddress=userMailAddress, gender=Gender.MALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 3
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'shani@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='שני', familyName='בירנבוים', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 4
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'revital@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='רויטל', familyName='מיכלזון', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 5
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'moshe@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='משה', familyName='גלבוע', mailAddress=userMailAddress, gender=Gender.MALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 6
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'aharon@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='אהרן', familyName='שחר', mailAddress=userMailAddress, gender=Gender.MALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 7
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'mike@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='מייק', familyName='לוינסון', mailAddress=userMailAddress, gender=Gender.MALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
+    #Sub 8
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'michal@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='מיכל', familyName='לוי', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+
 
 # createUsers()
 
@@ -460,5 +551,8 @@ UA3Context = db.getUserContextData('UA03')
 # res = db.resetUserPassword('U001')
 # res = db.updateUserPassword('U001', 'fZWi0k7Ht4', '123456')
 # db.userLogin('SHAUl.Ben.Maor@GMail.COM', '123546')
-userDetails = db.createUser(notifyNewUser=True, firstName = "Shaul", familyName="Major", gender= Gender.MALE, locale=Locale.LOCALE_EN_US, mailAddress="shaul@claro.one", role=UserRoles.MANAGER, orgId="OT_001")
+# userDetails = db.createUser(notifyNewUser=True, firstName = "Shaul", familyName="Major", gender= Gender.MALE, locale=Locale.LOCALE_EN_US, mailAddress="shaul@claro.one", role=UserRoles.MANAGER, orgId="OT_001")
+
+createUsersForBeta(dbInstance=db, orgId='T01', userFirstName='שאול', userLastName='כהן לוי', userMailAddress='shaul@claro.one', userGender=Gender.MALE)
 print ("Done")
+
