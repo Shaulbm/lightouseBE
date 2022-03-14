@@ -206,7 +206,7 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
         return None
 
     # qet question with no context
-    currQuestionDetails = dbInstance.getQuestion(id=questionId)
+    currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=None)
 
     if (currQuestionDetails.batchId == 'B99'):
         # this is a tail resolution Question with a single response
