@@ -334,27 +334,30 @@ class MoovLogic(metaclass=Singleton):
 
         return newUser.id
 
-    def resetUserPassword(self, userId):
+    def resetUserPassword(self, userMail):
        # get user details prior to potentially adding it to the DB
-        existingUser = self.getUser(userId)
+        existingUser = self.getUserByMail(userMail)
 
         if existingUser is None:
             return
 
         userPassword = self.createRandomPassword()
-        self.setUserPassword(userId=userId, orgId=existingUser.orgId, passwordRaw = userPassword)
+        self.setUserPassword(userId=existingUser.id, orgId=existingUser.orgId, passwordRaw = userPassword)
         self.notificationsProvider.sendResetPassword(userName=existingUser.firstName, userMail=existingUser.mailAddress, newPassword=userPassword)
 
         # update cache that user was changed
-        self.dbCache.setUserDirty(userId)        
+        self.dbCache.setUserDirty(existingUser.id)        
 
     def createRandomPassword(self):
         # printing letters
         letters = string.ascii_letters
+        
 
         # printing digits
         letters += string.digits
 
+        #remove space from possible letters
+        letters = letters.replace(" ","")
         newPassword = ( ''.join(random.choice(letters) for i in range(10)) )
 
         return newPassword
@@ -401,7 +404,7 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getAllMotivationsIds()
 
     def userLogin(self, userMail, password):
-        print ('in userLogin received mail ', userMail)
+        print ('in userLogin received mail ', userMail, password)
 
         userMail = userMail.lower()
 
