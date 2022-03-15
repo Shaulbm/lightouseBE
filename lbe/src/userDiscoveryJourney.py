@@ -77,7 +77,7 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
     # if there are - return the next questions batch and update the user journey data 
     # if this was the last batch - validate that we have a clear top 5 motivations - if not, create a tail resolution batch return DICOVERY_JOURNEY_END
     dbInstance = MoovLogic()
-    discoveryJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)   
+    discoveryJourneyDetails : UserDiscoveryJourneyData = dbInstance.getUserDiscoveryJourney(userId)   
 
     if discoveryJourneyDetails is None:
         return None
@@ -116,7 +116,9 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
                     
                     if (discoveryJourneyDetails.state == UserDiscoveryJourneyState.GAP_SCORING ):
                         # it might be that the user bailed before we he answered gap questions
-                        discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
+                        if discoveryJourneyDetails.motivationsGap.__len__() < 5:
+                            # we left in the middle of gap scoring, restart it.
+                            discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
             
             if (not userRespondedLastBatchQuestion):         
                 # the user have not finished to answer all the questions in the current batch, return the remaining questions
