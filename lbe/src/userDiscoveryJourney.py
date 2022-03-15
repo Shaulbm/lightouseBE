@@ -113,6 +113,10 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
                 lastQuestion = next((x for x in questionsList if x.batchIdx == lastQuestionIdx), None)
                 if (lastQuestion is not None and lastQuestion.id == discoveryJourneyDetails.lastAnsweredQuestion):
                     userRespondedLastBatchQuestion = True
+                    
+                    if (discoveryJourneyDetails.state == UserDiscoveryJourneyState.GAP_SCORING ):
+                        # it might be that the user bailed before we he answered gap questions
+                        discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
             
             if (not userRespondedLastBatchQuestion):         
                 # the user have not finished to answer all the questions in the current batch, return the remaining questions

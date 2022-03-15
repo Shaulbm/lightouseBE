@@ -707,6 +707,7 @@ class MoovLogic(metaclass=Singleton):
 
         # notify to all who are interested in this user
         for userToNotify in usersToNotify:
+            print ('user journey ended = notifying to {} users', usersToNotify.__len__())
             self.notificationsProvider.sendDiscoveryDoneMail(notifyTo=userToNotify.mailAddress, userWhoEndedDiscoveryDetails=currUser)    
     
     def getInterestedusers(self, userId):
