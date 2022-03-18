@@ -366,7 +366,7 @@ def inights_for_counterpart(request:Request, counterpartId):
 
     returnValue = dbActions.getInsightsForCounterpart(counterpartId=counterpartId, userContext=userContextDetails)
 
-    return returnValue
+    return returnValue   
 
 @router.get("/insightsForSelf")
 def inights_for_self(request:Request):

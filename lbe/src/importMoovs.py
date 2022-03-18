@@ -137,9 +137,10 @@ def insertMoov(moovDataDict):
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_ma_fe>>"].replace('•', '*'))
     dbInstance.insertOrUpdateText(heb_mg_ma_fe_LocaleCollection, currentTextData)
     currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe_fe>>"].replace('•', '*'))
-    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
-    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe_ma>>"].replace('•', '*'))
     dbInstance.insertOrUpdateText(heb_mg_fe_fe_LocaleCollection, currentTextData)
+    
+    currentTextData = TextData(newMoov.id, newMoov.howTo, moovDataDict["howTo <<he_fe_ma>>"].replace('•', '*'))
+    dbInstance.insertOrUpdateText(heb_mg_fe_ma_LocaleCollection, currentTextData)
 
 
     currentTextData = TextData(newMoov.id, newMoov.reasoning, moovDataDict["reasoning <<en_fe>>"])
