@@ -622,6 +622,7 @@ class MoovDBInstance(metaclass=Singleton):
             questionTextsDic = self.getTextDataByParents(parentsIds, userContext.locale, userContext.gender)
 
         questionDetails = QuestionData()
+        print ('in MoovDB:getQuestion question id is', questionsDataJSON['id'])
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
