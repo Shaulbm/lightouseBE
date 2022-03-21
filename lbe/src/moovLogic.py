@@ -226,7 +226,7 @@ class MoovLogic(metaclass=Singleton):
     def getBaseMoov (self, id, counterpartDetails, userContext: UserContextData):
         return self.dataBaseInstance.getBaseMoov(id=id, counterpartDetails=counterpartDetails, userContext=userContext)
 
-    def getMoovsForIssueAndCounterpart (self, counterpartId, issueId, userContext: UserContextData):
+    def getMoovsForIssueAndCounterpart (self, userId, counterpartId, issueId, userContext: UserContextData):
         counterpartDetails = self.getUser(counterpartId)
         issueMoovs :list (IssueMoovData) = self.dataBaseInstance.getMoovsForIssueAndCounterpart(counterpartDetails=counterpartDetails, issueId=issueId, userContext=userContext)
 
@@ -234,8 +234,8 @@ class MoovLogic(metaclass=Singleton):
 
         extendedIssueMoovs = []
 
-        pastMoovs = self.getPastMoovsToCounterpart(userId = userContext.userId, counterpartId = counterpartId, userContext = userContext)
-        activeMoovs = self.getActiveMoovsToCounterpart(userId=userContext.userId, counterpartId=counterpartId, userContext=userContext)
+        pastMoovs = self.getPastMoovsToCounterpart(userId = userId, counterpartId = counterpartId, userContext = userContext)
+        activeMoovs = self.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
         for currMoov in issueMoovs:
             relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
@@ -512,7 +512,12 @@ class MoovLogic(metaclass=Singleton):
         return userCircleDetails
 
     def getUsersUnder (self, userId):
-        return self.dataBaseInstance.getUsersUnder(userId=userId)
+        usersUnder = self.dataBaseInstance.getUsersUnder(userId=userId)
+
+        for currUser in usersUnder:
+            currUser.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=currUser.Id)
+
+        return usersUnder
 
     def getUserPeopleOfInterest(self, userId):
         peopleOfInterestList = []
@@ -524,10 +529,20 @@ class MoovLogic(metaclass=Singleton):
             userPartialDetails = UserPartialData()
             userPartialDetails.fromFullDetails(self.getUser(id=currPOI))
             userPartialDetails.activeMoovsCount = self.dataBaseInstance.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
-            userPartialDetails.recommendedMoovsCount = self.dataBaseInstance.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
+            userPartialDetails.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
             peopleOfInterestList.append (userPartialDetails)
 
         return peopleOfInterestList
+
+    def getRecommendedMoovsAboveThresholdCount(self, userId, counterpartId):
+        allRecommendedMoovs = self.getALlRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=None)
+
+        recommendedMoovsThreshold = ep.getAttribute(EnvKeys.moovs, EnvKeys.topRecommendedMoovThreshold)
+
+        recommendedMoovsAboveThreshold = [rm for rm in allRecommendedMoovs if rm.score > recommendedMoovsThreshold]
+
+        return recommendedMoovsAboveThreshold.__len__()
+
 
     def getUserImageFromFile(self, userId):
         userDetails = self.getUser(id=userId)
@@ -764,7 +779,7 @@ class MoovLogic(metaclass=Singleton):
         return topRecommendedMoovs 
         
     def getALlRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext: UserContextData):
-        recommendedMoovs = self.getMoovsForIssueAndCounterpart(counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
+        recommendedMoovs = self.getMoovsForIssueAndCounterpart(userId=userId, counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
 
         return recommendedMoovs
 

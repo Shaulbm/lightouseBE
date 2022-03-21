@@ -382,7 +382,11 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundMoovs = []
         for currMoovJSONData in motivationsDataJSONList:
-            moovTextsDic = self.getMGTextDataByParent(parentId= currMoovJSONData["id"], locale= userContext.locale, firstGender= userContext.gender, secondGender= counterpartDetails.gender, name= counterpartDetails.firstName)            
+            moovTextsDic = None
+
+            if (userContext is not None):
+                moovTextsDic = self.getMGTextDataByParent(parentId= currMoovJSONData["id"], locale= userContext.locale, firstGender= userContext.gender, secondGender= counterpartDetails.gender, name= counterpartDetails.firstName)            
+            
             newMoov = IssueMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             foundMoovs.append(newMoov)
@@ -1011,7 +1015,6 @@ class MoovDBInstance(metaclass=Singleton):
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(currentUserDetails)
                     userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
-                    userPartialDetails.recommendedMoovsCount = self.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)                    
                     foundSubordinatesDataList.append (userPartialDetails)
 
             return foundSubordinatesDataList
@@ -1054,7 +1057,6 @@ class MoovDBInstance(metaclass=Singleton):
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(self.getUser(currentSubordinate.name))
                     userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
-                    userPartialDetails.recommendedMoovsCount = self.getRecommnededMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
                     foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
@@ -1075,10 +1077,6 @@ class MoovDBInstance(metaclass=Singleton):
             foundUsersDetails.append(currUserDetails)
 
         return foundUsersDetails
-
-    def getRecommnededMoovsAboveThresholdCount(self, userId, counterpartId):
-        # TBD 
-        return 1
 
     def activateIssueMoov (self, moovId, userId, counterpartId, priority, userContext: UserContextData):
         db = self.getDatabase();

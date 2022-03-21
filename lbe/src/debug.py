@@ -647,6 +647,8 @@ UA3Context = db.getUserContextData('UA03')
 # db.activateIssueMoov(recMoovs[0].id, 'U001', 'UA06', db.getUserContextData('U001'))
 # recMoovs_ = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
 
-issues = db.getAllIssues('UA06', db.getUserContextData('U001'))
+# issues = db.getAllIssues('UA06', db.getUserContextData('U001'))
+
+COI = db.getUserCircle('U001')
 
 print ("Done")
