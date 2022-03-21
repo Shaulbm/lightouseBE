@@ -904,7 +904,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return issuesDetailsList
     
-    def getAllIssues (self, userContext: UserContextData):
+    def getAllIssues (self, issuesGender, userContext: UserContextData):
         db = self.getDatabase()
         subjectsCollection = db["issues"]
 
@@ -913,7 +913,7 @@ class MoovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, userContext.gender)
+            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, issuesGender)
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        

@@ -192,11 +192,11 @@ def get_issue(request: Request, id):
     return issueDetails
 
 @router.get("/allIssues")
-def get_all_issues(request: Request):
+def get_all_issues(request: Request, counterpartId = ""):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    issuesDetails = dbActions.getAllIssues(userContextDetails)
+    issuesDetails = dbActions.getAllIssues(counterpartId, userContextDetails)
     
     return issuesDetails
 

@@ -2,6 +2,8 @@ import datetime
 import math
 from random import Random
 import random
+from socket import setdefaulttimeout
+from threading import local
 from starlette.requests import Request
 from starlette.types import Scope
 from generalData import DiscoveryStatus, UserMotivationData
@@ -125,8 +127,34 @@ def setBaseUserPassword(dbInstance):
     dbInstance.setUserPassword("UA11", 'O001', "123456")
     dbInstance.setUserPassword("UA12", 'O001', "123456")
 
-def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender):
-    newUSerId = dbInstance.createUser(notifyNewUser=True, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
+def setDiscoveryDoneForUser(dbInstance : MoovLogic, userId):
+    # prepData
+    motivationsIdList = dbInstance.getAllMotivationsIds()
+    userMotivationDataList = []
+    for currMotivaitonId in motivationsIdList:
+        userMotivationData = UserMotivationData()
+        userMotivationData.motivationId = currMotivaitonId
+        userMotivationData.journeyScore = (math.floor ((random.uniform (a=2.6, b=5.2))*10))/10.0
+        userMotivationData.gapFactor = random.randint(1,5)
+
+        userMotivationDataList.append(userMotivationData)
+
+    userDetails : UserData = dbInstance.getUser(userId)
+    if (userDetails is None):
+        return
+
+    userMotivations = {}
+
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    for currMotivation in userSelectedMotivations:
+        userMotivations[currMotivation.motivationId] = currMotivation
+
+    userDetails.motivations = userMotivations
+    userDetails.discoveryStatus = DiscoveryStatus.DISCOVERED
+    dbInstance.insertOrUpdateUser(userDetails)
+
+def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender, shouldSkipDiscovery=False):
 
     # prepData
     motivationsIdList = dbInstance.getAllMotivationsIds()
@@ -138,6 +166,17 @@ def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName
         userMotivationData.gapFactor = random.randint(1,5)
 
         userMotivationDataList.append(userMotivationData)
+
+    # realUser
+    userMotivations = {}
+
+    if shouldSkipDiscovery:
+        userSelectedMotivations = random.sample(userMotivationDataList, 5)
+        userMotivations = {}
+        for currMotivation in userSelectedMotivations:
+            userMotivations[currMotivation.motivationId] = currMotivation
+    newUSerId = dbInstance.createUser(notifyNewUser=True, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
+    dbInstance.setUserDiscoveryStatus(newUSerId, discoveryStatus= DiscoveryStatus.DISCOVERED)
 
     #Sub 1
     userSelectedMotivations = random.sample(userMotivationDataList, 5)
@@ -202,15 +241,25 @@ def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName
     subUser = dbInstance.createUser( parentId=newUSerId, firstName='מייק', familyName='לוינסון', mailAddress=userMailAddress, gender=Gender.MALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
     dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
 
-    #Sub 8
+    #Sub 8 - haveb't finish discovery
     userSelectedMotivations = random.sample(userMotivationDataList, 5)
     userMotivations = {}
-    for currMotivation in userSelectedMotivations:
-        userMotivations[currMotivation.motivationId] = currMotivation
+    # for currMotivation in userSelectedMotivations:
+    #     userMotivations[currMotivation.motivationId] = currMotivation
     userMailAddress = 'michal@fakeuser.'+orgId+'.com'
     subUser = dbInstance.createUser( parentId=newUSerId, firstName='מיכל', familyName='לוי', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
-    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.DISCOVERED)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.UNDISCOVERED)
 
+    #Sub 9 - haveb't finish discovery
+    userSelectedMotivations = random.sample(userMotivationDataList, 5)
+    userMotivations = {}
+    # for currMotivation in userSelectedMotivations:
+    #     userMotivations[currMotivation.motivationId] = currMotivation
+    userMailAddress = 'ravit@fakeuser.'+orgId+'.com'
+    subUser = dbInstance.createUser( parentId=newUSerId, firstName='רוית', familyName='בן משה', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
+    dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.UNDISCOVERED)
+
+    return newUSerId
 
 # createUsers()
 
@@ -553,7 +602,51 @@ UA3Context = db.getUserContextData('UA03')
 # res = db.updateUserPassword('U001', 'fZWi0k7Ht4', '123456')
 # db.userLogin('SHAUl.Ben.Maor@GMail.COM', '123546')
 # userDetails = db.createUser(notifyNewUser=True, firstName = "Shaul", familyName="Major", gender= Gender.MALE, locale=Locale.LOCALE_EN_US, mailAddress="shaul@claro.one", role=UserRoles.MANAGER, orgId="OT_001")
-setBaseUserPassword(db)
-createUsersForBeta(dbInstance=db, orgId='T01', userFirstName='שאול', userLastName='כהן לוי', userMailAddress='shaul@claro.one', userGender=Gender.MALE)
-print ("Done")
+# setBaseUserPassword(db)
+# createUsersForBeta(dbInstance=db, orgId='T01', userFirstName='שאול', userLastName='כהן לוי', userMailAddress='shaul@claro.one', userGender=Gender.MALE)
+# db.resetUserPassword('shaul@claro.one')
+# user= db.userLogin('shaul@claro.one', 'QmuE1QW1KN')
 
+# questions = userDiscoveryJourney.getQuestionsInBatch('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+# response = userDiscoveryJourney.setUserResponse('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', 'Q999_3e1120f0' , '57f87f36', db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+
+# newUserId = createUsersForBeta(dbInstance=db, orgId='T08', userFirstName='רונית', userLastName='שרקני', userMailAddress='ronit.sharkany@syngenta.com', userGender=Gender.FEMALE)
+# setDiscoveryDoneForUser(db, newUserId)
+
+# journey = userDiscoveryJourney.continueUserJourney('T_df52b111_U_0')
+# questions = userDiscoveryJourney.getQuestionsInBatch('T_df52b111_U_0', db.getUserContextData('T_df52b111_U_0')) 
+
+# insights = db.getInsightsForSelf(db.getUserContextData('U001'))
+# db.createUser(notifyNewUser=True, setDefaultPassword=True, firstName='סמדר', familyName='תדמור', gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL, orgId="int004", mailAddress="smadar@calro.one")
+# recommendedMoovs = db.getTopRecommendedMoovsForCounterpart(userId='56bb848d-cf9d-4ac1-bf40-2516dec81cd4', counterpartId="f2eb23dc-8800-4149-aa9b-17228271348d", userContext=db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+# questions = userDiscoveryJourney.getQuestionsInBatch(userId='56bb848d-cf9d-4ac1-bf40-2516dec81cd4', userContext= db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+
+
+#### SWITCH COLOR START ####
+# oldUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
+# newUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
+
+# zip_iterator = zip (oldUserColors, newUserColors)
+# userColors = dict(zip_iterator)
+# #for new colors already do nothing
+# zip_iterator = zip (newUserColors, newUserColors)
+# # userColors = dict(userColors.items() + (dict(zip_iterator)).items())
+# userColors.update(dict(zip_iterator))
+
+
+# users = db.dataBaseInstance.getAllUsers()
+
+# for currUser in users:
+
+#     if (currUser.color != ''):
+#         currUser.color = userColors[currUser.color]
+#         db.insertOrUpdateUser(currUser)
+#### SWITCH COLOR END ####
+
+# recMoovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
+# db.activateIssueMoov(recMoovs[0].id, 'U001', 'UA06', db.getUserContextData('U001'))
+# recMoovs_ = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
+
+issues = db.getAllIssues('UA06', db.getUserContextData('U001'))
+
+print ("Done")
