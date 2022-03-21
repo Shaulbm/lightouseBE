@@ -515,7 +515,7 @@ class MoovLogic(metaclass=Singleton):
         usersUnder = self.dataBaseInstance.getUsersUnder(userId=userId)
 
         for currUser in usersUnder:
-            currUser.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=currUser.Id)
+            currUser.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=currUser.id)
 
         return usersUnder
 
