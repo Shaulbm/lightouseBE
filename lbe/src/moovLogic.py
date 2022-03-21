@@ -256,7 +256,7 @@ class MoovLogic(metaclass=Singleton):
 
         for activeMoov in activeMoovs:
             # if the is an active moov with this id return true
-            if activeMoov.id == moovId:
+            if activeMoov.moovId == moovId:
                 return True
 
         for pastMoov in relevantPastMoovs:
