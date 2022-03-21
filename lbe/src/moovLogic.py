@@ -235,15 +235,13 @@ class MoovLogic(metaclass=Singleton):
         extendedIssueMoovs = []
 
         pastMoovs = self.getPastMoovsToCounterpart(userId = userContext.userId, counterpartId = counterpartId, userContext = userContext)
+        activeMoovs = self.getActiveMoovsToCounterpart(userId=userContext.userId, counterpartId=counterpartId, userContext=userContext)
 
         for currMoov in issueMoovs:
             relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
             
             if relatedMotivation is not None:
-                currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation)
-                if self.doesMoovHaveRelevantHistory(pastMoovs=pastMoovs, moovId=currMoov.id):
-                    # if the moov was done in the last X days then the score should be penallize
-                    currMoov.score = currMoov.score * ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyValue)
+                currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation, pastMoovs= pastMoovs, activeMoovs=activeMoovs)
 
             # create steps for moov
             extendedMoov = ExtendedIssueMoovData()
@@ -253,18 +251,21 @@ class MoovLogic(metaclass=Singleton):
 
         return extendedIssueMoovs
 
-    def doesMoovHaveRelevantHistory(self, pastMoovs, moovId):
+    def doesMoovHaveRelevantInstances(self, pastMoovs, activeMoovs, moovId):
         relevantPastMoovs = [moov for moov in pastMoovs if moov.moovId == moovId]
 
-        foundRelevantPastMoovs = False
+        for activeMoov in activeMoovs:
+            # if the is an active moov with this id return true
+            if activeMoov.id == moovId:
+                return True
 
         for pastMoov in relevantPastMoovs:
+            # if there is a past moov in the defined timeframe, return true
             timeFromMoovEnd = datetime.datetime.utcnow() - pastMoov.endDate
             if timeFromMoovEnd.days < ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyDays):
-                foundRelevantPastMoovs = True
-                break
-        
-        return foundRelevantPastMoovs
+                return True
+
+        return False
 
     def getStepsToMoov (self, moovData : BaseMoovData):
         moovSteps = moovData.howTo.split('*')
@@ -276,7 +277,7 @@ class MoovLogic(metaclass=Singleton):
         return moovSteps
 
 
-    def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData):
+    def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData, pastMoovs, activeMoovs):
         userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
@@ -289,6 +290,11 @@ class MoovLogic(metaclass=Singleton):
         
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+
+        if self.doesMoovHaveRelevantInstances(pastMoovs=pastMoovs, activeMoovs=activeMoovs, moovId=moov.id):
+            # if the moov was done in the last X days then the score should be penallize
+            normalizedScore = normalizedScore * ep.getAttribute(EnvKeys.moovs, EnvKeys.moovInstanceScorePenaltyValue)
+
         return normalizedScore
 
     def calculateConflictMoovScore(self, moov : ConflictMoovData, conflictDetails : ConflictData):

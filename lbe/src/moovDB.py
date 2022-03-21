@@ -569,6 +569,25 @@ class MoovDBInstance(metaclass=Singleton):
 
         return userDetails
 
+    def getAllUsers(self):
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        userDataJSONList = usersCollection.find()
+
+        if (userDataJSONList is None):
+            #no users found
+            return None
+
+        usersList = []
+
+        for currUserJSONData in userDataJSONList:
+            foundUser = UserData()
+            foundUser.fromJSON(currUserJSONData)
+            usersList.append(foundUser)        
+
+        return usersList
+
     def getUserByMail (self, mail):
         db = self.getDatabase()
         usersCollection = db["users"]
