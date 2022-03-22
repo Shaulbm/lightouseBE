@@ -66,7 +66,11 @@ def get_motivation(request: Request, id):
 def user_log_in(loginData : LoginData):
     dbActions = MoovLogic()
     userDetails = dbActions.userLogin(loginData.userMail, loginData.password)
-    return userDetails
+
+    if userDetails is not None:
+        return userDetails
+    else:
+       raise HTTPException(status_code=401, detail="wrong password")
 
 @router.get("/allMotivations")
 def get_all_motivations(request: Request):
