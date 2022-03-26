@@ -215,8 +215,9 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
     currQuestionDetails = dbInstance.getQuestion(id=questionId, userContext=None)
 
     if (currQuestionDetails.batchId == 'B99'):
-        # this is a tail resolution Question with a single response
-        return setUserMultipleResponses (userId=userId, questionId=questionId, responsesIds=[responseId])
+        # this is a tail resolution Question - call multiple resposnse
+        responsesIds = responseId.split(",")
+        return setUserMultipleResponses (userId=userId, questionId=questionId, responsesIds=responsesIds)
 
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
