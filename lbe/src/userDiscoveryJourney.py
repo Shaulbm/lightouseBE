@@ -51,6 +51,9 @@ def continueUserJourney (userId):
     if userJourneyId is None:
         userJourneyId = startUserJourney(userId=userId)
 
+    # verify that the user discovery status is set to on going
+    dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
+
     return userJourneyId
 
 def getCurrentQuestionsBatch (userId, userContext: UserContextData):
