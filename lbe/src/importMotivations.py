@@ -14,8 +14,8 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1JBx_pa3Em_uJBn9LJVcT6TJ9nfiPp8zl1X86tZ-GjEE'
 SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:O31'
-INSIGHTS_RANGE_NAME = 'MotivationsInsights!A1:K181'
-INSIGHTS_TYPES_RANGE_NAME = 'Insights!A1:E7'
+INSIGHTS_RANGE_NAME = 'MotivationsInsights!A1:K241'
+INSIGHTS_TYPES_RANGE_NAME = 'Insights!A1:E9'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -163,13 +163,13 @@ def insertMotivationInsight(insightDataDict):
     currentTextData = TextData(insightDetails.id, insightDetails.shortDescription, insightDataDict["shortDescription <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<en>>"])
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<en>>"].replace('•', '\n•'))
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_ma>>"])
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_ma>>"].replace('•', '\n•'))
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_fe>>"])
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_fe>>"].replace('•', '\n•'))
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
 
     dbInstance.insertOrUpdateMotivationInsight(insightDetails=insightDetails)
