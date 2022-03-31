@@ -410,7 +410,7 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getAllMotivationsIds()
 
     def userLogin(self, userMail, password):
-        # print ('in userLogin received mail ', userMail, password)
+        print ('in userLogin received mail ', userMail, password)
 
         userMail = userMail.lower()
 
@@ -421,14 +421,20 @@ class MoovLogic(metaclass=Singleton):
         partialUserDetails = None
 
         if (userDetails is not None):
+            print ('in user login, found user')
+
             hashedPassword = hashlib.sha256(password.encode('utf-8'))
 
             if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
+                print ('in user login passwords match')
                 partialUserDetails = UserPartialData()
                 partialUserDetails.fromFullDetails(userDetails)
             else:
                 # raise error 404
+                print ('in user login, passwords do not match')
                 pass
+        else:
+            print ('in user login DID NOT found user')
 
         return partialUserDetails
 
