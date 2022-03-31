@@ -410,7 +410,7 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getAllMotivationsIds()
 
     def userLogin(self, userMail, password):
-        print ('in userLogin received mail ', userMail, password)
+        print ('in userLogin received mail #' + userMail +'# password #' + password + '#')
 
         userMail = userMail.lower()
 
