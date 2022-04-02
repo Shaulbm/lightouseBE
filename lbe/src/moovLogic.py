@@ -185,7 +185,7 @@ class MoovLogic(metaclass=Singleton):
         userDetails = self.getUser(userContext.userId)
         insights = self.dataBaseInstance.getInsightsForSelf (userDetails, userContext)
 
-        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.SELF , userContext)
+        insightsTypes = self.dataBaseInstance.getInsightsTypes (InsightsUserType.SELF_EMPLOYEE , userContext)
 
         aggregatedInsights = []
 

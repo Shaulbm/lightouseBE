@@ -13,9 +13,9 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = '1JBx_pa3Em_uJBn9LJVcT6TJ9nfiPp8zl1X86tZ-GjEE'
-SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:O31'
-INSIGHTS_RANGE_NAME = 'MotivationsInsights!A1:K241'
-INSIGHTS_TYPES_RANGE_NAME = 'Insights!A1:E9'
+SAMPLE_RANGE_NAME = 'MotivationsDetails!A1:R31'
+INSIGHTS_RANGE_NAME = 'MotivationsInsights!A1:K391'
+INSIGHTS_TYPES_RANGE_NAME = 'Insights!A1:E14'
 
 def main():
     """Shows basic usage of the Sheets API.
@@ -97,6 +97,7 @@ def insertMotivation(motivationDataDict):
     newMotivation.shortDescription = newMotivation.id + "_2"
     newMotivation.longDescription = newMotivation.id + "_3"
     newMotivation.tailResolution = newMotivation.id + "_4"
+    newMotivation.longDescriptionPlural = newMotivation.id + "_5"
     newMotivation.imageUrl = motivationDataDict["imageUrl"]
     newMotivation.color =motivationDataDict["color"]
 
@@ -125,6 +126,15 @@ def insertMotivation(motivationDataDict):
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMotivation.id, newMotivation.longDescription, motivationDataDict["long description <<he_fe>>"])
+    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescriptionPlural, motivationDataDict["long description plural <<en>>"])
+    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescriptionPlural, motivationDataDict["long description plural <<he_ma>>"])
+    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newMotivation.id, newMotivation.longDescriptionPlural, motivationDataDict["long description plural <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newMotivation.id, newMotivation.tailResolution, motivationDataDict["tail resolution <<en>>"])

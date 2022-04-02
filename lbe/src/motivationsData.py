@@ -5,7 +5,8 @@ import jsonpickle
 class InsightsUserType:
     GENERAL = 0
     TEAM_MEMBER = 1
-    SELF = 2
+    SELF_EMPLOYEE = 2
+    SELF_MANAGER = 3
 
 class InsightTypeData:
     def __init__(self):
@@ -67,6 +68,7 @@ class MotivationData:
         self.name = ""
         self.shortDescription = ""
         self.longDescription = ""
+        self.longDescriptionPlural = ""
         self.additionalData = ""
         self.imageUrl = ""
         self.color = ""
@@ -76,11 +78,19 @@ class MotivationData:
     def buildFromJSON (self, jsonData, localedTextDic):
         self.id = jsonData["id"]
         self.name =  localedTextDic[jsonData["name"]]
-        self.shortDescription = localedTextDic[jsonData["shortDescription"]]
-        self.longDescription = localedTextDic[jsonData["longDescription"]]
         self.imageUrl = jsonData["imageUrl"]
         self.color = jsonData["color"]
-        self.tailResolution = localedTextDic[jsonData["tailResolution"]]
+
+        if localedTextDic is None:
+            self.shortDescription = jsonData["shortDescription"]
+            self.longDescription = jsonData["longDescription"]
+            self.longDescriptionPlural = jsonData["longDescriptionPlural"]
+            self.tailResolution = jsonData["tailResolution"]
+        else:
+            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            self.longDescription = localedTextDic[jsonData["longDescription"]]
+            self.longDescriptionPlural = localedTextDic[jsonData["longDescriptionPlural"]]
+            self.tailResolution = localedTextDic[jsonData["tailResolution"]]
 
     def toJSON(self):
         motivationDataJSON = jsonpickle.encode(self, unpicklable=False)

@@ -46,15 +46,21 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
 def continueUserJourney (userId):
     dbInstance = MoovLogic()
-    userJourneyId = dbInstance.getUserDiscoveryJourney(userId)
+    userJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
-    if userJourneyId is None:
-        userJourneyId = startUserJourney(userId=userId)
+    if (userJourneyDetails.state == UserDiscoveryJourneyState.DONE):
+        userDetails = dbInstance.getUser(userId)
+        if (userDetails.discoveryStatus != DiscoveryStatus.DISCOVERED):
+            dbInstance.setUserDiscoveryStatus(userId, DiscoveryStatus.DISCOVERED)
+        return None
+
+    if userJourneyDetails is None:
+        userJourneyDetails = startUserJourney(userId=userId)
 
     # verify that the user discovery status is set to on going
     dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
 
-    return userJourneyId
+    return userJourneyDetails
 
 def getCurrentQuestionsBatch (userId, userContext: UserContextData):
     dbInstance = MoovLogic()

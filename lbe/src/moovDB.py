@@ -219,7 +219,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundInsights        
 
-    def getInsightsForSelf (self, userDetails, userContext : UserContextData):
+    def getInsightsForSelf (self, userDetails : UserData, userContext : UserContextData):
         db = self.getDatabase()
         insightsCollection = db["motivationsInsights"]
 
@@ -228,7 +228,12 @@ class MoovDBInstance(metaclass=Singleton):
 
         userMotivationsIds = list(userDetails.motivations.keys())
 
-        insightsFilter = {"type":InsightsUserType.SELF,"motivationId": {"$in":userMotivationsIds}}
+        insightsType = InsightsUserType.SELF_MANAGER
+
+        if userDetails.role == UserRoles.EMPLOYEE:
+            insightsType = InsightsUserType.SELF_EMPLOYEE
+
+        insightsFilter = {"type":insightsType,"motivationId": {"$in":userMotivationsIds}}
         insightsDataJSONList = insightsCollection.find(insightsFilter)
 
         if (insightsDataJSONList is None):
@@ -646,6 +651,10 @@ class MoovDBInstance(metaclass=Singleton):
 
         questionDetails = QuestionData()
         print ('in MoovDB:getQuestion question id is', questionsDataJSON['id'])
+
+        if questionTextsDic.__len__ == 0:
+            questionTextsDic = None
+
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
 
         # print ("motivation object is {0}", newMotivtion.toJSON())
