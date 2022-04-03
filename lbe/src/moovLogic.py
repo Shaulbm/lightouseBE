@@ -319,6 +319,10 @@ class MoovLogic(metaclass=Singleton):
         # update cache that user was changed
         self.dbCache.setUserDirty(currUserData.id)
 
+    def setUserDirty(self, userId):
+        # update cache that should be reloaded
+        self.dbCache.setUserDirty(userId) 
+
     def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
         # get user details prior to potentially adding it to the DB
         existingUser = self.getUserByMail(mail=mailAddress)

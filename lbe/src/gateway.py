@@ -97,6 +97,14 @@ def get_user(request: Request, id):
 
     return userDetails
 
+@router.get("/setUserDirty")
+def set_user_dirty(request: Request, id):
+    dbActions = MoovLogic()
+
+    dbActions.setUserDirty(id)
+
+    return 'user data was set to dirty'
+
 @router.post("/addUser")
 def add_or_update_user(request: Request, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = MoovLogic()
