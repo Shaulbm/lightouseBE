@@ -709,5 +709,6 @@ userContext = db.getUserContextData('U001')
 # db.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 # db.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
-res = db.setUserDirty('UA06')
+# res = db.setUserDirty('UA06')
+res = db.userLogin('shaul.ben.maor@gmail.com', '123456')
 print ("Done")

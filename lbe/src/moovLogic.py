@@ -425,8 +425,6 @@ class MoovLogic(metaclass=Singleton):
 
         userDetails : UserData = self.getUserByMail(mail=userMail)
 
-        # TBD verify password
-
         partialUserDetails = None
 
         if (userDetails is not None):
@@ -444,6 +442,10 @@ class MoovLogic(metaclass=Singleton):
                 pass
         else:
             print ('in user login DID NOT found user')
+
+        if(partialUserDetails is not None):
+            # update cache
+            self.dbCache.setUserDirty(partialUserDetails.id) 
 
         return partialUserDetails
 
