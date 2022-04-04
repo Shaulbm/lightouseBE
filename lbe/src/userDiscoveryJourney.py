@@ -50,8 +50,7 @@ def continueUserJourney (userId):
 
     if userJourneyDetails is None:
         userJourneyDetails = startUserJourney(userId=userId)
-
-    if (userJourneyDetails.state == UserDiscoveryJourneyState.DONE):
+    elif (userJourneyDetails.state == UserDiscoveryJourneyState.DONE):
         userDetails = dbInstance.getUser(userId)
         if (userDetails.discoveryStatus != DiscoveryStatus.DISCOVERED):
             dbInstance.setUserDiscoveryStatus(userId, DiscoveryStatus.DISCOVERED)
