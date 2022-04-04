@@ -48,14 +48,14 @@ def continueUserJourney (userId):
     dbInstance = MoovLogic()
     userJourneyDetails = dbInstance.getUserDiscoveryJourney(userId)
 
+    if userJourneyDetails is None:
+        userJourneyDetails = startUserJourney(userId=userId)
+
     if (userJourneyDetails.state == UserDiscoveryJourneyState.DONE):
         userDetails = dbInstance.getUser(userId)
         if (userDetails.discoveryStatus != DiscoveryStatus.DISCOVERED):
             dbInstance.setUserDiscoveryStatus(userId, DiscoveryStatus.DISCOVERED)
         return None
-
-    if userJourneyDetails is None:
-        userJourneyDetails = startUserJourney(userId=userId)
 
     # verify that the user discovery status is set to on going
     dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
