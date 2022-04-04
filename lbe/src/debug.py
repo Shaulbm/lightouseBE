@@ -644,7 +644,7 @@ userContext = db.getUserContextData('U001')
 # questions = userDiscoveryJourney.getQuestionsInBatch('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
 # response = userDiscoveryJourney.setUserResponse('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', 'Q999_3e1120f0' , '57f87f36', db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
 
-# newUserId= createUsersForBeta(dbInstance=db, orgId='T_Shufersal_01', userFirstName='הדר', userLastName='שיין ברי', userMailAddress='hadars@shufersal.co.il', userGender=Gender.FEMALE, bCreatePartialTeam=True)
+# newUserId= createUsersForBeta(dbInstance=db, orgId='T_Whitesource_01', userFirstName='גלית', userLastName='גולד', userMailAddress='galit.gold@whitesourcesoftware.com', userGender=Gender.FEMALE, bCreatePartialTeam=True, shouldSkipDiscovery=True)
 # createSingleUser(dbInstance=db, orgId='T_Shufersal_01', userFirstName='נוי', userLastName='יאיר', userMailAddress='noyy@shufersal.co.il', userGender=Gender.FEMALE, parentId=newUserId, userRole  = UserRoles.EMPLOYEE)
 # newUserId = createSingleUser(dbInstance=db, orgId='Int006', userFirstName='רן', userLastName='1 כהן', userMailAddress='ran1@claroFake.one', userGender=Gender.FEMALE, notifyNewUser=False, createDefaultPAssword=True)
 # setDiscoveryDoneForUser(db, newUserId)
@@ -659,24 +659,27 @@ userContext = db.getUserContextData('U001')
 
 
 #### SWITCH COLOR START ####
-# oldUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
-# newUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
+newUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
+oldUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
 
-# zip_iterator = zip (oldUserColors, newUserColors)
-# userColors = dict(zip_iterator)
-# #for new colors already do nothing
-# zip_iterator = zip (newUserColors, newUserColors)
-# # userColors = dict(userColors.items() + (dict(zip_iterator)).items())
-# userColors.update(dict(zip_iterator))
+zip_iterator = zip (oldUserColors, newUserColors)
+userColors = dict(zip_iterator)
+#for new colors already do nothing
+zip_iterator = zip (newUserColors, newUserColors)
+# userColors = dict(userColors.items() + (dict(zip_iterator)).items())
+userColors.update(dict(zip_iterator))
 
 
-# users = db.dataBaseInstance.getAllUsers()
+users = db.dataBaseInstance.getAllUsers()
 
-# for currUser in users:
+for currUser in users:
 
-#     if (currUser.color != ''):
-#         currUser.color = userColors[currUser.color]
-#         db.insertOrUpdateUser(currUser)
+    if (currUser.color != ''):
+        currUser.color = currUser.color.upper()
+
+    if (currUser.color in userColors):
+        currUser.color = userColors[currUser.color]
+        db.insertOrUpdateUser(currUser)
 #### SWITCH COLOR END ####
 
 # recMoovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
@@ -710,5 +713,6 @@ userContext = db.getUserContextData('U001')
 # db.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
 # res = db.setUserDirty('UA06')
-res = db.userLogin('shaul.ben.maor@gmail.com', '123456')
+# res = db.userLogin('shaul.ben.maor@gmail.com', '123456')
+
 print ("Done")

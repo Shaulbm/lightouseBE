@@ -56,8 +56,9 @@ class EnvKeys:
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
-    # old user colors userColors = ['#3D59E9','#607D8B', '#E91E63', '#FA982B', '#673AB7', '#F44336', '#4CAF50', '#3F50B5', '#8BC34A', '#2CA9F5', '#795548', '#CDDC39']
-    userColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#CCCCCC','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
+    # original pallet
+    userColors = ['#3D59E9','#607D8B', '#E91E63', '#FA982B', '#673AB7', '#F44336', '#4CAF50', '#3F50B5', '#8BC34A', '#2CA9F5', '#795548', '#CDDC39']
+    # pastel pallet userColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#CCCCCC','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
 
     def __init__(self):
         self.modificationTimeStamp = 0.0
