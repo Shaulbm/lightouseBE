@@ -661,8 +661,8 @@ userContext = db.getUserContextData('U001')
 #### SWITCH COLOR START ####
 # newUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
 # oldUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
-oldUserColors=['#795548']
-newUserColors=['#7D19E6']
+oldUserColors=['#F44336']
+newUserColors=['#33D7ED']
 
 zip_iterator = zip (oldUserColors, newUserColors)
 userColors = dict(zip_iterator)
@@ -674,6 +674,8 @@ userColors.update(dict(zip_iterator))
 
 users = db.dataBaseInstance.getAllUsers()
 
+changedUsers = 0
+
 for currUser in users:
 
     if (currUser.color != ''):
@@ -682,6 +684,9 @@ for currUser in users:
     if (currUser.color in userColors):
         currUser.color = userColors[currUser.color]
         db.insertOrUpdateUser(currUser)
+        changedUsers += 1
+
+print ('updated users color ',changedUsers)
 #### SWITCH COLOR END ####
 
 # recMoovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
