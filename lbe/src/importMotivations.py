@@ -173,16 +173,35 @@ def insertMotivationInsight(insightDataDict):
     currentTextData = TextData(insightDetails.id, insightDetails.shortDescription, insightDataDict["shortDescription <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<en>>"].replace('•', '\n•'))
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, replaceBulllet(insightDataDict["longDescription <<en>>"]))
     dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_ma>>"].replace('•', '\n•'))
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, replaceBulllet(insightDataDict["longDescription <<he_ma>>"]))
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData) 
 
-    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, insightDataDict["longDescription <<he_fe>>"].replace('•', '\n•'))
+    currentTextData = TextData(insightDetails.id, insightDetails.longDescription, replaceBulllet(insightDataDict["longDescription <<he_fe>>"]))
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData) 
 
     dbInstance.insertOrUpdateMotivationInsight(insightDetails=insightDetails)
+
+def replaceBulllet(text):
+    if '•' in text:
+        lines = text.split('•')
+        newLines = []
+        for line in lines:
+            line = line.strip()
+            if line == "":
+                continue
+            # line = line.replace('•')
+            line = line.strip()
+            line = '<li>' + line + '</li>'
+            newLines.append(line)
+
+        newText = ''.join(newLines)
+        newText = '<ul>' + newText + '</ul>'
+        text = newText
+
+    return text
 
 def insertInsightType(insightTypeDataDict):
     dbInstance = MoovLogic()

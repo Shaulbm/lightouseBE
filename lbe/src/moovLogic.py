@@ -433,7 +433,9 @@ class MoovLogic(metaclass=Singleton):
 
             hashedPassword = hashlib.sha256(password.encode('utf-8'))
 
-            if self.getUserPassword(userDetails.id) == hashedPassword.hexdigest():
+            savedPassword = self.getUserPassword(userDetails.id)
+
+            if  savedPassword != "" and savedPassword == hashedPassword.hexdigest():
                 print ('in user login passwords match')
                 partialUserDetails = UserPartialData()
                 partialUserDetails.fromFullDetails(userDetails)
