@@ -794,7 +794,8 @@ class MoovLogic(metaclass=Singleton):
 
         topRecommendedMoovs = sortedRecommendedMoovs[:topRecommendedMoovsToReturn]
 
-        topRecommendedMoovs = [rm for rm in topRecommendedMoovs if rm.score > recommendedMoovsThreshold]
+        # no need to filter - we just return the top.
+        # topRecommendedMoovs = [rm for rm in topRecommendedMoovs if rm.score > recommendedMoovsThreshold]
 
         return topRecommendedMoovs 
         
