@@ -1062,7 +1062,7 @@ class MoovDBInstance(metaclass=Singleton):
         # foundSubordinates = anytree.search.findall(requestingUserNode)
         
         # find all the users that are directly under
-        foundSubordinates = requestingUserNode.children()
+        foundSubordinates = requestingUserNode.children
 
         if (foundSubordinates is not None):
             foundSubordinatesList = list(foundSubordinates)
