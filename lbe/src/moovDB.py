@@ -1038,7 +1038,10 @@ class MoovDBInstance(metaclass=Singleton):
             currentUserDetails.fromJSON(currentFoundUser)
             
             currentUserNode = anytree.search.find_by_attr(rootNode, currentUserDetails.id)
-            currentUserParentNode = anytree.search.find_by_attr(rootNode, currentUserDetails.parentId)
+
+            currentUserParentNode = rootNode
+            if (currentUserDetails.parentId != ""):
+                currentUserParentNode = anytree.search.find_by_attr(rootNode, currentUserDetails.parentId)
 
             if (currentUserParentNode is None):
                 #this is the first time we find this Id
@@ -1048,7 +1051,7 @@ class MoovDBInstance(metaclass=Singleton):
                 #this is the first time we find this Id
                 currentUserNode = Node (currentUserDetails.id, currentUserParentNode)
             else:
-                # this user Id is already in the tree
+                # this user Id is already in the tree - set it under the right parent
                 currentUserNode.parent = currentUserParentNode
 
             if (currentUserDetails.id == userId):
@@ -1056,7 +1059,10 @@ class MoovDBInstance(metaclass=Singleton):
                 requestingUserNode = currentUserNode
 
         # now we have the organization hierarchy, get the list of all this managers subordinates
-        foundSubordinates = anytree.search.findall(requestingUserNode)
+        # foundSubordinates = anytree.search.findall(requestingUserNode)
+        
+        # find all the users that are directly under
+        foundSubordinates = requestingUserNode.children()
 
         if (foundSubordinates is not None):
             foundSubordinatesList = list(foundSubordinates)
