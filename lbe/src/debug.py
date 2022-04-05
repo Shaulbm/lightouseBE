@@ -661,25 +661,27 @@ userContext = db.getUserContextData('U001')
 #### SWITCH COLOR START ####
 # newUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
 # oldUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
+oldUserColors=['#795548']
+newUserColors=['#7D19E6']
 
-# zip_iterator = zip (oldUserColors, newUserColors)
-# userColors = dict(zip_iterator)
-# #for new colors already do nothing
-# zip_iterator = zip (newUserColors, newUserColors)
-# # userColors = dict(userColors.items() + (dict(zip_iterator)).items())
-# userColors.update(dict(zip_iterator))
+zip_iterator = zip (oldUserColors, newUserColors)
+userColors = dict(zip_iterator)
+#for new colors already do nothing
+zip_iterator = zip (newUserColors, newUserColors)
+# userColors = dict(userColors.items() + (dict(zip_iterator)).items())
+userColors.update(dict(zip_iterator))
 
 
-# users = db.dataBaseInstance.getAllUsers()
+users = db.dataBaseInstance.getAllUsers()
 
-# for currUser in users:
+for currUser in users:
 
-#     if (currUser.color != ''):
-#         currUser.color = currUser.color.upper()
+    if (currUser.color != ''):
+        currUser.color = currUser.color.upper()
 
-#     if (currUser.color in userColors):
-#         currUser.color = userColors[currUser.color]
-#         db.insertOrUpdateUser(currUser)
+    if (currUser.color in userColors):
+        currUser.color = userColors[currUser.color]
+        db.insertOrUpdateUser(currUser)
 #### SWITCH COLOR END ####
 
 # recMoovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
