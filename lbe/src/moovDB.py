@@ -652,7 +652,7 @@ class MoovDBInstance(metaclass=Singleton):
         questionDetails = QuestionData()
         print ('in MoovDB:getQuestion question id is', questionsDataJSON['id'])
 
-        if questionTextsDic.__len__ == 0:
+        if questionTextsDic is not None and questionTextsDic.__len__ == 0:
             questionTextsDic = None
 
         questionDetails.buildFromJSON(questionsDataJSON, questionTextsDic)
