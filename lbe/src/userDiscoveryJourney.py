@@ -233,6 +233,9 @@ def setUserResponse (userId, questionId, responseId, userContext: UserContextDat
     if (currQuestionDetails.type == QuestionsType.REGULAR):
         discoveryJourneyDetails.userResponses[questionId] = responseId
         discoveryJourneyDetails.lastAnsweredQuestion = questionId
+        
+        # we want to save the actual batch the user responded to
+        discoveryJourneyDetails.currBatch = currQuestionDetails.batchId
 
     if (currQuestionDetails.type == QuestionsType.MOTIVATION_GAP):
         responseDetails = next((x for x in currQuestionDetails.possibleResponses if x.id == responseId), None)
