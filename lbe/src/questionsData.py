@@ -37,8 +37,9 @@ class ResponseData:
             self.responseText = jsonData["responseText"]
 
 class QuestionData:
-    def __init__(self, id="", batchId = "", batchIdx = 0, setId = "", setIdx = 0, type = QuestionsType.REGULAR, questionText = "", userResponsesNo = 0, motivationId= "", imageUrl = "", possibleResponses = []):
+    def __init__(self, id="", idx = 0, batchId = "", batchIdx = 0, setId = "", setIdx = 0, type = QuestionsType.REGULAR, questionText = "", userResponsesNo = 0, motivationId= "", imageUrl = "", possibleResponses = []):
         self.id = id
+        self.idx = idx
         self.batchId = batchId
         self.batchIdx = batchIdx
         self.setId = setId
@@ -60,6 +61,7 @@ class QuestionData:
     def buildFromJSON (self, jsonData, localedTextDic = None):
         self.id = jsonData["id"]
         self.batchId = jsonData["batchId"]
+        self.idx = int(jsonData["idx"])
         self.batchIdx = int(jsonData["batchIdx"])
         self.setId = jsonData["setId"]
         self.setIdx = int(jsonData["setIdx"])
