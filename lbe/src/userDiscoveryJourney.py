@@ -203,7 +203,6 @@ def getQuestionsInBatch (userId, userContext : UserContextData):
         #discovery journey is on going - just get the next batch
         discoveryJourneyDetails.state = UserDiscoveryJourneyState.STANDARD_QUESTIONER
  
-        discoveryJourneyDetails.currBatch = nextBatchDetails.batchId
         #updaing user discovery journey
         dbInstance.insertOrUpdateDiscoveryJourney(discoveryJourneyDetails)
         
