@@ -327,7 +327,7 @@ class MoovLogic(metaclass=Singleton):
         # get user details prior to potentially adding it to the DB
         existingUser = self.getUserByMail(mail=mailAddress)
         if (existingUser is not None):
-            return existingUser.Id
+            return existingUser.id
 
         userId = str(uuid.uuid4())
         newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
