@@ -354,14 +354,15 @@ class MoovLogic(metaclass=Singleton):
         existingUser = self.getUserByMail(userMail)
 
         if existingUser is None:
-            return
+            return "user Not found"
 
         userPassword = self.createRandomPassword()
         self.setUserPassword(userId=existingUser.id, orgId=existingUser.orgId, passwordRaw = userPassword)
         self.notificationsProvider.sendResetPassword(userName=existingUser.firstName, userMail=existingUser.mailAddress, newPassword=userPassword)
 
         # update cache that user was changed
-        self.dbCache.setUserDirty(existingUser.id)        
+        self.dbCache.setUserDirty(existingUser.id)
+        return "done"
 
     def createRandomPassword(self):
         # printing letters

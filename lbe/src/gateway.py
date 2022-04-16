@@ -405,6 +405,13 @@ def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
 
     return returnValue
 
+def reset_user_password(request:Request, userMail):
+    dbActions = MoovLogic()
+
+    returnValue = dbActions.resetUserPassword(userMail = userMail)
+
+    return returnValue
+
 @router.post("/sendFeedback")
 def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
     dbActions = MoovLogic()
