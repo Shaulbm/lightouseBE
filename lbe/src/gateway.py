@@ -405,6 +405,7 @@ def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
 
     return returnValue
 
+@router.get("/resetUserPassword")
 def reset_user_password(request:Request, userMail):
     dbActions = MoovLogic()
 
