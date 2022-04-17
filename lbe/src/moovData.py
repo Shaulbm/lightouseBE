@@ -3,11 +3,12 @@ import jsonpickle
 import json
 
 class BaseMoovData:
-    def __init__(self, id = "", score = 0, image = "", name = "", description = "", howTo="", contributor = "", reasoning=""):
+    def __init__(self, id = "", score = 0, image = "", name = "", motivationId = "", description = "", howTo="", contributor = "", reasoning=""):
         self.id = id
         self.score = score
         self.image = image
         self.name = name
+        self.motivationId = motivationId
         self.description = description
         self.howTo = howTo
         self.contributor = contributor
@@ -22,6 +23,7 @@ class BaseMoovData:
 
     def buildFromJSON(self, jsonData, localedTextDic = None):
         self.id = jsonData["id"]
+        self.motivationId = jsonData["motivationId"]
         self.score = jsonData["score"]
         self.image = jsonData["image"]
         self.contributorId = jsonData["contributor"]
@@ -59,12 +61,10 @@ class IssueMoovData(BaseMoovData):
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", contributor = "", reasoning=""):
         super().__init__(id = id, score=score, image=image, contributor=contributor, name=name, description=description, howTo=howTo, reasoning=reasoning)
         self.issueId = issueId
-        self.motivationId = motivationId
 
     def buildFromJSON(self, jsonData, localedTextDic = None):
         super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
         self.issueId = jsonData["issueId"]
-        self.motivationId = jsonData["motivationId"]
 
 class ExtendedIssueMoovData(IssueMoovData):
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", steps = [], contributor = "", reasoning=""):
@@ -80,6 +80,7 @@ class ExtendedIssueMoovData(IssueMoovData):
 
     def fromBase(self, moovData : BaseMoovData):
         self.id = moovData.id
+        self.motivationId = moovData.motivationId
         self.score = moovData.score
         self.image = moovData.image
         self.name = moovData.name
@@ -91,7 +92,6 @@ class ExtendedIssueMoovData(IssueMoovData):
     def fromIssueMoov(self, moovData:IssueMoovData):
         self.fromBase(moovData=moovData)
         self.issueId = moovData.issueId
-        self.motivationId = moovData.motivationId
 
 
 class MoovInstance:
