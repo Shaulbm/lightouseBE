@@ -762,7 +762,11 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getInterestedUsers(userId)
 
     def insertOrUpdateRelationshipDetails (self, userId, counterpartId, costOfSeperation, chanceOfSeperation):
-        relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=chanceOfSeperation, timeStamp=datetime.datetime.utcnow())
+        
+        # this will switch the chance of seperation from 1..5 to 5..1
+        calculatedChanceOfSeperation = ((chanceOfSeperation-1)*(-1)) + 5
+
+        relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=calculatedChanceOfSeperation, timeStamp=datetime.datetime.utcnow())
 
         self.insertOrUpdateRelationship(relationshipDetails)
 
