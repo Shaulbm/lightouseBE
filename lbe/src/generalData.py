@@ -5,6 +5,11 @@ import bson
 import jsonpickle
 from numpy import full
 
+class UserState:
+    ACTIVE = 0
+    SUSPENDED = 1
+    DELETED = 2
+
 class UserRoles:
     NONE = 0
     EMPLOYEE = 1
@@ -54,8 +59,9 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
+    def __init__(self, id = "", state = UserState.ACTIVE, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
         self.id = id
+        self.state = state
         self.parentId = parentId
         self.firstName = firstName
         self.familyName = familyName
@@ -79,6 +85,7 @@ class UserData:
 
     def fromJSON (self, jsonData):
         self.id = jsonData["id"]
+        self.state = jsonData["state"]
         self.parentId = jsonData["parentId"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]

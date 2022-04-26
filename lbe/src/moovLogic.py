@@ -11,6 +11,7 @@ from pymongo.common import RETRY_READS
 from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
+from generalData import UserState
 from motivationsData import InsightsUserType, InsightAggregationData
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
@@ -429,7 +430,7 @@ class MoovLogic(metaclass=Singleton):
 
         partialUserDetails = None
 
-        if (userDetails is not None):
+        if (userDetails is not None and userDetails.state == UserState.ACTIVE):
             # print ('in user login, found user')
 
             hashedPassword = hashlib.sha256(password.encode('utf-8'))
@@ -445,7 +446,7 @@ class MoovLogic(metaclass=Singleton):
                 # print ('in user login, passwords do not match')
                 pass
         else:
-            print ('in user login DID NOT found user')
+            print ('in user login DID NOT found user or user is Inactive')
 
         if(partialUserDetails is not None):
             # update cache
