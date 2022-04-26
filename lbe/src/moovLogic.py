@@ -463,6 +463,13 @@ class MoovLogic(metaclass=Singleton):
 
         self.dataBaseInstance.setUserPassword(userCredDetails)
 
+    def approvePrivacyPolicy(self, userContext: UserContextData):
+        user = self.getUser(userContext.userId)
+
+        user.privacyApprovalDate = datetime.datetime.utcnow()
+
+        self.insertOrUpdateUser(user)
+
     def getUserByMail (self, mail):
         return self.dataBaseInstance.getUserByMail(mail=mail)
     

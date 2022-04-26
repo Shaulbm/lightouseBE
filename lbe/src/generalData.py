@@ -59,7 +59,7 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", state = UserState.ACTIVE, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = []):
+    def __init__(self, id = "", state = UserState.ACTIVE, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = [], privacyApprovalDate = ""):
         self.id = id
         self.state = state
         self.parentId = parentId
@@ -75,6 +75,7 @@ class UserData:
         self.mailAddress = mailAddress
         self.motivations = motivations.copy()
         self.personsOfInterest = personsOfInterest.copy()
+        self.privacyApprovalDate = privacyApprovalDate
 
     def toJSON (self):
         userDataJSON = jsonpickle.encode(self, unpicklable=False)
@@ -97,6 +98,12 @@ class UserData:
         self.isRTL = bool(jsonData["isRTL"])
         self.color = jsonData["color"]
         self.mailAddress = jsonData["mailAddress"]
+
+        if ("privacyApprovalDate" in jsonData):
+            self.privacyApprovalDate = jsonData["privacyApprovalDate"]
+        else:
+            self.privacyApprovalDate = ""
+
         self.motivations = {}
 
         if len(jsonData["motivations"]) > 0:
