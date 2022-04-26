@@ -105,12 +105,23 @@ def set_user_dirty(request: Request, id):
 
     return 'user data was set to dirty'
 
+@router.get("/approvePrivacyPolicy")
+def set_user_approved_privacy_policy(request: Request, userId):
+    userContextDetails = get_user_context(request)
+    dbActions = MoovLogic()
+    motivationsDetails = dbActions.approvePrivacyPolicy(userContext=userContextDetails)
+
+    return "privacy policy approved"
+
+
 @router.post("/addUser")
 def add_or_update_user(request: Request, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", personsOfInterest = []):
     dbActions = MoovLogic()
     dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=int(locale), gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
-    return 
+    return
+
+ 
 
 @router.post("/setMotivations")
 def set_motivations_to_user(request: Request, id, motivations):
