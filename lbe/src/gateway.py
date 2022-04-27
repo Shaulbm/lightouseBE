@@ -106,7 +106,7 @@ def set_user_dirty(request: Request, id):
     return 'user data was set to dirty'
 
 @router.get("/approvePrivacyPolicy")
-def set_user_approved_privacy_policy(request: Request, userId):
+def set_user_approved_privacy_policy(request: Request):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     motivationsDetails = dbActions.approvePrivacyPolicy(userContext=userContextDetails)
