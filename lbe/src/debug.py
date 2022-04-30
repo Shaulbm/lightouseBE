@@ -182,7 +182,7 @@ def createSingleUser(dbInstance:MoovLogic, orgId, userFirstName, userLastName, u
 
     return newUSerId
 
-def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender, shouldSkipDiscovery=False, bCreatePartialTeam = False):
+def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender, setDefaultPassword=False, shouldSkipDiscovery=False, bCreatePartialTeam = False):
 
     # prepData
     motivationsIdList = dbInstance.getAllMotivationsIds()
@@ -204,7 +204,7 @@ def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName
         for currMotivation in userSelectedMotivations:
             userMotivations[currMotivation.motivationId] = currMotivation
     
-    newUSerId = dbInstance.createUser(notifyNewUser=True, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
+    newUSerId = dbInstance.createUser(notifyNewUser=True, setDefaultPassword=setDefaultPassword, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
 
     if shouldSkipDiscovery:
        dbInstance.setUserDiscoveryStatus(newUSerId, discoveryStatus= DiscoveryStatus.DISCOVERED)
@@ -297,6 +297,28 @@ def createUsersUnder(dbInstance:MoovLogic, newUSerId, orgId, userMotivationDataL
         userMailAddress = 'ravit@fakeuser.'+orgId+'.com'
         subUser = dbInstance.createUser( parentId=newUSerId, firstName='רוית', familyName='בן משה', mailAddress=userMailAddress, gender=Gender.FEMALE, locale=Locale.LOCALE_HE_IL,orgId=orgId, role=UserRoles.EMPLOYEE, motivations=userMotivations)
         dbInstance.setUserDiscoveryStatus(subUser, discoveryStatus= DiscoveryStatus.UNDISCOVERED)
+
+def changeTeamColors(orgId, db: MoovLogic):
+    # CRAZY HACK AND DIRTY only use when you know what you are doing
+    dbInstance:MoovDBInstance = db.getDatabase()
+
+    users = dbInstance.getUsersInOrg(orgId)
+    parentId = users[0].parentId
+    if parentId == "":
+        # this was the team leader
+        parentId = users[0].id
+
+    # remove all colors from team, not the parent
+    for currUser in users:
+        if currUser.id != parentId:
+            currUser.color = ""
+            db.insertOrUpdateUser(currUser)
+
+    # now - recreate all the color for the team - not the parent
+    for currUser in users:
+        if currUser.id != parentId:
+            currUser.color = db.generateUserColor(currUser)
+            db.insertOrUpdateUser(currUser)
 
 # createUsers()
 
@@ -661,32 +683,32 @@ userContext = db.getUserContextData('U001')
 #### SWITCH COLOR START ####
 # newUserColors = ['#3D59E9','#607D8B','#E91E63','#FA982B','#673AB7','#F44336','#4CAF50','#3F50B5','#8BC34A','#2CA9F5','#795548','#CDDC39']
 # oldUserColors = ['#5CB0DB','#3E8A9D','#6AC9A5','#CA9774','#FC9CAE','#B2B2B2','#C3A2CF','#FB8969','#FBA959','#9DA4D6','#FB8969','#DED173']
-oldUserColors=['#F44336']
-newUserColors=['#33D7ED']
+# oldUserColors=['#F44336']
+# newUserColors=['#33D7ED']
 
-zip_iterator = zip (oldUserColors, newUserColors)
-userColors = dict(zip_iterator)
-#for new colors already do nothing
-zip_iterator = zip (newUserColors, newUserColors)
-# userColors = dict(userColors.items() + (dict(zip_iterator)).items())
-userColors.update(dict(zip_iterator))
+# zip_iterator = zip (oldUserColors, newUserColors)
+# userColors = dict(zip_iterator)
+# #for new colors already do nothing
+# zip_iterator = zip (newUserColors, newUserColors)
+# # userColors = dict(userColors.items() + (dict(zip_iterator)).items())
+# userColors.update(dict(zip_iterator))
 
 
-users = db.dataBaseInstance.getAllUsers()
+# users = db.dataBaseInstance.getAllUsers()
 
-changedUsers = 0
+# changedUsers = 0
 
-for currUser in users:
+# for currUser in users:
 
-    if (currUser.color != ''):
-        currUser.color = currUser.color.upper()
+#     if (currUser.color != ''):
+#         currUser.color = currUser.color.upper()
 
-    if (currUser.color in userColors):
-        currUser.color = userColors[currUser.color]
-        db.insertOrUpdateUser(currUser)
-        changedUsers += 1
+#     if (currUser.color in userColors):
+#         currUser.color = userColors[currUser.color]
+#         db.insertOrUpdateUser(currUser)
+#         changedUsers += 1
 
-print ('updated users color ',changedUsers)
+# print ('updated users color ',changedUsers)
 #### SWITCH COLOR END ####
 
 # recMoovs = db.getTopRecommendedMoovsForCounterpart('U001', 'UA06', db.getUserContextData('U001'))
@@ -722,7 +744,33 @@ print ('updated users color ',changedUsers)
 # res = db.setUserDirty('UA06')
 # res = db.userLogin('shaul.ben.maor@gmail.com', '123456')
 
-# userId = createSingleUser(dbInstance=db, orgId='T01', userFirstName='GroupLeader', userLastName='Boss', userMailAddress='groupLeader@claro.one', userGender=Gender.MALE, userRole  = UserRoles.MANAGER, notifyNewUser=False)
+# userId = createSingleUser(dbInstance=db,orgId='T_Elbit_01', parentId='114b5ec6-ac6f-493a-a0bc-e857326ee123', userFirstName='עמית', userLastName='ברק', userMailAddress='barakamit23@gmail.com', userGender=Gender.FEMALE, userRole  = UserRoles.EMPLOYEE, notifyNewUser=True)
 
-user = db.userLogin('shaul.ben.maor@gmail.com', '')
+# newUserId= createUsersForBeta(dbInstance=db, orgId='Int006', userFirstName='אבי', userLastName='כהן', userMailAddress='manager1@claro.com', userGender=Gender.MALE, bCreatePartialTeam=True, shouldSkipDiscovery=True, setDefaultPassword=True)
+# newUserId= createUsersForBeta(dbInstance=db, orgId='Int007', userFirstName='מירית', userLastName='כהן', userMailAddress='manager2@claro.com', userGender=Gender.MALE, bCreatePartialTeam=True, shouldSkipDiscovery=True, setDefaultPassword=True)
+# newUserId= createUsersForBeta(dbInstance=db, orgId='Int008', userFirstName='שמעון', userLastName='כהן', userMailAddress='manager3@claro.com', userGender=Gender.MALE, bCreatePartialTeam=True, shouldSkipDiscovery=True, setDefaultPassword=True)
+# newUserId= createUsersForBeta(dbInstance=db, orgId='Int009', userFirstName='שלומי', userLastName='כהן', userMailAddress='manager4@claro.com', userGender=Gender.MALE, bCreatePartialTeam=True, shouldSkipDiscovery=True, setDefaultPassword=True)
+# newUserId= createUsersForBeta(dbInstance=db, orgId='Int010', userFirstName='בני', userLastName='כהן', userMailAddress='manager5@claro.com', userGender=Gender.MALE, bCreatePartialTeam=True, shouldSkipDiscovery=True, setDefaultPassword=True)
+
+# user = db.userLogin('shaul.ben.maor@gmail.com', '')
+
+# createUsersForBeta(dbInstance=db, orgId='T_ErelHR_01', userFirstName='אראל', userLastName='דגן', userMailAddress='Erel@erelhr.com', userGender=Gender.FEMALE, bCreatePartialTeam=False, shouldSkipDiscovery=True)
+# createUsersForBeta(dbInstance=db, orgId='T_ErelHR_02', userFirstName='קובי', userLastName='אלי', userMailAddress='Kobi@erelhr.com', userGender=Gender.MALE, bCreatePartialTeam=False, shouldSkipDiscovery=True)
+# createUsersForBeta(dbInstance=db, orgId='T19', userFirstName='אורי', userLastName='רוזנברג', userMailAddress='Ori.rozenberg@kornit.com', userGender=Gender.MALE, bCreatePartialTeam=False, shouldSkipDiscovery=False)
+# createUsersForBeta(dbInstance=db, orgId='T20', userFirstName='טלי', userLastName='סיוון', userMailAddress='Taligilad09@gmail.com', userGender=Gender.FEMALE, bCreatePartialTeam=False, shouldSkipDiscovery=False)
+
+# userDiscoveryJourney.setUserResponse('U001', 'QP01', 'R241', userContext=db.getUserContextData('U001'))
+
+# questions = userDiscoveryJourney.getQuestionsInBatch('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+
+# createUsersForBeta(dbInstance=db, orgId='T21', userFirstName='רחלי', userLastName='מרחב', userMailAddress='rachelimerhav@gmail.com', userGender=Gender.FEMALE, shouldSkipDiscovery=False)
+# userId = createSingleUser(dbInstance=db,orgId='T_Elbit_01', parentId='', userFirstName='גלי', userLastName='צור', userMailAddress='gal.tzur@elbitsystems.com', userGender=Gender.FEMALE, userRole  = UserRoles.MANAGER, notifyNewUser=True)
+
+# createUsersForBeta(dbInstance=db, orgId='T_22', userFirstName='גיא', userLastName='רולניק', userMailAddress='y', userGender=Gender.MALE, shouldSkipDiscovery=False)
+# user = db.userLogin('shaul.ben.maor@gmail.com', '123456')
+
+# db.approvePrivacyPolicy(db.getUserContextData('U001'))
+
+changeTeamColors('T01', db=db)
+
 print ("Done")

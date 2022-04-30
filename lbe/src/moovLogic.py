@@ -332,7 +332,7 @@ class MoovLogic(metaclass=Singleton):
 
         userId = str(uuid.uuid4())
         newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
-        newUser.color = self.generateUserColor()
+        newUser.color = self.generateUserColor(newUser)
         newUser.discoveryStatus = DiscoveryStatus.UNDISCOVERED
 
         self.dataBaseInstance.insertOrUpdateUser(currUserData=newUser)
@@ -386,8 +386,30 @@ class MoovLogic(metaclass=Singleton):
             userDetails.discoveryStatus = discoveryStatus
             self.insertOrUpdateUser(userDetails)
 
-    def generateUserColor(self):
-        return ep.generateRandomUserColor()
+    def generateUserColor(self, userDetails: UserData = None):
+
+        if userDetails is None or userDetails.parentId == "":
+            # either no user details or the user is currently no part of a team
+            return ep.generateRandomUserColor()
+        
+        teamMates = self.getUsersUnder(userDetails.parentId)
+
+        if len(teamMates) == 0:
+            # no one in the team yet
+            return ep.generateRandomUserColor()
+
+        leftUserColors = ep.getAllUserColors()
+
+        for currUser in teamMates:
+            if currUser.color in leftUserColors:
+                # remove colors that are currently in use in the team
+                leftUserColors.remove(currUser.color)
+
+        if len(leftUserColors) == 0:
+            return ep.generateRandomUserColor()
+
+        colorIdx = random.randint(0, len(leftUserColors)-1)
+        return leftUserColors[colorIdx]
 
     def setMotivationsToUSer (self, id, motivations):
         self.dataBaseInstance.setMotivationsToUSer(id=id, motivations=motivations)

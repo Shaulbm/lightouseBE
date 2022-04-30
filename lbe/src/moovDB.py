@@ -1076,6 +1076,29 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundSubordinatesDataList
 
+    def getUsersInOrg (self, orgId):
+        if (orgId is None or orgId == ""):
+            return None
+
+        foundSubordinatesDataList = []
+
+        db = self.getDatabase()
+        usersCollection = db["users"]
+
+        # get all users in the user organization
+        foundUsers = usersCollection.find({"orgId":orgId})
+
+        if (foundUsers is None):
+            # no users in the organization
+            return foundSubordinatesDataList
+
+        for currentFoundUser in foundUsers:
+            currentUserDetails = UserData()
+            currentUserDetails.fromJSON(currentFoundUser)
+            foundSubordinatesDataList.append (currentUserDetails)
+
+        return foundSubordinatesDataList
+
     #return the users that the given UserId is in their POI
     def getInterestedUsers(self, userId):
         db = self.getDatabase()

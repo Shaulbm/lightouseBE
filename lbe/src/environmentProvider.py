@@ -26,6 +26,9 @@ def shouldSupressNotificationsToAdmin ():
 def generateRandomUserColor():
     return EnvironmentProvider.getInstance().generateRandomUserColor()
 
+def getAllUserColors():
+    return EnvironmentProvider.getInstance().getAllUserColors()
+
 class EnvKeys:
     courier = "courier"
     courierAuthToken = "token"
@@ -85,4 +88,7 @@ class EnvironmentProvider (metaclass=Singleton):
     def generateRandomUserColor(self):
         colorIdx = random.randint(0, len(self.userColors)-1)
         return self.userColors[colorIdx]
+
+    def getAllUserColors(self):
+        return self.userColors.copy()
 
