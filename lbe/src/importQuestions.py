@@ -81,6 +81,7 @@ def main():
             insertQuestion(currQuestion, currResponses)
 
 def insertQuestion(questionsDataDict, responsesDataDictArray):
+    print ('import question id ', questionsDataDict["id"])
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 

@@ -78,6 +78,8 @@ def main():
     #         insertConflictMoov(currMoov)
 
 def insertMoov(moovDataDict):
+    print ('Importing Moov ', moovDataDict["id"])
+
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 
@@ -160,6 +162,8 @@ def insertMoov(moovDataDict):
     dbInstance.insertOrUpdateMoov(newMoov)
 
 def insertConflictMoov(conflictMoovDataDict):
+    return
+
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
     moovsCollection = db["moovs"]

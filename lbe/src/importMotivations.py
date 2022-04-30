@@ -84,6 +84,8 @@ def main():
         insertMotivation(currMotivation)
 
 def insertMotivation(motivationDataDict):
+    print ('importing Motivation ', motivationDataDict["id"])
+
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 
@@ -149,6 +151,8 @@ def insertMotivation(motivationDataDict):
     dbInstance.insertOrUpdateMotivation(newMotivation)
 
 def insertMotivationInsight(insightDataDict):
+    print ('importing Motivation Insight ', insightDataDict["id"])
+
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 
@@ -204,6 +208,8 @@ def replaceBulllet(text):
     return text
 
 def insertInsightType(insightTypeDataDict):
+    print ('importing Insight ', insightTypeDataDict["id"])
+
     dbInstance = MoovLogic()
     db = dbInstance.getDatabase().getDatabase()
 
