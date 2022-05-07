@@ -290,18 +290,9 @@ class MoovLogic(metaclass=Singleton):
         
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*2) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
-        if moov.id == "MO0135":
-            print ('in calculateIssueMoovScore and normalizedScore is ', normalizedScore)
-
         if self.doesMoovHaveRelevantInstances(pastMoovs=pastMoovs, activeMoovs=activeMoovs, moovId=moov.id):
-            if moov.id == "MO0135":
-                print ('in calculateIssueMoovScore and doesMoovHaveRelevantInstances was true')
             # if the moov was done in the last X days then the score should be penallize
             normalizedScore = normalizedScore * ep.getAttribute(EnvKeys.moovs, EnvKeys.moovInstanceScorePenaltyValue)
-
-            if moov.id == "MO0135":
-                print ('in calculateIssueMoovScore and normalizedScore after penalty is ', normalizedScore)
-
 
         return normalizedScore
 
