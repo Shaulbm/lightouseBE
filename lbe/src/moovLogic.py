@@ -244,10 +244,7 @@ class MoovLogic(metaclass=Singleton):
         activeMoovs = self.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
         for currMoov in issueMoovs:
-            relatedMotivation = next((x for x in issueDetails.contributingMotivations if x.motivationId == currMoov.motivationId), None)
-            
-            if relatedMotivation is not None:
-                currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, relatedMotivation=relatedMotivation, pastMoovs= pastMoovs, activeMoovs=activeMoovs)
+            currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, pastMoovs= pastMoovs, activeMoovs=activeMoovs)
 
             # create steps for moov
             extendedMoov = ExtendedIssueMoovData()
@@ -283,21 +280,16 @@ class MoovLogic(metaclass=Singleton):
         return moovSteps
 
 
-    def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, relatedMotivation : RelatedMotivationData, pastMoovs, activeMoovs):
+    def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, pastMoovs, activeMoovs):
         userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         
         calculatedScore = 0
-        calculatedScore += moov.score
-        calculatedScore += relatedMotivation.impact 
-        calculatedScore += multiplyer*userMotivationGap
-        calculatedScore = moov.score + relatedMotivation.impact + multiplyer*userMotivationGap
+        calculatedScore = moov.score + multiplyer*userMotivationGap
         
-        print ('in calculateIssueMoovScore moov id is', moov.id)
-
         # normalize - get the % of 100
-        normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        normalizedScore = calculatedScore / (multiplyer*2) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
         if moov.id == "MO0135":
             print ('in calculateIssueMoovScore and normalizedScore is ', normalizedScore)
 
