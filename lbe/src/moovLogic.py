@@ -258,12 +258,12 @@ class MoovLogic(metaclass=Singleton):
         return extendedIssueMoovs
 
     def doesMoovHaveRelevantInstances(self, pastMoovs, activeMoovs, moovId):
-        relevantPastMoovs = [moov for moov in pastMoovs if moov.moovId == moovId]
-
         for activeMoov in activeMoovs:
             # if the is an active moov with this id return true
             if activeMoov.moovId == moovId:
                 return True
+
+        relevantPastMoovs = [moov for moov in pastMoovs if moov.moovId == moovId]
 
         for pastMoov in relevantPastMoovs:
             # if there is a past moov in the defined timeframe, return true
@@ -296,10 +296,18 @@ class MoovLogic(metaclass=Singleton):
         
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
+        if moov.id == "MO0135":
+            print ('in calculateIssueMoovScore and normalizedScore is ', normalizedScore)
 
         if self.doesMoovHaveRelevantInstances(pastMoovs=pastMoovs, activeMoovs=activeMoovs, moovId=moov.id):
+            if moov.id == "MO0135":
+                print ('in calculateIssueMoovScore and doesMoovHaveRelevantInstances was true')
             # if the moov was done in the last X days then the score should be penallize
             normalizedScore = normalizedScore * ep.getAttribute(EnvKeys.moovs, EnvKeys.moovInstanceScorePenaltyValue)
+
+            if moov.id == "MO0135":
+                print ('in calculateIssueMoovScore and normalizedScore after penalty is ', normalizedScore)
+
 
         return normalizedScore
 
@@ -323,6 +331,9 @@ class MoovLogic(metaclass=Singleton):
     def setUserDirty(self, userId):
         # update cache that should be reloaded
         self.dbCache.setUserDirty(userId) 
+
+    def CreateUserWithDefaults ():
+        pass
 
     def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
         # get user details prior to potentially adding it to the DB
