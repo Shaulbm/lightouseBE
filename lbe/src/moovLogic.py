@@ -294,6 +294,8 @@ class MoovLogic(metaclass=Singleton):
         calculatedScore += multiplyer*userMotivationGap
         calculatedScore = moov.score + relatedMotivation.impact + multiplyer*userMotivationGap
         
+        print ('in calculateIssueMoovScore moov id is', moov.id)
+
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*3) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
         if moov.id == "MO0135":
