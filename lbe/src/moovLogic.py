@@ -281,7 +281,7 @@ class MoovLogic(metaclass=Singleton):
 
 
     def calculateIssueMoovScore (self, counterpartId, moov : IssueMoovData, pastMoovs, activeMoovs):
-        userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=relatedMotivation.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
+        userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=moov.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
         
