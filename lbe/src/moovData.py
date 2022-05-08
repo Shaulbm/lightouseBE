@@ -3,10 +3,11 @@ import jsonpickle
 import json
 
 class BaseMoovData:
-    def __init__(self, id = "", score = 0, image = "", name = "", motivationId = "", description = "", howTo="", contributor = "", reasoning=""):
+    def __init__(self, id = "", score = 0, image = "", complexity = 0, name = "", motivationId = "", description = "", howTo="", contributor = "", reasoning=""):
         self.id = id
         self.score = score
         self.image = image
+        self.complexity = complexity
         self.name = name
         self.motivationId = motivationId
         self.description = description
@@ -26,6 +27,8 @@ class BaseMoovData:
         self.motivationId = jsonData["motivationId"]
         self.score = jsonData["score"]
         self.image = jsonData["image"]
+        self.complexity = jsonData["complexity"]
+
         self.contributorId = jsonData["contributor"]
 
         if (localedTextDic is not None):

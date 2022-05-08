@@ -14,7 +14,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
 # The ID and range of a sample spreadsheet.
 MOOVS_SPREADSHEET_ID = '1eBZQ8wmTyn3DVDfqHrtRJ3hoL056hUnrlPh3q9CuYok'
-MOOVS_RANGE_NAME = 'MoovsDetails!A1:AD440'
+MOOVS_RANGE_NAME = 'MoovsDetails!A1:AE440'
 CONFLICT_MOOVS_RANGE_NAME = 'ConflictsMoovsDetails!A1:Q3'
 
 def main():
@@ -96,6 +96,7 @@ def insertMoov(moovDataDict):
     newMoov.motivationId = moovDataDict["motivationId"]
     newMoov.score = int(moovDataDict["score"])
     newMoov.image = moovDataDict["image"]
+    newMoov.complexity = moovDataDict["complexity"]
     newMoov.contributor = moovDataDict["contributor"]
     newMoov.name = newMoov.id + "_1"
     newMoov.description = newMoov.id + "_2"
