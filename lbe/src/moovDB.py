@@ -20,6 +20,7 @@ import anytree
 from anytree import Node
 from issuesData import IssueData, SubjectData, IssuePartialData, IssueExtendedData, ConflictData, ExtendedConflictData
 import datetime
+import logging
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
@@ -28,6 +29,7 @@ class MoovDBInstance(metaclass=Singleton):
     def __init__(self):
         self.dataBaseInstance = None
         self.counterLock = threading.Lock()
+        self.logger = logging.getLogger(__name__)
 
     def lock(self):
         self.counterLock.acquire()
@@ -461,14 +463,11 @@ class MoovDBInstance(metaclass=Singleton):
         if (motivationDataJSON is None):
             return None
 
-        # print ("motivation data is {0}", motivationDataJSON)
-
         motivationTextsDic = self.getTextDataByParent(id, userContext.locale, userContext.gender)
 
         foundMotivation = MotivationData()
         foundMotivation.buildFromJSON(motivationDataJSON, motivationTextsDic)
 
-        # print ("motivation object is {0}", newMotivtion.toJSON())
         return foundMotivation 
 
     def getAllMotivations(self,userContext:UserContextData):

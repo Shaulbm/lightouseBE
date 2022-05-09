@@ -8,12 +8,15 @@ from discoveryData import DiscoveryBatchData
 from moovLogic import MoovLogic
 from questionsData import QuestionData, ResponseData, QuestionsType
 import uuid
-from loguru import logger
+import logging
 
 SINGLE_JOURNEY_ID = "J001"
 TAIL_QUESTION_ID = "Q999"
 MOTVIATION_TAIL_RESOLUTION_RESPONSE_SCORE = 1.3
 
+def getLogger():
+    logger = logging.getLogger(__name__)
+    return logger
 
 def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
     #creates an entry in discovery Journey if one doesn't exists, returns the user journey id
@@ -28,6 +31,8 @@ def startUserJourney (userId, journeyTypeId = SINGLE_JOURNEY_ID):
 
         dbInstance.insertOrUpdateDiscoveryJourney(existingDiscoveryJourney)
         dbInstance.setUserDiscoveryStatus(userId, discoveryStatus=DiscoveryStatus.ONGOING)
+
+        getLogger().info('user')
         return existingDiscoveryJourney.id
 
 

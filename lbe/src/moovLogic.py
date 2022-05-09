@@ -24,6 +24,7 @@ import hashlib
 from pathlib import Path
 from cache import Cache
 import environmentProvider as ep
+import logging
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
@@ -40,6 +41,7 @@ class MoovLogic(metaclass=Singleton):
         self.usersContext = {}
         self.dbCache = Cache(self.dataBaseInstance)
         self.notificationsProvider = NotificationsProvider()
+        self.logger = logging.getLogger(__name__)
 
     def lock(self):
         self.counterLock.acquire()
@@ -491,7 +493,8 @@ class MoovLogic(metaclass=Singleton):
     def getUserByMail (self, mail):
         return self.dataBaseInstance.getUserByMail(mail=mail)
     
-    def getUser (self, id = ""):      
+    def getUser (self, id = ""):
+        self.logger.info('get user id is ', id)   
         userDetails = self.dbCache.getUSerDetailsById (id)
 
         return userDetails

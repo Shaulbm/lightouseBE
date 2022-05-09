@@ -11,6 +11,8 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 from moovLogic import MoovScheduler
 from schedule import every, repeat
+import logHandler
+import logging
 
 app = FastAPI()
 
@@ -63,10 +65,16 @@ def runTTLVerification():
 
 @app.on_event("startup")
 def startup():
-    print ('on startup')
+    logHandler.initLog()
+    logger = logging.getLogger(__name__)
+    logger.info ('server startup event')
     executor = ThreadPoolExecutor(2)
     executor.submit(runTTLVerification)
 
+
 @app.on_event("shutdown")
 def shutdown():
+    logger = logging.getLogger(__name__)
+    logger.info ('server shutdown event')
+
     shuttingDown = True
