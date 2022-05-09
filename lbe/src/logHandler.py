@@ -21,5 +21,5 @@ def initLog():
     handler.setFormatter(formatter)
     
     logging.basicConfig(filename='c:\\logs\\Claro\\claroLog.log', filemode='a', level=os.environ.get("LOGLEVEL", "INFO"))
-    root = logging.getLogger()
+    root = logging.getLogger(__name__)
     root.addHandler(handler)
