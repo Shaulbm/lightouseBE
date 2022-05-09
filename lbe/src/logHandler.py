@@ -20,6 +20,6 @@ def initLog():
                     datefmt='%m/%d/%Y %I:%M:%S %p')
     handler.setFormatter(formatter)
     
-    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+    logging.basicConfig(filename='claroLog.log', filemode='a', level=os.environ.get("LOGLEVEL", "INFO"))
     root = logging.getLogger()
     root.addHandler(handler)
