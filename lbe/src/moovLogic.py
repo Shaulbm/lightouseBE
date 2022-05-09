@@ -494,7 +494,7 @@ class MoovLogic(metaclass=Singleton):
         return self.dataBaseInstance.getUserByMail(mail=mail)
     
     def getUser (self, id = ""):
-        self.logger.info(str.format('get user id is ', id))   
+        # self.logger.info(str.format('get user id is ', id))   
         userDetails = self.dbCache.getUSerDetailsById (id)
 
         return userDetails
