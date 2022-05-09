@@ -8,6 +8,7 @@ from generalData import UserRoles, Gender, Locale, UserContextData
 from loguru import logger
 import ast
 from pydantic import BaseModel
+import importUsers as userImporter
 
 router = APIRouter()
 
@@ -441,3 +442,7 @@ def send_discoveryReminder(request:Request, counterpartId):
 
     return returnValue
 
+@router.get("/importUsers")
+def reset_user_password(request:Request, spreadsheetId, dataRage):
+    usersCount = userImporter.importUsers(spreadsheetId=spreadsheetId, dataRange=dataRage)
+    return str.format("{0} users were imported", usersCount)
