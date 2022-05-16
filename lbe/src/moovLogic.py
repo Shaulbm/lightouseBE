@@ -246,8 +246,8 @@ class MoovLogic(metaclass=Singleton):
         activeMoovs = self.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
         # filter arrays by issueId - improve performance
-        pastMoovs = [pastMoov for pastMoov in pastMoovs if pastMoov.issueId == issueId]
-        activeMoovs = [activeMoov for activeMoov in activeMoovs if activeMoov.issueId == issueId]
+        pastMoovs = [pastMoov for pastMoov in pastMoovs if pastMoov.moovData.issueId == issueId]
+        activeMoovs = [activeMoov for activeMoov in activeMoovs if activeMoov.moovData.issueId == issueId]
 
         for currMoov in issueMoovs:
             currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, pastMoovs= pastMoovs, activeMoovs=activeMoovs)
