@@ -53,6 +53,7 @@ class EnvKeys:
     extendActiveMoovTimeDays = "extendActiveMoovTimeDays"
     importanctPriorityThershold = "importanctPriorityThershold"
     pastMoovScorePenaltyDays = "pastMoovScorePenaltyDays"
+    pastMoovScorePenaltyForSystemRecommendationsDays = "pastMoovScorePenaltyForSystemRecommendationsDays"
     moovInstanceScorePenaltyValue = "moovInstanceScorePenaltyValue" 
     feedback = "feedback"
     sendFeedbackRecipient = "sendTo"

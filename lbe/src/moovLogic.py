@@ -245,6 +245,10 @@ class MoovLogic(metaclass=Singleton):
         pastMoovs = self.getPastMoovsToCounterpart(userId = userId, counterpartId = counterpartId, userContext = userContext)
         activeMoovs = self.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
+        # filter arrays by issueId - improve performance
+        pastMoovs = [pastMoov for pastMoov in pastMoovs if pastMoov.issueId == issueId]
+        activeMoovs = [activeMoov for activeMoov in activeMoovs if activeMoov.issueId == issueId]
+
         for currMoov in issueMoovs:
             currMoov.score = self.calculateIssueMoovScore(counterpartId=counterpartId, moov=currMoov, pastMoovs= pastMoovs, activeMoovs=activeMoovs)
 
@@ -256,19 +260,33 @@ class MoovLogic(metaclass=Singleton):
 
         return extendedIssueMoovs
 
-    def doesMoovHaveRelevantInstances(self, pastMoovs, activeMoovs, moovId):
-        for activeMoov in activeMoovs:
-            # if the is an active moov with this id return true
-            if activeMoov.moovId == moovId:
-                return True
+    def doesMoovHaveRelevantInstances(self, pastMoovs, activeMoovs, moov):
+        if (moov.issueId == ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId)):
+            # this is a system recommendation issue, it's enough that he is currently having moovs from the same issue
+            for activeMoov in activeMoovs:
+                if activeMoov.moovData.issueId == moov.issueId:
+                    return True
+            
+            relevantPastMoovs = [pastMoov for pastMoov in pastMoovs if pastMoov.moovData.issueId == moov.issueId]
 
-        relevantPastMoovs = [moov for moov in pastMoovs if moov.moovId == moovId]
+            for pastMoov in relevantPastMoovs:
+                # if there is a past moov with system recommendations started (as moovs can be opened with no limitation) less than the timeframe it's enough
+                timeFromMoovEnd = datetime.datetime.utcnow() - pastMoov.startDate
+                if timeFromMoovEnd.days < ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyForSystemRecommendationsDays):
+                    return True
+        else:
+            for activeMoov in activeMoovs:
+                # if the is an active moov with this id return true
+                if activeMoov.moovId == moov.id:
+                    return True
 
-        for pastMoov in relevantPastMoovs:
-            # if there is a past moov in the defined timeframe, return true
-            timeFromMoovEnd = datetime.datetime.utcnow() - pastMoov.endDate
-            if timeFromMoovEnd.days < ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyDays):
-                return True
+            relevantPastMoovs = [pastMoov for pastMoov in pastMoovs if pastMoov.moovId == moov.id]
+
+            for pastMoov in relevantPastMoovs:
+                # if there is a past moov in the defined timeframe, return true
+                timeFromMoovEnd = datetime.datetime.utcnow() - pastMoov.endDate
+                if timeFromMoovEnd.days < ep.getAttribute(EnvKeys.moovs, EnvKeys.pastMoovScorePenaltyDays):
+                    return True
 
         return False
 
@@ -292,7 +310,7 @@ class MoovLogic(metaclass=Singleton):
         
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*2) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
-        if self.doesMoovHaveRelevantInstances(pastMoovs=pastMoovs, activeMoovs=activeMoovs, moovId=moov.id):
+        if self.doesMoovHaveRelevantInstances(pastMoovs=pastMoovs, activeMoovs=activeMoovs, moov=moov):
             # if the moov was done in the last X days then the score should be penallize
             normalizedScore = normalizedScore * ep.getAttribute(EnvKeys.moovs, EnvKeys.moovInstanceScorePenaltyValue)
 
@@ -829,8 +847,8 @@ class MoovLogic(metaclass=Singleton):
 
         topRecommendedMoovs = sortedRecommendedMoovs[:topRecommendedMoovsToReturn]
 
-        # no need to filter - we just return the top.
-        # topRecommendedMoovs = [rm for rm in topRecommendedMoovs if rm.score > recommendedMoovsThreshold]
+        # remove recommended moovs with score lesser than threshold
+        topRecommendedMoovs = [rm for rm in topRecommendedMoovs if rm.score > recommendedMoovsThreshold]
 
         return topRecommendedMoovs 
         
