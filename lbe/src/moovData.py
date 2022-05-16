@@ -3,7 +3,7 @@ import jsonpickle
 import json
 
 class BaseMoovData:
-    def __init__(self, id = "", score = 0, image = "", complexity = 0, name = "", motivationId = "", description = "", howTo="", contributor = "", reasoning=""):
+    def __init__(self, id = "", score = 0, image = "", complexity = 0, name = "", motivationId = "", description = "", issueId="", howTo="", contributor = "", reasoning=""):
         self.id = id
         self.score = score
         self.image = image
@@ -11,6 +11,7 @@ class BaseMoovData:
         self.name = name
         self.motivationId = motivationId
         self.description = description
+        self.issueId = issueId
         self.howTo = howTo
         self.contributor = contributor
         self.reasoning = reasoning
@@ -28,6 +29,7 @@ class BaseMoovData:
         self.score = jsonData["score"]
         self.image = jsonData["image"]
         self.complexity = jsonData["complexity"]
+        self.issueId = jsonData["issueId"]
 
         self.contributorId = jsonData["contributor"]
 
@@ -62,12 +64,11 @@ class ExtendedConflictMoovData(ConflictMoovData):
 
 class IssueMoovData(BaseMoovData):
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", contributor = "", reasoning=""):
-        super().__init__(id = id, score=score, image=image, contributor=contributor, name=name, description=description, howTo=howTo, reasoning=reasoning)
-        self.issueId = issueId
+        super().__init__(id = id, score=score, image=image, contributor=contributor, name=name, description=description, issueId = issueId, howTo=howTo, reasoning=reasoning)
 
     def buildFromJSON(self, jsonData, localedTextDic = None):
         super().buildFromJSON(jsonData=jsonData, localedTextDic=localedTextDic)
-        self.issueId = jsonData["issueId"]
+
 
 class ExtendedIssueMoovData(IssueMoovData):
     def __init__(self, id = "", issueId = "", motivationId = "", score = 0, image = "", name = "", description = "", howTo="", steps = [], contributor = "", reasoning=""):
