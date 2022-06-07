@@ -17,7 +17,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 USERS_SPREADSHEET_ID = '1dprvs72UP0mn8mAKWqwHWaCAm2V62_nx4IS76BR-su0'
-USERS_RANGE_NAME = 'O_org1_1!A1:G4'
+USERS_RANGE_NAME = 'whitesource!A1:H27'
 
 orphanedEmployees = {}
 
@@ -61,7 +61,7 @@ def importUsers(spreadsheetId = USERS_SPREADSHEET_ID, dataRange=USERS_RANGE_NAME
             zip_iterator = zip (keysRow, currRow)
             currSubject = dict(zip_iterator)
 
-            #create motivations
+            #create users
             insertUser(userDataDict=currSubject)   
             usersCount += 1     
 

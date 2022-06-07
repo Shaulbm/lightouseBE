@@ -446,3 +446,9 @@ def send_discoveryReminder(request:Request, counterpartId):
 def reset_user_password(request:Request, spreadsheetId, dataRage):
     usersCount = userImporter.importUsers(spreadsheetId=spreadsheetId, dataRange=dataRage)
     return str.format("{0} users were imported", usersCount)
+
+@router.post("/createTrialUser")
+def create_trial_user(request:Request, firstName, lastName, orgId, mail, gender, locale):
+    userContextDetails = get_user_context(request)
+
+    dbActions = MoovLogic()

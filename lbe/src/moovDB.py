@@ -8,6 +8,7 @@ from pymongo import MongoClient
 from pymongo.common import partition_node
 from environmentProvider import EnvKeys
 import environmentProvider as ep
+from lbe.src.generalData import TrialData
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData, InsightTypeData, InsightsUserType, MotivationInsightData
@@ -774,6 +775,20 @@ class MoovDBInstance(metaclass=Singleton):
             #this is a new issue
             issuesCollection.insert_one(currIssueData.toJSON())
 
+    def insertOrUpdateTrial(self, trialDetails):
+        db = self.getDatabase()
+        trialsCollection = db["trials"]
+
+        foundTrial = trialsCollection.find_one({"id": trialDetails.id})
+
+        if (foundTrial is not None):
+            # the trial already exists in the DB - update the trial data
+            trialDataFilter = {"id": trialDetails.id}
+            trialsCollection.replace_one(trialDataFilter, trialDetails.toJSON())
+        else:
+            # this is a new trial
+            trialsCollection.insert_one(trialDetails.toJSON())
+
     def getIssueByDetails (self, id, locale, gender, name):
         db = self.getDatabase()
         issuesCollection = db["issues"]
@@ -1397,3 +1412,33 @@ class MoovDBInstance(metaclass=Singleton):
             relationshipDetails.fromJSON(foundRelationship)
 
         return relationshipDetails
+
+    def getTrialDetails(self, trialId):
+        db = self.getDatabase()
+        trialsCollection = db["trials"]
+
+        foundTrial = trialsCollection.find_one({"id": trialId})
+
+        trialDetails = None
+        
+        if (foundTrial is not None):
+            trialDetails = TrialData()
+            trialDetails.fromJSON(foundTrial)
+
+        return trialDetails
+
+    def getTrialDetailsByUser(self, userMail):
+        db = self.getDatabase()
+        trialsCollection = db["trials"]
+
+        foundTrial = trialsCollection.find_one({"userMail": userMail})
+
+        trialDetails = None
+        
+        if (foundTrial is not None):
+            trialDetails = TrialData()
+            trialDetails.fromJSON(foundTrial)
+
+        return trialDetails
+
+    

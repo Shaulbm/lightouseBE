@@ -8,6 +8,7 @@ from starlette.requests import Request
 from starlette.types import Scope
 from generalData import DiscoveryStatus, UserMotivationData
 from generalData import TextData
+from notificationsProvider import NotificationsProvider
 from moovLogic import MoovLogic
 import main
 import gateway
@@ -22,6 +23,7 @@ import base64
 import cache
 import schedule
 import environmentProvider as ep
+import trialDataProvider
 
 #gateway.get_training_map('ee728c15-c04a-4ecf-9c19-2a07ed37b65a', '4')
 #gateway.get_issue('ee728c15-c04a-4ecf-9c19-2a07ed37b65a')
@@ -766,11 +768,16 @@ userContext = db.getUserContextData('U001')
 # createUsersForBeta(dbInstance=db, orgId='T21', userFirstName='רחלי', userLastName='מרחב', userMailAddress='rachelimerhav@gmail.com', userGender=Gender.FEMALE, shouldSkipDiscovery=False)
 # userId = createSingleUser(dbInstance=db,orgId='T_Elbit_01', parentId='', userFirstName='גלי', userLastName='צור', userMailAddress='gal.tzur@elbitsystems.com', userGender=Gender.FEMALE, userRole  = UserRoles.MANAGER, notifyNewUser=True)
 
-# createUsersForBeta(dbInstance=db, orgId='T_22', userFirstName='גיא', userLastName='רולניק', userMailAddress='y', userGender=Gender.MALE, shouldSkipDiscovery=False)
 # user = db.userLogin('shaul.ben.maor@gmail.com', '123456')
 
 # db.approvePrivacyPolicy(db.getUserContextData('U001'))
 
-changeTeamColors('T01', db=db)
+# changeTeamColors('T01', db=db)
+# moovs = db.getTopRecommendedMoovsForCounterpart(userId='56bb848d-cf9d-4ac1-bf40-2516dec81cd4', counterpartId='c965be92-5d50-4766-9c84-4cc7e2db9219', userContext=db.getUserContextData('56bb848d-cf9d-4ac1-bf40-2516dec81cd4'))
+# createUsersForBeta(dbInstance=db, orgId='T_Int_1', userFirstName='אסתרי', userLastName='גילעוז רן', userMailAddress='estersa@013net.net', userGender=Gender.FEMALE, shouldSkipDiscovery=False)
+# user = db.getUser('U001')
 
+# np = NotificationsProvider()
+# res = np.sendDiscoveryReminder("shaul@claro.one", "ABCD", "ABCD_Manager")
+user = trialDataProvider.createTrialUser(orgName="TestTest", userFirstName="Dan", userLastName="Ziti", userMailAddress="dan.zitti@testtest.com", useDefaulsPassword=True, userGender=Gender.MALE, locale=Locale.LOCALE_HE_IL)
 print ("Done")

@@ -12,6 +12,7 @@ from environmentProvider import EnvKeys
 from issuesData import RelatedMotivationData
 from issuesData import ConflictData
 from generalData import UserState
+from generalData import AccountType
 from motivationsData import InsightsUserType, InsightAggregationData
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
@@ -323,7 +324,7 @@ class MoovLogic(metaclass=Singleton):
     def insertOrUpdateText (self, dataCollection, textDataObj):
         self.dataBaseInstance.insertOrUpdateText(dataCollection=dataCollection, textDataObj=textDataObj)
     
-    def insertOrUpdateUserDetails (self, id, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, color = 0, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def insertOrUpdateUserDetails (self, id, parentId = "", firstName = "", familyName = "", accountType = AccountType.REGULAR, gender = Gender.MALE, locale = Locale.UNKNOWN, color = 0, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
         newUser = UserData(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, color=color, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         self.insertOrUpdateUser(newUser)
 
@@ -340,14 +341,14 @@ class MoovLogic(metaclass=Singleton):
     def CreateUserWithDefaults ():
         pass
 
-    def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", accountType = AccountType.REGULAR ,gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
         # get user details prior to potentially adding it to the DB
         existingUser = self.getUserByMail(mail=mailAddress)
         if (existingUser is not None):
             return existingUser.id
 
         userId = str(uuid.uuid4())
-        newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
+        newUser = UserData(id=userId, parentId=parentId, firstName=firstName, familyName= familyName, accountType=accountType, locale=locale, gender=gender, orgId=orgId, role=role, mailAddress=mailAddress, motivations=motivations, personsOfInterest=personsOfInterest)
         newUser.color = self.generateUserColor(newUser)
         newUser.discoveryStatus = DiscoveryStatus.UNDISCOVERED
 
@@ -539,6 +540,9 @@ class MoovLogic(metaclass=Singleton):
 
     def insertOrUpdateIssue(self, currIssueData):
         self.dataBaseInstance.insertOrUpdateIssue(currIssueData=currIssueData)
+
+    def insertOrUpdateTrial(self, trialDetails):
+        self.dataBaseInstance.insertOrUpdateTrial(trialDetails=trialDetails)
 
     def getIssue(self, id, userContext: UserContextData):
         return self.dataBaseInstance.getIssue(id= id, userContext=userContext)
@@ -815,6 +819,9 @@ class MoovLogic(metaclass=Singleton):
         relationshipDetails = UserRelationshipData(userId=userId, counterpartId=counterpartId, costOfSeperation=costOfSeperation, chanceOfSeperation=calculatedChanceOfSeperation, timeStamp=datetime.datetime.utcnow())
 
         self.insertOrUpdateRelationship(relationshipDetails)
+
+    def getTrialDetails(self, trialId):
+        return self.dataBaseInstance.getTrialDetails(trialId)
 
     def insertOrUpdateRelationship (self, relationshipData):
         self.dataBaseInstance.insertOrUpdateRelationship(relationshipData= relationshipData)

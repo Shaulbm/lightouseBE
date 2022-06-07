@@ -1,20 +1,33 @@
 from cmath import cos
 import datetime
 import json
+from xmlrpc.client import DateTime
 import bson
 import jsonpickle
 from numpy import full
+
+class TrialState:
+    ACTIVE = 0
+    DONE = 1
 
 class UserState:
     ACTIVE = 0
     SUSPENDED = 1
     DELETED = 2
 
+class AccountType:
+    REGULAR = 1
+    TRIAL = 2
 class UserRoles:
     NONE = 0
     EMPLOYEE = 1
     MANAGER = 2
     HR = 3
+
+class ClaroRoles:
+    REGULAR = 100
+    POWER_USER = 200
+    ADMINISTRATOR = 1000
 
 class Locale:
     UNKNOWN = ""
@@ -59,20 +72,23 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", state = UserState.ACTIVE, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", motivations = {}, personsOfInterest = [], privacyApprovalDate = ""):
+    def __init__(self, id = "", state = UserState.ACTIVE, accountType = AccountType.REGULAR, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, claroRole = ClaroRoles.REGULAR, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", presentGuidedTours = False, motivations = {}, personsOfInterest = [], privacyApprovalDate = ""):
         self.id = id
         self.state = state
+        self.accountType = accountType
         self.parentId = parentId
         self.firstName = firstName
         self.familyName = familyName
         self.discoveryStatus = discoveryStatus
         self.orgId = orgId
         self.role = role
+        self.claroRole = claroRole
         self.gender = gender
         self.locale = locale
         self.isRTL = isRTL
         self.color = color
         self.mailAddress = mailAddress
+        self.presentGuidedTours = presentGuidedTours
         self.motivations = motivations.copy()
         self.personsOfInterest = personsOfInterest.copy()
         self.privacyApprovalDate = privacyApprovalDate
@@ -86,18 +102,30 @@ class UserData:
 
     def fromJSON (self, jsonData):
         self.id = jsonData["id"]
-        self.state = jsonData["state"]
+        self.state = int(jsonData["state"])
+        
+        if ("accountType" in jsonData):
+            self.accountType = int(jsonData["accountType"])
+        
+        
         self.parentId = jsonData["parentId"]
         self.firstName = jsonData["firstName"]
         self.familyName = jsonData["familyName"]
         self.discoveryStatus = int(jsonData["discoveryStatus"])
         self.orgId = jsonData["orgId"]
         self.role = jsonData["role"]
+
+        if ("claroRole" in jsonData):
+            self.claroRole = int(jsonData["claroRole"])
+
         self.gender = jsonData["gender"]
         self.locale = jsonData["locale"]
         self.isRTL = bool(jsonData["isRTL"])
         self.color = jsonData["color"]
         self.mailAddress = jsonData["mailAddress"]
+
+        if ("presentGuidedTours" in jsonData):
+            self.presentGuidedTours = bool(jsonData["presentGuidedTours"])
 
         if ("privacyApprovalDate" in jsonData):
             self.privacyApprovalDate = jsonData["privacyApprovalDate"]
@@ -286,3 +314,25 @@ class UserContextData:
         self.locale = int(jsonData["locale"])
         self.isRTL = bool(jsonData["isRTL"])
         self.timeStamp = jsonData["timeStamp"]
+
+class TrialData:
+    def __init__(self, id = "", orgName="", userMail = "", startDate = datetime.datetime.utcnow(), plannedEndDate = datetime.datetime.utcnow()):
+        self.id = id
+        self.orgName = orgName
+        self.userMail = userMail
+        self.startDate = startDate
+        self.plannedEndDate = plannedEndDate
+
+    def toJSON (self):
+        userDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (userDataJSON)
+
+        return jsonObject 
+
+    def fromJSON (self, jsonData):
+        self.id = jsonData["id"]
+        self.orgName =  jsonData["orgName"]
+        self.userMail =  jsonData["userMail"]
+        self.startDate =  jsonData["startDate"]
+        self.plannedEndDate =  jsonData["plannedEndDate"]

@@ -57,6 +57,8 @@ class EnvKeys:
     moovInstanceScorePenaltyValue = "moovInstanceScorePenaltyValue" 
     feedback = "feedback"
     sendFeedbackRecipient = "sendTo"
+    trial = "trial"
+    trialPeriodDays = "trialPeriodDays"
 
 class EnvironmentProvider (metaclass=Singleton):
     __instance__ = None
