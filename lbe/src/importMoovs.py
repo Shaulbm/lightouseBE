@@ -96,7 +96,7 @@ def insertMoov(moovDataDict):
     newMoov.motivationId = moovDataDict["motivationId"]
     newMoov.score = int(moovDataDict["score"])
     newMoov.image = moovDataDict["image"]
-    newMoov.complexity = moovDataDict["complexity"]
+    newMoov.complexity = int(moovDataDict["complexity"])
     newMoov.contributor = moovDataDict["contributor"]
     newMoov.name = newMoov.id + "_1"
     newMoov.description = newMoov.id + "_2"
