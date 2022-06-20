@@ -149,7 +149,7 @@ class UserData:
             self.personsOfInterest = []
 
 class UserPartialData:
-    def __init__(self, id = "", firstName = "", familyName = "", mailAddress="", discoveryStatus = DiscoveryStatus.UNDISCOVERED, role=UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
+    def __init__(self, id = "", firstName = "", familyName = "", mailAddress="", discoveryStatus = DiscoveryStatus.UNDISCOVERED, role=UserRoles.NONE, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", orgId = "", presentFullHierarchy = False, motivations = [], activeMoovsNo = 0, recommendedMoovsNo = 0):
         self.id = id
         self.firstName = firstName
         self.familyName = familyName
@@ -161,6 +161,7 @@ class UserPartialData:
         self.isRTL = isRTL
         self.color = color
         self.orgId = orgId
+        self.presentFullHierarchy = presentFullHierarchy
         self.motivations = motivations.copy()
         self.activeMoovsCount = activeMoovsNo
         self.recommendedMoovsCount = recommendedMoovsNo
@@ -185,6 +186,7 @@ class UserPartialData:
         self.isRTL = bool(jsonData["isRTL"])
         self.color = jsonData["color"]
         self.orgId = jsonData["orgId"]
+        self.presentFullHierarchy = jsonData["presentFullHierarchy"]
 
         if len(jsonData["motivations"]) > 0:
             self.motivations = jsonData["motivations"].copy()
@@ -204,6 +206,7 @@ class UserPartialData:
         self.isRTL = fullUserDetails.isRTL
         self.color = fullUserDetails.color
         self.orgId = fullUserDetails.orgId
+        self.presentFullHierarchy = fullUserDetails.presentFullHierarchy
 
         if len(fullUserDetails.motivations) > 0:
             self.motivations = fullUserDetails.motivations.copy()
