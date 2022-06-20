@@ -8,7 +8,7 @@ from pymongo import MongoClient
 from pymongo.common import partition_node
 from environmentProvider import EnvKeys
 import environmentProvider as ep
-from lbe.src.generalData import TrialData
+from generalData import TrialData
 from questionsData import QuestionsType
 from moovData import IssueMoovData, ConflictMoovData, ExtendedConflictMoovData, MoovInstance, ExtendedMoovInstance, BaseMoovData
 from motivationsData import MotivationData, MotivationPartialData, InsightTypeData, InsightsUserType, MotivationInsightData
@@ -1072,11 +1072,14 @@ class MoovDBInstance(metaclass=Singleton):
                 #this is the user that we want to get all his subordinates
                 requestingUserNode = currentUserNode
 
-        # now we have the organization hierarchy, get the list of all this managers subordinates
-        # foundSubordinates = anytree.search.findall(requestingUserNode)
-        
-        # find all the users that are directly under
-        foundSubordinates = requestingUserNode.children
+        foundSubordinates = None
+
+        if requestingUser.presentFullHierarchy:
+            # now we have the organization hierarchy, get the list of all this managers subordinates
+            foundSubordinates = anytree.search.findall(requestingUserNode)
+        else:    
+            # find all the users that are directly under
+            foundSubordinates = requestingUserNode.children
 
         if (foundSubordinates is not None):
             foundSubordinatesList = list(foundSubordinates)

@@ -871,7 +871,7 @@ class MoovLogic(metaclass=Singleton):
 
         return tempText
 
-    def updateUserDetails(self, id, locale, gender):
+    def updateUserDetails(self, id, locale, gender, presentFullHierarchy):
         userDetails = self.getUser(id)
 
         if (userDetails is None):
@@ -879,6 +879,7 @@ class MoovLogic(metaclass=Singleton):
 
         userDetails.locale = locale
         userDetails.gender = gender
+        userDetails.presentFullHierarchy = presentFullHierarchy
 
         self.insertOrUpdateUser(userDetails)
 

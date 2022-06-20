@@ -72,7 +72,7 @@ class UserMotivationData:
         self.gapFactor = gapFactor
 
 class UserData:
-    def __init__(self, id = "", state = UserState.ACTIVE, accountType = AccountType.REGULAR, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, claroRole = ClaroRoles.REGULAR, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", presentGuidedTours = False, motivations = {}, personsOfInterest = [], privacyApprovalDate = ""):
+    def __init__(self, id = "", state = UserState.ACTIVE, accountType = AccountType.REGULAR, parentId = "", firstName = "", familyName = "", discoveryStatus= DiscoveryStatus.UNDISCOVERED, orgId = "", role = UserRoles.NONE, claroRole = ClaroRoles.REGULAR, gender = Gender.MALE, locale = Locale.UNKNOWN, isRTL = False, color = "", mailAddress = "", presentGuidedTours = False, presentFullHierarchy = False, motivations = {}, personsOfInterest = [], privacyApprovalDate = ""):
         self.id = id
         self.state = state
         self.accountType = accountType
@@ -89,6 +89,7 @@ class UserData:
         self.color = color
         self.mailAddress = mailAddress
         self.presentGuidedTours = presentGuidedTours
+        self.presentFullHierarchy = presentFullHierarchy
         self.motivations = motivations.copy()
         self.personsOfInterest = personsOfInterest.copy()
         self.privacyApprovalDate = privacyApprovalDate
@@ -123,6 +124,9 @@ class UserData:
         self.isRTL = bool(jsonData["isRTL"])
         self.color = jsonData["color"]
         self.mailAddress = jsonData["mailAddress"]
+
+        if ("presentFullHierarchy" in jsonData):
+            self.presentFullHierarchy = bool(jsonData["presentFullHierarchy"])
 
         if ("presentGuidedTours" in jsonData):
             self.presentGuidedTours = bool(jsonData["presentGuidedTours"])

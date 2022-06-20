@@ -25,6 +25,7 @@ class UpdateUserData(BaseModel):
     userId: str
     locale: str
     gender: int
+    presentFullHierarchy: bool
 
 class RelationshipData (BaseModel):
     userId: str
@@ -405,7 +406,7 @@ def inights_for_self(request:Request):
 def update_user_details(request:Request, userDetails: UpdateUserData):
     dbActions = MoovLogic()
 
-    returnValue = dbActions.updateUserDetails(userDetails.userId, userDetails.locale, userDetails.gender)
+    returnValue = dbActions.updateUserDetails(userDetails.userId, userDetails.locale, userDetails.gender, userDetails.presentFullHierarchy)
 
     return returnValue
 
