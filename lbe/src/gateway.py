@@ -121,9 +121,7 @@ def add_or_update_user(request: Request, id, parentId = "", firstName = "", fami
     dbActions = MoovLogic()
     dbActions.insertOrUpdateUserDetails(id=id, parentId=parentId, firstName=firstName, familyName= familyName, locale=int(locale), gender=gender, orgId = orgId, role=role, mailAddress=mailAddress, motivations={}, personsOfInterest=personsOfInterest)
 
-    return
-
- 
+    return 
 
 @router.post("/setMotivations")
 def set_motivations_to_user(request: Request, id, motivations):
@@ -142,51 +140,52 @@ def get_question(request: Request, id):
     return questionDetails
     
 @router.get("/startUserJourney")
-def start_user_journey(request: Request, userId):
-    journeyId = userDiscoveryJourney.startUserJourney(userId)
+def start_user_journey(request: Request):
+    userContextDetails = get_user_context(request)
+    journeyId = userDiscoveryJourney.startUserJourney(userContextDetails.userId)
     
     return journeyId
 
 @router.get("/continueUserJourney")
-def continue_user_journey(request: Request, userId):
-    journeyId = userDiscoveryJourney.continueUserJourney(userId)
+def continue_user_journey(request: Request):
+    userContextDetails = get_user_context(request)
+    journeyId = userDiscoveryJourney.continueUserJourney(userContextDetails.userId)
     
     return journeyId
 
-
 @router.get("/journeyGetQuestionsInBatch")
-def get_next_questions_batch(request: Request, userId):
+def get_next_questions_batch(request: Request):
     userContextDetails = get_user_context(request)
-    questionsBatch = userDiscoveryJourney.getQuestionsInBatch(userId, userContext=userContextDetails)
+    questionsBatch = userDiscoveryJourney.getQuestionsInBatch(userContextDetails.userId, userContext=userContextDetails)
     
     return questionsBatch
 
 @router.get("/journeyGetCurrentBatch")
-def get_current_questions_batch(request: Request, userId):
+def get_current_questions_batch(request: Request):
     userContextDetails = get_user_context(request)
-    questionsBatch = userDiscoveryJourney.getCurrentQuestionsBatch(userId, userContext=userContextDetails)
+    questionsBatch = userDiscoveryJourney.getCurrentQuestionsBatch(userContextDetails.userId, userContext=userContextDetails)
     
     return questionsBatch
 
 @router.get("/journeySetQuestionResponse", status_code=200)
-def set_journey_question_response(request: Request, userId, questionId, responseId):
+def set_journey_question_response(request: Request, questionId, responseId):
     userContextDetails = get_user_context(request)
-    userDiscoveryJourney.setUserResponse (userId = userId, questionId = questionId, responseId = responseId, userContext=userContextDetails)
+    userDiscoveryJourney.setUserResponse (userId = userContextDetails.userId, questionId = questionId, responseId = responseId, userContext=userContextDetails)
 
     return "reposne was set"
 
 @router.get("/journeySetQuestionMultipleResponse", status_code=200)
-def set_journey_multiple_question_responses(request: Request, userId, questionId, responses):
-    userDiscoveryJourney.setUserMultipleResponses (userId = userId, questionId = questionId, responsesIds = responses)
+def set_journey_multiple_question_responses(request: Request, questionId, responses):
+    userContextDetails = get_user_context(request)
+    userDiscoveryJourney.setUserMultipleResponses (userId = userContextDetails.userId, questionId = questionId, responsesIds = responses)
 
     return "reposnes were set"
 
 @router.get("/getUserCircle", status_code=200)
-def get_user_circle(request: Request, userId):
-    print ('in get_user_circle, UserID is {0}', userId)
-
+def get_user_circle(request: Request):
+    userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
-    userCircleDetails = dbActions.getUserCircle(userId=userId)
+    userCircleDetails = dbActions.getUserCircle(userId=userContextDetails.userId)
     return userCircleDetails
 
 @router.get("/allSubjects")
@@ -253,21 +252,21 @@ def get_moovs_for_issue_and_user(request: Request, issueId, userId):
     return moovsDetails
 
 @router.get("/activateMoov")
-def activate_moov(request: Request, moovId, userId, counterpartId):
+def activate_moov(request: Request, moovId, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    returnValue = dbActions.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
+    returnValue = dbActions.activateIssueMoov(moovId=moovId, userId=userContextDetails.userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return returnValue
 
 @router.get("/activateConflictMoov")
-def activate_conflict_moov(request: Request, moovId, userId, firstCounterpartId, secondCounterpartId):
+def activate_conflict_moov(request: Request, moovId, firstCounterpartId, secondCounterpartId):
     counterpartsIds = [firstCounterpartId, secondCounterpartId]
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    returnValue = dbActions.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, userContext=userContextDetails)
+    returnValue = dbActions.activateConflictMoov(moovId=moovId, userId=userContextDetails.userId, counterpartsIds=counterpartsIds, userContext=userContextDetails)
     
     return returnValue
 
@@ -280,39 +279,39 @@ def end_moov (request: Request, endMoovDetails: EndMoovData):
     return returnValue
 
 @router.get("/activeMoovsForCounterpart")
-def get_active_moovs_to_counterpart (request: Request, userId, counterpartId):
+def get_active_moovs_to_counterpart (request: Request, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
+    activeMoovs = dbActions.getActiveMoovsToCounterpart(userId=userContextDetails.userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return activeMoovs
 
 @router.get("/pastMoovsForCounterpart")
-def get_past_moovs_to_counterpart (request: Request, userId, counterpartId):
+def get_past_moovs_to_counterpart (request: Request, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    activeMoovs = dbActions.getPastMoovsToCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
+    activeMoovs = dbActions.getPastMoovsToCounterpart(userId=userContextDetails.userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return activeMoovs
 
 @router.get("/pastMoovsForMoovAndCounterpart")
-def get_past_moovs_to_moov_and_counterpart (request: Request, userId, counterpartId, moovId):
+def get_past_moovs_to_moov_and_counterpart (request: Request, counterpartId, moovId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    activeMoovs = dbActions.getPastMoovsToMoovAndCounterpart(userId=userId, counterpartId=counterpartId, moovId=moovId, userContext=userContextDetails)
+    activeMoovs = dbActions.getPastMoovsToMoovAndCounterpart(userId=userContextDetails.userId, counterpartId=counterpartId, moovId=moovId, userContext=userContextDetails)
     
     return activeMoovs
 
 
 @router.get("/activeMoovsForUser")
-def get_active_moovs_for_user (request: Request, userId):
+def get_active_moovs_for_user (request: Request):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    activeMoovs = dbActions.getActiveMoovsForUser(userId=userId, userContext=userContextDetails)
+    activeMoovs = dbActions.getActiveMoovsForUser(userId=userContextDetails.userId, userContext=userContextDetails)
     
     return activeMoovs
 
@@ -355,24 +354,26 @@ def get_conflict_moovs (request: Request, conflictId):
 def update_relationship_data(request: Request, relationshipDetails: RelationshipData):
     dbActions = MoovLogic()
     
-    dbActions.insertOrUpdateRelationshipDetails(userId=relationshipDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
+    userContextDetails = get_user_context(request)
+    dbActions.insertOrUpdateRelationshipDetails(userId=userContextDetails.userId, counterpartId=relationshipDetails.counterpartId, costOfSeperation=relationshipDetails.costOfSeperation, chanceOfSeperation=relationshipDetails.chanceOfSeperation)
     
     return Response(status_code=201)
 
 @router.get("/getTopRecommendedMoovs")
-def get_top_recommended_moovs (request: Request, userId, counterpartId):
+def get_top_recommended_moovs (request: Request, counterpartId):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContextDetails)
+    topRecommendedMoovs = dbActions.getTopRecommendedMoovsForCounterpart(userId=userContextDetails.userId, counterpartId=counterpartId, userContext=userContextDetails)
     
     return topRecommendedMoovs
 
 @router.get("/isMissingRelationshipData")
-def is_missing_relationship_data(request: Request, userId, counterpartId):
+def is_missing_relationship_data(request: Request, counterpartId):
+    userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
     
-    returnValue = dbActions.missingRelationshipData(userId=userId, counterpartId=counterpartId)
+    returnValue = dbActions.missingRelationshipData(userId=userContextDetails.userId, counterpartId=counterpartId)
     
     return returnValue
 
@@ -404,17 +405,27 @@ def inights_for_self(request:Request):
 
 @router.post("/updateUserDetails")
 def update_user_details(request:Request, userDetails: UpdateUserData):
+    userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
 
-    returnValue = dbActions.updateUserDetails(userDetails.userId, userDetails.locale, userDetails.gender, userDetails.presentFullHierarchy)
+    if (userContextDetails.userId != userDetails.userId):
+        # this is an invalid request, trying to update other user details - Log this
+        return None
+
+    returnValue = dbActions.updateUserDetails(userContextDetails.userId, userDetails.locale, userDetails.gender, userDetails.presentFullHierarchy)
 
     return returnValue
 
 @router.post("/updateUserPassword")
 def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
+    userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
 
-    returnValue = dbActions.updateUserPassword(passwordDetails.userId, passwordDetails.oldPassword, passwordDetails.newPassword)
+    if (userContextDetails.userId != passwordDetails.userId):
+        # this is an invalid request, trying to update other user details - Log this
+        return None
+
+    returnValue = dbActions.updateUserPassword(userContextDetails.userId, passwordDetails.oldPassword, passwordDetails.newPassword)
 
     return returnValue
 
@@ -428,9 +439,11 @@ def reset_user_password(request:Request, userMail):
 
 @router.post("/sendFeedback")
 def send_feedback(request:Request, feedbackDetails: UserFeedbackData):
+    userContextDetails = get_user_context(request)
+    
     dbActions = MoovLogic()
 
-    returnValue = dbActions.sendUserFeedback(userId = feedbackDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
+    returnValue = dbActions.sendUserFeedback(userId = userContextDetails.userId, issue=feedbackDetails.issue, text=feedbackDetails.text)
 
     return returnValue
 
