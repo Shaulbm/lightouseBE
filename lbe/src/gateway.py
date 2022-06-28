@@ -22,24 +22,20 @@ class EndMoovData(BaseModel):
     feedbackText: str
 
 class UpdateUserData(BaseModel):
-    userId: str
     locale: str
     gender: int
     presentFullHierarchy: bool
 
 class RelationshipData (BaseModel):
-    userId: str
     counterpartId: str
     costOfSeperation: int
     chanceOfSeperation: int
 
 class UserFeedbackData(BaseModel):
-    userId: str
     issue: str
     text: str
 
 class UpdatePasswordData(BaseModel):
-    userId: str
     oldPassword: str
     newPassword: str
 
