@@ -404,10 +404,6 @@ def update_user_details(request:Request, userDetails: UpdateUserData):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
 
-    if (userContextDetails.userId != userDetails.userId):
-        # this is an invalid request, trying to update other user details - Log this
-        return None
-
     returnValue = dbActions.updateUserDetails(userContextDetails.userId, userDetails.locale, userDetails.gender, userDetails.presentFullHierarchy)
 
     return returnValue
@@ -416,10 +412,6 @@ def update_user_details(request:Request, userDetails: UpdateUserData):
 def update_user_details(request:Request, passwordDetails: UpdatePasswordData):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
-
-    if (userContextDetails.userId != passwordDetails.userId):
-        # this is an invalid request, trying to update other user details - Log this
-        return None
 
     returnValue = dbActions.updateUserPassword(userContextDetails.userId, passwordDetails.oldPassword, passwordDetails.newPassword)
 
