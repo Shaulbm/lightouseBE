@@ -26,9 +26,9 @@ class BaseMoovData:
     def buildFromJSON(self, jsonData, localedTextDic = None):
         self.id = jsonData["id"]
         self.motivationId = jsonData["motivationId"]
-        self.score = jsonData["score"]
+        self.score = int(jsonData["score"])
         self.image = jsonData["image"]
-        self.complexity = jsonData["complexity"]
+        self.complexity = int(jsonData["complexity"])
         self.issueId = jsonData["issueId"]
 
         self.contributorId = jsonData["contributor"]
