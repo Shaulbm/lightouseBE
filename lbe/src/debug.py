@@ -184,7 +184,7 @@ def createSingleUser(dbInstance:MoovLogic, orgId, userFirstName, userLastName, u
 
     return newUSerId
 
-def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender, setDefaultPassword=False, shouldSkipDiscovery=False, bCreatePartialTeam = False):
+def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName, userMailAddress, userGender, setDefaultPassword=False, shouldSkipDiscovery=False, bCreatePartialTeam = False, notifyUser=True):
 
     # prepData
     motivationsIdList = dbInstance.getAllMotivationsIds()
@@ -206,7 +206,7 @@ def createUsersForBeta (dbInstance:MoovLogic, orgId, userFirstName, userLastName
         for currMotivation in userSelectedMotivations:
             userMotivations[currMotivation.motivationId] = currMotivation
     
-    newUSerId = dbInstance.createUser(notifyNewUser=True, setDefaultPassword=setDefaultPassword, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
+    newUSerId = dbInstance.createUser(notifyNewUser=notifyUser, setDefaultPassword=setDefaultPassword, firstName=userFirstName, familyName=userLastName, gender=userGender, locale=Locale.LOCALE_HE_IL, orgId=orgId, role=UserRoles.MANAGER, mailAddress=userMailAddress)
 
     if shouldSkipDiscovery:
        dbInstance.setUserDiscoveryStatus(newUSerId, discoveryStatus= DiscoveryStatus.DISCOVERED)
@@ -779,5 +779,9 @@ userContext = db.getUserContextData('U001')
 
 # np = NotificationsProvider()
 # res = np.sendDiscoveryReminder("shaul@claro.one", "ABCD", "ABCD_Manager")
-user = trialDataProvider.createTrialUser(orgName="TestTest", userFirstName="Dan", userLastName="Ziti", userMailAddress="dan.zitti@testtest.com", useDefaulsPassword=True, userGender=Gender.MALE, locale=Locale.LOCALE_HE_IL)
+# user = trialDataProvider.createTrialUser(orgName="TestTest", userFirstName="Dan", userLastName="Ziti", userMailAddress="dan.zitti@testtest.com", useDefaulsPassword=True, userGender=Gender.MALE, locale=Locale.LOCALE_HE_IL)
+
+user = db.updateUserDetails('56bb848d-cf9d-4ac1-bf40-2516dec81cd4', 'he-IL', 2, True)
+# users = dbInstance_1.getUsersUnder('983a26da-967d-442b-8ee8-967e6b7f479d')
+
 print ("Done")

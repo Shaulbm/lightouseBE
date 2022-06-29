@@ -17,7 +17,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 USERS_SPREADSHEET_ID = '1dprvs72UP0mn8mAKWqwHWaCAm2V62_nx4IS76BR-su0'
-USERS_RANGE_NAME = 'whitesource!A1:H27'
+USERS_RANGE_NAME = 'IDF_Hatal!A1:H9'
 
 orphanedEmployees = {}
 
