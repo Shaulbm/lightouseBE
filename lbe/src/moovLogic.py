@@ -305,9 +305,10 @@ class MoovLogic(metaclass=Singleton):
         userMotivationGap = self.getUserMotivationGap(userId=counterpartId, motivationId=moov.motivationId) / ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
 
         multiplyer = ep.getAttribute(EnvKeys.behaviour, EnvKeys.priorityMultiplayer)
+        gapBase = ep.getAttribute(EnvKeys.behaviour, EnvKeys.motivationGapBase)
         
         calculatedScore = 0
-        calculatedScore = moov.score + multiplyer*userMotivationGap
+        calculatedScore = moov.score + multiplyer*userMotivationGap/gapBase
         
         # normalize - get the % of 100
         normalizedScore = calculatedScore / (multiplyer*2) * ep.getAttribute(EnvKeys.behaviour, EnvKeys.baseMoovPriority)
