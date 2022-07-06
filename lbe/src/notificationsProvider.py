@@ -28,8 +28,8 @@ class NotificationsProvider(metaclass=Singleton):
       return resp
 
     def sendDiscoveryDoneMail(self, notifyTo, userWhoEndedDiscoveryDetails):
-      # if ep.shouldSuppressNotifications():
-      #   return
+      if ep.shouldSuppressNotifications():
+        return
 
       resp = self.client.send(
         event="discoveryDoneForTeamMember",

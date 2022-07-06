@@ -398,9 +398,11 @@ class MoovLogic(metaclass=Singleton):
         return newPassword
 
     def setUserDiscoveryStatus(self, userId, discoveryStatus):
+        print('setUserDiscoveryStatus getting user details for user Id (0)', userId)
         userDetails = self.getUser(userId)
 
         if (userDetails is not None):
+            print('setUserDiscoveryStatus updating with discovery status (0)', discoveryStatus)          
             userDetails.discoveryStatus = discoveryStatus
             self.insertOrUpdateUser(userDetails)
 
