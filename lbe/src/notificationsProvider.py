@@ -12,9 +12,14 @@ class NotificationsProvider(metaclass=Singleton):
       self.authToken = ep.getAttribute(EnvKeys.courier, EnvKeys.courierAuthToken)
       self.client = Courier(auth_token=self.authToken)
 
-    def sendWelcomeMail (self, userName, userMail, password: str):
+    def sendWelcomeMail (self, userName, userMail, password: str, customMailTemplate = ""):
+      mailTemplate = "welcome-mail"
+
+      if customMailTemplate != "":
+        mailTemplate = customMailTemplate
+      
       resp = self.client.send(
-        event="welcome-mail",
+        event=mailTemplate,
         recipient=userMail,
         data={
           "firstName": userName,

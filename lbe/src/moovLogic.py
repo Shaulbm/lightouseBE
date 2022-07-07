@@ -342,7 +342,7 @@ class MoovLogic(metaclass=Singleton):
     def CreateUserWithDefaults ():
         pass
 
-    def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", accountType = AccountType.REGULAR ,gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = []):
+    def createUser (self, notifyNewUser = False, setDefaultPassword = False, parentId = "", firstName = "", familyName = "", accountType = AccountType.REGULAR ,gender = Gender.MALE, locale = Locale.UNKNOWN, orgId = "", role = UserRoles.NONE, mailAddress = "", motivations = {}, personsOfInterest = [], customMailTemplate=""):
         # get user details prior to potentially adding it to the DB
         existingUser = self.getUserByMail(mail=mailAddress)
         if (existingUser is not None):
@@ -364,7 +364,7 @@ class MoovLogic(metaclass=Singleton):
         self.setUserPassword(userId=userId, orgId=newUser.orgId, passwordRaw = userPassword)
 
         if (notifyNewUser):
-            self.notificationsProvider.sendWelcomeMail(userName=newUser.firstName, userMail=newUser.mailAddress, password=userPassword)
+            self.notificationsProvider.sendWelcomeMail(userName=newUser.firstName, userMail=newUser.mailAddress, password=userPassword, customMailTemplate=customMailTemplate)
 
         return newUser.id
 

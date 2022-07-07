@@ -17,7 +17,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 USERS_SPREADSHEET_ID = '1dprvs72UP0mn8mAKWqwHWaCAm2V62_nx4IS76BR-su0'
-USERS_RANGE_NAME = 'IDF_Hatal!A1:H9'
+USERS_RANGE_NAME = 'IDF_Hatal!A1:J28'
 
 orphanedEmployees = {}
 
@@ -85,6 +85,11 @@ def importUsers(spreadsheetId = USERS_SPREADSHEET_ID, dataRange=USERS_RANGE_NAME
     return usersCount
 
 def insertUser(userDataDict):
+    if "created" in userDataDict and int(userDataDict["created"]) == 1:
+        # the user was already imported skip
+        print ('ignoring user {0}', userDataDict["mailAddress"])
+        return
+
     print ('imported user {0}', userDataDict["mailAddress"])
 
     dbInstance = MoovLogic()
@@ -101,7 +106,11 @@ def insertUser(userDataDict):
             # parent alredy added
             parentId = parentData.id
             
-    dbInstance.createUser(notifyNewUser=True, parentId=parentId, firstName=userDataDict["firstName"], familyName=userDataDict["lastName"], gender=int(userDataDict["gender"]), locale=Locale.LOCALE_HE_IL, orgId=userDataDict["orgId"], role = int(userDataDict["role"]), mailAddress=userDataDict["mailAddress"])
+    customMailTemplate = ""
+    if ("customMail" in userDataDict):
+        customMailTemplate = userDataDict["customMail"]
+    
+    dbInstance.createUser(notifyNewUser=True, parentId=parentId, firstName=userDataDict["firstName"], familyName=userDataDict["lastName"], gender=int(userDataDict["gender"]), locale=Locale.LOCALE_HE_IL, orgId=userDataDict["orgId"], role = int(userDataDict["role"]), mailAddress=userDataDict["mailAddress"], customMailTemplate=customMailTemplate)
 
 if __name__ == '__main__':
     importUsers()
