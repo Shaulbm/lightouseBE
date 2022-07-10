@@ -395,7 +395,53 @@ class MoovLogic(metaclass=Singleton):
         letters = letters.replace(" ","")
         newPassword = ( ''.join(random.choice(letters) for i in range(10)) )
 
+        # select two special chars
+        specialChars = '[@_!#$%^&*()<>?/\|}{~:]'
+        specialCharA = random.choice(specialChars)
+        specialCharB = random.choice(specialChars)
+        strPos = random.randint(0, newPassword.__len__())
+        newPassword = newPassword[:strPos] + specialCharA + newPassword[strPos:]
+        strPos = random.randint(0, newPassword.__len__())
+        newPassword = newPassword[:strPos] + specialCharB + newPassword[strPos:]
+
         return newPassword
+
+    def verifyPasswordPolicy(self, password):
+        if len(password) < 12:
+            return False
+
+        conditionsMet = 0
+
+        # verify if contains Capital Letters:
+        for char in password:
+            if char.isupper():
+                conditionsMet += 1
+                break 
+
+        # verify if contains non capital Letters:
+        for char in password:
+            if not char.isupper():
+                conditionsMet += 1
+                break 
+
+        # verify if contains numbers:
+        for char in password:
+            if char.isdigit():
+                conditionsMet += 1
+                break 
+
+        # verify if contains special characters:
+        specialChars = '[@_!#$%^&*()<>?/\|}{~:]'
+        for char in password:
+            if char in specialChars:
+                conditionsMet += 1
+                break 
+
+        if conditionsMet > 2:
+            # we have met at least 3 conditions the password is valid
+            return True
+
+        return False
 
     def setUserDiscoveryStatus(self, userId, discoveryStatus):
         print('setUserDiscoveryStatus getting user details for user Id (0)', userId)
