@@ -940,12 +940,19 @@ class MoovLogic(metaclass=Singleton):
         if (userDetails is None):
             raise HTTPException(status_code=404, detail="user not found")
 
-        if (userDetails is not None):
-            hashedPassword = hashlib.sha256(oldPassword.encode('utf-8'))
+        #verify old password
+        savedPassword = self.getUserPassword(userDetails.id)
+        hashedOldPassword = hashlib.sha256(oldPassword.encode('utf-8'))
+        if  savedPassword != "" and savedPassword != hashedOldPassword.hexdigest():
+            print ('in updateUserPassword ole password do not match user is {0}', userDetails.mailAddress)
+            raise HTTPException(status_code=401, detail="old password do not match")
+        
+        # verify password policy
+        if self.verifyPasswordPolicy(newPassword):
             self.setUserPassword(userId=id, orgId=userDetails.orgId, passwordRaw=newPassword)
             return ""
         else:
-            raise HTTPException(status_code=401, detail="wrong password")
+            raise HTTPException(status_code=401, detail="wrong password policy")
 
     def sendUserFeedback(self, userId, issue, text):
         userDetails = self.getUser(userId)
