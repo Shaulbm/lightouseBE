@@ -420,7 +420,7 @@ class MoovLogic(metaclass=Singleton):
 
         # verify if contains non capital Letters:
         for char in password:
-            if not char.isupper():
+            if char.islower():
                 conditionsMet += 1
                 break 
 
