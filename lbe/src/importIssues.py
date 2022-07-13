@@ -15,7 +15,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets', "https://www.googleapi
 
 # The ID and range of a sample spreadsheet.
 ISSUES_SPREADSHEET_ID = '1c68_oJr28b6USdkj3CW5h9KaXvLKpB5iCACJoKygEs0'
-ISSUES_RANGE_NAME = 'Issues!A1:K8'
+ISSUES_RANGE_NAME = 'Issues!A1:F8'
 SUBJECTS_RANGE_NAME = 'Subjects!A1:G4'
 RESOLVING_MOTIVATIONS_RANGE_NAME = 'IssueResolvingMotivations!A1:G22'
 CONTRIBUTING_MOTIVATIONS_RANGE_NAME = 'IssueContributingMotivations!A1:G73'
@@ -186,41 +186,28 @@ def insertIssue(issueDataDict, resolvingMotivationsDictArray, contributingMotiva
     heb_ma_LocaleCollection = db["locale_he_ma"]
     heb_fe_LocaleCollection = db["locale_he_fe"]
     eng_LocaleCollection = db["locale_en"]
+    eng_mg_fe_LocaleCollection = db["locale_mg_en_fe"]
+    eng_mg_ma_LocaleCollection = db["locale_mg_en_ma"]
 
     newIssue = IssueData()
     newIssue.id = issueDataDict["id"]
     newIssue.subjectId = issueDataDict["subjectId"]
     newIssue.name = newIssue.id + "_1"
-    newIssue.shortDescription = newIssue.id + "_2"
-    newIssue.longDescription = newIssue.id + "_3"
+    newIssue.shortDescription = "" # this is supressed prior to deletion
+    newIssue.longDescription = "" # this is supressed prior to deletion
     newIssue.contributingMotivations = []
     newIssue.resolvingMotivations = []
 
-    currentTextData = TextData(newIssue.id, newIssue.name, issueDataDict["name <<en>>"])
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
+    currentTextData = TextData(newIssue.id, newIssue.name, issueDataDict["name <<en_ma>>"])
+    dbInstance.insertOrUpdateText(eng_mg_ma_LocaleCollection, currentTextData)
+
+    currentTextData = TextData(newIssue.id, newIssue.name, issueDataDict["name <<en_fe>>"])
+    dbInstance.insertOrUpdateText(eng_mg_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newIssue.id, newIssue.name, issueDataDict["name <<he_fe>>"])
     dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
 
     currentTextData = TextData(newIssue.id, newIssue.name, issueDataDict["name <<he_ma>>"])
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.shortDescription, issueDataDict["shortDescription <<en>>"])
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.shortDescription, issueDataDict["shortDescription <<he_fe>>"])
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.shortDescription, issueDataDict["shortDescription <<he_ma>>"])
-    dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<en>>"])
-    dbInstance.insertOrUpdateText(eng_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<he_fe>>"])
-    dbInstance.insertOrUpdateText(heb_fe_LocaleCollection, currentTextData)
-
-    currentTextData = TextData(newIssue.id, newIssue.longDescription, issueDataDict["longDescription <<he_ma>>"])
     dbInstance.insertOrUpdateText(heb_ma_LocaleCollection, currentTextData)
 
     for currResolvingMotivations in resolvingMotivationsDictArray:

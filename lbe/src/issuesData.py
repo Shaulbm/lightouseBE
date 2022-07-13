@@ -100,18 +100,19 @@ class IssueData:
         return jsonObject
 
     def buildFromJSON (self, jsonData, localedTextDic = None):
+        # Notice - shortDescription and longDescription have been supressed as there is no real data there. In addition, we have changed the english part to support gender, so this was supressed prior to futuredeletion
         self.id = jsonData["id"]
         self.subjectId = jsonData["subjectId"]
 
         if (localedTextDic is not None):
             self.name = localedTextDic[jsonData["name"]]
-            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
-            self.longDescription = localedTextDic[jsonData["longDescription"]]
+            # self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            # self.longDescription = localedTextDic[jsonData["longDescription"]]
         else:
             # create as is
             self.name = jsonData["name"]
-            self.shortDescription = jsonData["shortDescription"]
-            self.longDescription = jsonData["longDescription"]
+            # self.shortDescription = jsonData["shortDescription"]
+            # self.longDescription = jsonData["longDescription"]
         
         self.buildRelatedMotivations(jsonData=jsonData, localedTextDic=localedTextDic)
 
@@ -194,11 +195,11 @@ class IssuePartialData:
 
         if (localedTextDic is not None):
             self.name = localedTextDic[jsonData["name"]]
-            self.shortDescription = localedTextDic[jsonData["shortDescription"]]
+            # self.shortDescription = localedTextDic[jsonData["shortDescription"]]
         else:
             # create as is
             self.name = jsonData["name"]
-            self.shortDescription = jsonData["shortDescription"]        
+            # self.shortDescription = jsonData["shortDescription"]        
 
     
 class ConflictData:

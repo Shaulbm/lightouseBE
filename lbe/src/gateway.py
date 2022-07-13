@@ -193,15 +193,6 @@ def get_all_subjects(request: Request, locale = Locale.UNKNOWN):
     
     return subjectsDetails
 
-@router.get("/issuesForSubject")
-def get_issue_for_subjects(request : Request, subjectId):
-    userContextDetails = get_user_context(request)
-    dbActions = MoovLogic()
-    
-    issuesDetails = dbActions.getIssuesForSubject(subjectId, userContextDetails)
-    
-    return issuesDetails
-
 @router.get("/issue")
 def get_issue(request: Request, id):
     userContextDetails = get_user_context(request)

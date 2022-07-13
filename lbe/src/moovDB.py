@@ -815,13 +815,18 @@ class MoovDBInstance(metaclass=Singleton):
         if (locale != Locale.UNKNOWN):
             # get id's for text quesry
             parentsIds = []
-            parentsIds.append(issueDataJSON["id"])
             parentsIds = parentsIds + ([p["id"] for p in issueDataJSON["contributingMotivations"]])
             parentsIds = parentsIds + ([p["id"] for p in issueDataJSON["resolvingMotivations"]]) 
             
-
             # get localed text
             issuesTextsDic = self.getTextDataByParents(parentsIds, locale, gender, name=name )
+
+            if (locale == Locale.LOCALE_EN_US):
+                addionalTextsDetails = self.getMGTextDataByParent(issueDataJSON["id"], locale, firstGender=gender, secondGender=gender, name=name)
+            else:
+                addionalTextsDetails = self.getTextDataByParent(issueDataJSON["id"], locale, gender=gender, name=name)
+
+            issuesTextsDic = dict(issuesTextsDic.items(), addionalTextsDetails.items())
 
         issueDetails = IssueData()
         issueDetails.buildFromJSON(jsonData = issueDataJSON, localedTextDic=issuesTextsDic)
@@ -924,25 +929,7 @@ class MoovDBInstance(metaclass=Singleton):
             conflictsDetails.append(currConflictDetails)
 
         return conflictsDetails
-
-    def getIssuesForSubject (self, subjectId, userContext: UserContextData):
-        db = self.getDatabase()
-        subjectsCollection = db["issues"]
-
-        dataFilter = {"subjectId": subjectId}
-
-        issuesDataJSONList = subjectsCollection.find(dataFilter)
-
-        issuesDetailsList = []
-
-        for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, userContext.gender)
-            newIssue = IssuePartialData()
-            newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
-            issuesDetailsList.append(newIssue)        
-
-        return issuesDetailsList
-    
+  
     def getAllIssues (self, issuesGender, userContext: UserContextData, counterpartName = ""):
         db = self.getDatabase()
         subjectsCollection = db["issues"]
@@ -952,7 +939,12 @@ class MoovDBInstance(metaclass=Singleton):
         issuesDetailsList = []
 
         for currIssueJSONData in issuesDataJSONList:
-            issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, issuesGender, name = counterpartName)
+
+            if (userContext.locale == Locale.LOCALE_EN_US):
+                issueTextsDic = self.getMGTextDataByParent(currIssueJSONData["id"], userContext.locale, firstGender=issuesGender, secondGender=issuesGender, name=counterpartName)
+            else:
+                issueTextsDic = self.getTextDataByParent(currIssueJSONData["id"], userContext.locale, gender=issuesGender, name=counterpartName)
+            
             newIssue = IssuePartialData()
             newIssue.buildFromJSON(currIssueJSONData, issueTextsDic)
             issuesDetailsList.append(newIssue)        

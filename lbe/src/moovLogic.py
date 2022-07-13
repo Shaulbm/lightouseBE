@@ -604,10 +604,7 @@ class MoovLogic(metaclass=Singleton):
 
     def getConflictsForUsers (self, teamMemberId, counterpartId, partialData: bool, userContext : UserContextData):
         return self.dataBaseInstance.getConflictsForUsers(teamMemberId=teamMemberId, counterpartId=counterpartId, partialData=partialData, userContext=userContext)
-
-    def getIssuesForSubject (self, subjectId, userContext: UserContextData):
-        return self.dataBaseInstance.getIssuesForSubject(subjectId=subjectId, userContext=userContext)
-    
+  
     def getAllIssues (self, counterpartId, userContext: UserContextData):
         issuesGender = userContext.gender
         if (counterpartId != ""):
