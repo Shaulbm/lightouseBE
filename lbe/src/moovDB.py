@@ -139,6 +139,10 @@ class MoovDBInstance(metaclass=Singleton):
     def getMGTextCollectionByLocale(self, locale, firstGender, secondGender):
         db = self.getDatabase()
 
+        if (locale != Locale.LOCALE_EN_US and firstGender == None):
+            print ("error in getMGTextCollectionByLocale, locale is not EN_US but got first gender as None")
+            return db ["locale_mg_en_ma"]
+
         if locale == Locale.LOCALE_HE_IL:
             if firstGender == Gender.FEMALE:
                 if secondGender == Gender.FEMALE:
@@ -215,7 +219,11 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundInsights = []
         for currInsightJSONData in insightsDataJSONList:
-            insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender = counterpartDetails.gender, name= counterpartDetails.firstName)            
+            if (userContext.locale == Locale.LOCALE_EN_US):
+                insightTextsDic = self.getMGTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, firstGender= counterpartDetails.gender, secondGender= counterpartDetails.gender, name= counterpartDetails.firstName)            
+            else:
+                insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender= counterpartDetails.gender, name= counterpartDetails.firstName)            
+
             newInisight = MotivationInsightData()
             newInisight.buildFromJSON(currInsightJSONData, insightTextsDic)
             foundInsights.append(newInisight)
@@ -244,7 +252,11 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundInsights = []
         for currInsightJSONData in insightsDataJSONList:
-            insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender = userDetails.gender, name= userDetails.firstName)            
+            if userContext.locale == Locale.LOCALE_EN_US:
+                insightTextsDic = self.getMGTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, firstGender= None, secondGender= userDetails.gender, name= userDetails.firstName)                        
+            else:
+                insightTextsDic = self.getTextDataByParent(parentId= currInsightJSONData["id"], locale= userContext.locale, gender= userDetails.gender, name= userDetails.firstName)            
+
             newInisight = MotivationInsightData()
             newInisight.buildFromJSON(currInsightJSONData, insightTextsDic)
             foundInsights.append(newInisight)
