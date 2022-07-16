@@ -368,7 +368,7 @@ def is_missing_relationship_data(request: Request, counterpartId):
 def extend_activeM_moov(request:Request, activeMoovId):
     dbActions = MoovLogic()
 
-    returnValue = dbActions.extendAcctiveMoov(activeMoovId=activeMoovId)
+    returnValue = dbActions.extendActiveMoov(activeMoovId=activeMoovId)
 
     return returnValue
 

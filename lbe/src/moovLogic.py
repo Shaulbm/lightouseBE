@@ -13,6 +13,7 @@ from issuesData import RelatedMotivationData
 from issuesData import ConflictData
 from generalData import UserState
 from generalData import AccountType
+from lbe.src.moovData import MoovInstanceEvent, MoovInstanceEventTypes
 from motivationsData import InsightsUserType, InsightAggregationData
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
@@ -685,14 +686,23 @@ class MoovLogic(metaclass=Singleton):
         moovDetails = self.getIssueMoov(moovId, userContext= None)
 
         moovInstancePriority = self.calculateIssueMoovPriority(userId = userId, counterpartId = counterpartId, motivationId=moovDetails.motivationId)
-        return self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
+        activeMoov = self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
+
+        event = self.addSystemEventToMoovInstance(moovInstanceId=activeMoov.id, eventType=MoovInstanceEventTypes.LIFETIME_START)
+
+        # this was already added in the DB, saving another call to refresh data
+        activeMoov.events.append(event)
+
+        return activeMoov
 
     def activateConflictMoov (self, moovId, userId, counterpartsIds, userContext: UserContextData):
         # moovInstancePriority = self.calculateConflictMoovPriority(userId, counterpartsIds)
         # return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
         pass
 
-    def extendAcctiveMoov(self, activeMoovId):
+    def extendActiveMoov(self, activeMoovId):
+        self.addSystemEventToMoovInstance(moovInstanceId=activeMoovId, eventType=MoovInstanceEventTypes.LIFETIME_EXTENTION)
+
         activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
 
         if (activeMoovDetails is not None):
@@ -827,6 +837,9 @@ class MoovLogic(metaclass=Singleton):
         return activeMoov
 
     def endMoov (self, activeMoovId, feedbackScore, feedbackText, isEndedByTimer):
+        self.addUserFeedbackEventToMoovInstance(moovInstanceId = activeMoovId, text=feedbackText, score = feedbackScore)
+        self.addSystemEventToMoovInstance(moovInstanceId=activeMoovId, eventType=MoovInstanceEventTypes.LIFETIME_END)
+
         self.dataBaseInstance.endMoov(activeMoovId=activeMoovId, feedbackScore=feedbackScore, feedbackText=feedbackText, isEndedByTimer=isEndedByTimer)
     
     def getAllMoovsPlannedToEnd (self, timeStamp, ignoreUserNotifications = False):
@@ -958,3 +971,36 @@ class MoovLogic(metaclass=Singleton):
     def sendDiscoveryReminder(self, counterpartId, userContext : UserContextData):
         counterpartDetails = self.getUser(counterpartId)
         return self.notificationsProvider.sendDiscoveryReminder(notifyToMail=counterpartDetails.mailAddress, notifyToName=counterpartDetails.firstName, teamManagerName=userContext.firstName)
+
+    def addUserFeedbackEventToMoovInstance(self, moovInstanceId, text, score):
+        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=MoovInstanceEventTypes.FEEDBACK, content=text, score=score)
+        return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
+
+    def addUserEventToMoovInstance(self, moovInstanceId, text):
+        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=MoovInstanceEventTypes.USER_COMMENT, content=text)
+        return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
+
+    def addSystemEventToMoovInstance(self, moovInstanceId, eventType):
+        text = self.getTextIdForType(eventType=eventType)
+        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=eventType, content=text)
+        return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
+
+    def addEventToMoovInstance(self, moovInstanceId, moovInstanceEvent):
+        moovInstance = self.getActiveMoov(moovInstanceId)
+
+        if moovInstance is None:
+            return
+        
+        moovInstance.events.append(moovInstanceEvent)
+        self.insertOrUpdateActiveMoov(moovInstance)
+
+        return moovInstanceEvent
+
+    def getTextIdForType(self, eventType):
+        switcher = {
+            MoovInstanceEventTypes.LIFETIME_START: "SYS_TXT_MIE_001",
+            MoovInstanceEventTypes.LIFETIME_END: "SYS_TXT_MIE_002",
+            MoovInstanceEventTypes.LIFETIME_EXTENTION: "SYS_TXT_MIE_003"
+        }
+        
+        return switcher.get(eventType, "")

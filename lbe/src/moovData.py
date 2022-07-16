@@ -2,6 +2,20 @@ from datetime import datetime
 import jsonpickle
 import json
 
+MOOV_INSTANCE_NO_SCORE = -1
+
+class MoovInstanceEventTypes:
+    LIFETIME_START = 1
+    LIFETIME_END = 2
+    FEEDBACK = 3
+    LIFETIME_EXTENTION = 4
+    USER_COMMENT = 5
+
+class MoovInstanceEventTextId:
+    LIFETIME_START = "SYS_TXT_MIE_001"
+    LIFETIME_END = "SYS_TXT_MIE_002"
+    TIME_EXTENTION = "SYS_TXT_MIE_003"
+
 class BaseMoovData:
     def __init__(self, id = "", score = 0, image = "", complexity = 0, name = "", motivationId = "", description = "", issueId="", howTo="", contributor = "", reasoning=""):
         self.id = id
@@ -98,8 +112,32 @@ class ExtendedIssueMoovData(IssueMoovData):
         self.issueId = moovData.issueId
 
 
+class MoovInstanceEvent:
+    def __init__(self, timestamp = datetime.utcnow(), type = MoovInstanceEventTypes.LIFETIME_START, content = "", score = MOOV_INSTANCE_NO_SCORE):
+        self.timestamp = timestamp
+        self.type = type
+        self.content = content
+        self.score = score
+
+    def toJSON(self):
+        responseDataJSON = jsonpickle.encode(self, unpicklable=False)
+
+        jsonObject = json.loads (responseDataJSON)
+
+        return jsonObject
+
+    def buildFromJSON(self, jsonData, localedTextDic = None):
+        self.timestamp = jsonData["timeStamp"]
+        self.type = jsonData["type"]
+        self.score = int(jsonData["score"])
+
+        if (localedTextDic is not None):
+            self.content = localedTextDic[jsonData["content"]]
+        else:
+            self.content = jsonData["content"]
+
 class MoovInstance:
-    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = ""):
+    def __init__(self, id = "", userId = "", counterpartId = "", moovId = "", priority = 0, startDate= datetime.utcnow(), endDate= datetime.utcnow(), plannedEndDate =  datetime.utcnow(), isOverdue = False, notifiedUserForOverdue = False, feedbackScore = 0, feedbackText = "", events = []):
         self.id = id
         self.userId = userId
         self.counterpartId = counterpartId
@@ -112,6 +150,7 @@ class MoovInstance:
         self.notifiedUserForOverdue = False
         self.feedbackScore = feedbackScore
         self.feedbackText = feedbackText
+        self.events = events
 
     def toJSON (self):
         questionDataJSON = jsonpickle.encode(self, unpicklable=False)
@@ -140,6 +179,14 @@ class MoovInstance:
         self.feedbackScore = jsonData["feedbackScore"]
         self.feedbackText = jsonData["feedbackText"]
         self.counterpartId = jsonData["counterpartId"]
+
+        self.events = []
+
+        if "events" in jsonData and jsonData["events"].__len__() > 0:
+            for currEventJsonData in jsonData["events"]:
+                currEventData = MoovInstanceEvent()
+                currEventData.buildFromJSON(currEventJsonData)
+                self.events.append(currEventData)
 
         # if len(jsonData["counterpartsIds"]) > 0:
         #     self.counterpartsIds = jsonData["counterpartsIds"].copy()
