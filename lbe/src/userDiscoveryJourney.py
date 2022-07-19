@@ -356,8 +356,9 @@ def getUserScoreBoardResolutionDetails (userMotivationsScoreBoard):
 
 def endUserJourney (userId, userMotivationScoreBoard):
     #end the journey and update the user data with the top 5 motivations
-
-    print ('endUserJourney called for userId (0)', userId)
+    logger = logging.getLogger(__name__)
+    
+    logger.info ('endUserJourney called for userId (0)', userId)
 
     dbInstance = MoovLogic()
     currJourney = dbInstance.getUserDiscoveryJourney(userId)
@@ -365,20 +366,20 @@ def endUserJourney (userId, userMotivationScoreBoard):
     currJourney.currBatch = ""
     currJourney.state = "closed"
 
-    print('endUserJourney updating discovery journey')
+    logger.info ('endUserJourney updating discovery journey')
     dbInstance.insertOrUpdateDiscoveryJourney(currJourney)
     
-    print('endUserJourney calling  set motivation to user')
+    logger.info ('endUserJourney calling  set motivation to user')
     dbInstance.setMotivationsToUSer(userId, userMotivationScoreBoard)
 
-    print('endUserJourney updated discovery journey')
+    logger.info ('endUserJourney updated discovery journey')
     dbInstance.setUserDiscoveryStatus(userId=userId, discoveryStatus=DiscoveryStatus.DISCOVERED)
 
     # call Logic to perform post journey actions
-    print('endUserJourney updated discovery journey')
+    logger.info ('endUserJourney updated discovery journey')
     dbInstance.userJourneyEnded(userId)
 
-    print('endUserJourney Done')
+    logger.info ('endUserJourney Done')
 
 def createTailResolutionQuestion (tailResolutionDataInstance, userContext: UserContextData):
     dbInstance = MoovLogic()
