@@ -25,6 +25,7 @@ import logging
 
 ROOT_USER_IMAGES_PATH = 'C:\\Dev\\Data\\UserImages'
 DEFAULT_USER_IMAGES_DIR = 'Default'
+SYSTEM_TEXT_MIE = 'SYS_TXT_MIE'
 
 class MoovDBInstance(metaclass=Singleton):
     def __init__(self):
@@ -281,7 +282,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         foundInsightsTypes = []
         for currInsightTypeJSONData in insightsDataJSONList:
-            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale, name=counterpartName, gender= counterpartGender)            
+            insightTypeTextsDic = self.getTextDataByParent(parentId= currInsightTypeJSONData["id"], locale= userContext.locale, name=counterpartName, gender= counterpartGender)
             newInsightType = InsightTypeData()
             newInsightType.buildFromJSON(currInsightTypeJSONData, insightTypeTextsDic)
             foundInsightsTypes.append(newInsightType)
@@ -323,12 +324,11 @@ class MoovDBInstance(metaclass=Singleton):
 
         if (moovsDataJSON is None):
             return None
-
-        moovTextsDic = None
+            
+        moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
 
         foundMoovs = []
         for currMoovJSONData in moovsDataJSON:
-            moovTextsDic = self.getTextDataByParent(currMoovJSONData["id"], userContext.locale, userContext.gender)
             newMoov = ExtendedConflictMoovData()
             newMoov.buildFromJSON(currMoovJSONData, moovTextsDic)
             newMoov.conflictScore = ConflictDetails.score
@@ -1142,7 +1142,7 @@ class MoovDBInstance(metaclass=Singleton):
         activeMoovsCollection = db["activeMoovs"]
 
         #Check if there is an already moovId with userId and teamMember Id that is active
-        existingMoov = self.getActiveMoovByMoovUserAndCounterpart(userId=userId, moovId=moovId, counterpartId=counterpartId)
+        existingMoov = self.getActiveMoovByMoovUserAndCounterpart(userId=userId, moovId=moovId, counterpartId=counterpartId, userContext=userContext)
 
         if existingMoov is not None:
             #rasie error active Moov already exists
@@ -1173,16 +1173,21 @@ class MoovDBInstance(metaclass=Singleton):
         else:
             activeMoovsCollection.insert_one(activeMoov.toJSON())
 
-    def getActiveMoov (self, id):
+    def getActiveMoov (self, id, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
         foundActiveMoov = activeMoovsCollection.find_one({"id":id})
 
+        moovTextsDic = None
+
+        if (userContext is not None):
+            moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)        
+
         activeMoovDetails = None
         if foundActiveMoov is not None:
             activeMoovDetails = MoovInstance()
-            activeMoovDetails.buildFromJSON(foundActiveMoov)
+            activeMoovDetails.buildFromJSON(foundActiveMoov, moovTextsDic)
 
         return activeMoovDetails
 
@@ -1222,10 +1227,12 @@ class MoovDBInstance(metaclass=Singleton):
         if (activeMoovsDataJSONList is None):
             return None
 
+        moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)    
+
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
-            foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
+            foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData, moovTextsDic)
             foundAcvtiveMoov.moovData = self.getBaseMoov(foundAcvtiveMoov.moovId, counterpartDetails = counterpartDetails, userContext=userContext)
 
             foundActiveMoovs.append(foundAcvtiveMoov)
@@ -1253,10 +1260,12 @@ class MoovDBInstance(metaclass=Singleton):
         if (historicMoovsDataJSONList is None):
             return None
 
+        moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)    
+
         foundHistoricMoovs = []
         for currHistoricMoovJSONData in historicMoovsDataJSONList:
             foundHistoricMoov = ExtendedMoovInstance()
-            foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
+            foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData, moovTextsDic)
             foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails, userContext)
             foundHistoricMoovs.append(foundHistoricMoov)
    
@@ -1273,10 +1282,12 @@ class MoovDBInstance(metaclass=Singleton):
         if (historicMoovsDataJSONList is None):
             return None
 
+        moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)    
+
         foundHistoricMoovs = []
         for currHistoricMoovJSONData in historicMoovsDataJSONList:
             foundHistoricMoov = ExtendedMoovInstance()
-            foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData)
+            foundHistoricMoov.buildFromJSON(currHistoricMoovJSONData, moovTextsDic)
             foundHistoricMoov.moovData = self.getBaseMoov(foundHistoricMoov.moovId, counterpartDetails, userContext)
             foundHistoricMoovs.append(foundHistoricMoov)
    
@@ -1293,15 +1304,17 @@ class MoovDBInstance(metaclass=Singleton):
         if (activeMoovsDataJSONList is None):
             return None
 
+        moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)    
+
         foundActiveMoovs = []
         for currActiveMoovJSONData in activeMoovsDataJSONList:
             foundAcvtiveMoov = ExtendedMoovInstance()
-            foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData)
+            foundAcvtiveMoov.buildFromJSON(currActiveMoovJSONData, moovTextsDic)
             foundActiveMoovs.append(foundAcvtiveMoov)
    
         return foundActiveMoovs
 
-    def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId):
+    def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId, userContext: UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 
@@ -1312,8 +1325,10 @@ class MoovDBInstance(metaclass=Singleton):
         if (activeMoovJSONData is None):
             return None
 
+        moovTextsDic = self.getTextDataByParent(parentId= SYSTEM_TEXT_MIE, locale= userContext.locale)    
+
         foundActiveMoov = MoovInstance()
-        foundActiveMoov.buildFromJSON(activeMoovJSONData)
+        foundActiveMoov.buildFromJSON(activeMoovJSONData, moovTextsDic)
    
         return foundActiveMoov
 

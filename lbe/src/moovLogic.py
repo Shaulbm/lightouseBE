@@ -699,10 +699,10 @@ class MoovLogic(metaclass=Singleton):
         # return self.dataBaseInstance.activateConflictMoov(moovId=moovId, userId=userId, counterpartsIds=counterpartsIds, priority=moovInstancePriority, userContext=userContext)
         pass
 
-    def extendActiveMoov(self, activeMoovId):
+    def extendActiveMoov(self, activeMoovId, userContext:UserContextData):
         self.addSystemEventToMoovInstance(moovInstanceId=activeMoovId, eventType=MoovInstanceEventTypes.LIFETIME_EXTENTION)
 
-        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
+        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId, userContext= userContext)
 
         if (activeMoovDetails is not None):
             activeMoovDetails.plannedEndDate = datetime.datetime.utcnow() + datetime.timedelta(days=ep.getAttribute(EnvKeys.moovs, EnvKeys.extendActiveMoovTimeDays))
@@ -711,8 +711,8 @@ class MoovLogic(metaclass=Singleton):
 
         return activeMoovDetails
 
-    def getActiveMoov (self, activeMoovId):
-        return self.dataBaseInstance.getActiveMoov(id=activeMoovId)
+    def getActiveMoov (self, activeMoovId, userContext: UserContextData):
+        return self.dataBaseInstance.getActiveMoov(id=activeMoovId, userContext=userContext)
 
     def insertOrUpdateActiveMoov(self, activeMoovDetails):
         self.dataBaseInstance.insertOrUpdateActiveMoov(activeMoov=activeMoovDetails)
@@ -824,8 +824,8 @@ class MoovLogic(metaclass=Singleton):
 
         return activeMoovs    
 
-    def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId):
-        activeMoov = self.dataBaseInstance.getActiveMoovByMoovUserAndCounterpart (userId=userId, moovId=moovId, counterpartId=counterpartId)
+    def getActiveMoovByMoovUserAndCounterpart(self, userId, moovId, counterpartId, userContext:UserContextData):
+        activeMoov = self.dataBaseInstance.getActiveMoovByMoovUserAndCounterpart (userId=userId, moovId=moovId, counterpartId=counterpartId, userContext=userContext)
 
         #  calculate steps to moov
         extendedMoovDetails = ExtendedIssueMoovData() 
@@ -976,7 +976,7 @@ class MoovLogic(metaclass=Singleton):
         return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
 
     def verifyUserEventChangePermission(self, activeMoovId, userId) -> bool:
-        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
+        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId, userContext=None)
 
         if (activeMoovDetails):
             if (activeMoovDetails.userId == userId):
@@ -995,7 +995,7 @@ class MoovLogic(metaclass=Singleton):
         return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
 
     def addEventToMoovInstance(self, moovInstanceId, moovInstanceEvent):
-        moovInstance = self.getActiveMoov(moovInstanceId)
+        moovInstance = self.getActiveMoov(moovInstanceId, userContext=None)
 
         if moovInstance is None:
             return

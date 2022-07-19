@@ -131,7 +131,7 @@ class MoovInstanceEvent:
         self.type = jsonData["type"]
         self.score = int(jsonData["score"])
 
-        if (localedTextDic is not None):
+        if (localedTextDic is not None and self.type != MoovInstanceEventTypes.FEEDBACK and self.type != MoovInstanceEventTypes.USER_COMMENT):
             self.content = localedTextDic[jsonData["content"]]
         else:
             self.content = jsonData["content"]
@@ -164,7 +164,7 @@ class MoovInstance:
 
         return jsonObject
 
-    def buildFromJSON (self, jsonData):
+    def buildFromJSON (self, jsonData, localedTextDic = None):
         self.id = jsonData["id"]
         self.userId = jsonData["userId"]
         self.moovId = jsonData["moovId"]
@@ -185,7 +185,7 @@ class MoovInstance:
         if "events" in jsonData and jsonData["events"].__len__() > 0:
             for currEventJsonData in jsonData["events"]:
                 currEventData = MoovInstanceEvent()
-                currEventData.buildFromJSON(currEventJsonData)
+                currEventData.buildFromJSON(currEventJsonData, localedTextDic)
                 self.events.append(currEventData)
 
         # if len(jsonData["counterpartsIds"]) > 0:

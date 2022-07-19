@@ -379,9 +379,10 @@ def is_missing_relationship_data(request: Request, counterpartId):
 
 @router.get("/extendActiveMoov")
 def extend_activeM_moov(request:Request, activeMoovId):
+    userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
 
-    returnValue = dbActions.extendActiveMoov(activeMoovId=activeMoovId)
+    returnValue = dbActions.extendActiveMoov(activeMoovId=activeMoovId, userContext=userContextDetails)
 
     return returnValue
 
