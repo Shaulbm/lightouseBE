@@ -113,8 +113,8 @@ class ExtendedIssueMoovData(IssueMoovData):
 
 
 class MoovInstanceEvent:
-    def __init__(self, timestamp = datetime.utcnow(), type = MoovInstanceEventTypes.LIFETIME_START, content = "", score = MOOV_INSTANCE_NO_SCORE):
-        self.timestamp = timestamp
+    def __init__(self, timeStamp = datetime.utcnow(), type = MoovInstanceEventTypes.LIFETIME_START, content = "", score = MOOV_INSTANCE_NO_SCORE):
+        self.timeStamp = timeStamp
         self.type = type
         self.content = content
         self.score = score
@@ -127,7 +127,7 @@ class MoovInstanceEvent:
         return jsonObject
 
     def buildFromJSON(self, jsonData, localedTextDic = None):
-        self.timestamp = jsonData["timeStamp"]
+        self.timeStamp = jsonData["timeStamp"]
         self.type = jsonData["type"]
         self.score = int(jsonData["score"])
 

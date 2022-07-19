@@ -8,7 +8,7 @@ from generalData import UserRoles, Gender, Locale, UserContextData
 from loguru import logger
 import ast
 from pydantic import BaseModel
-import importUsers as userImporter
+import External_importUsers as userImporter
 
 router = APIRouter()
 
@@ -20,6 +20,10 @@ class EndMoovData(BaseModel):
     activeMoovId: str
     feedbackScore: int
     feedbackText: str
+
+class ActiveMoovUserEventData(BaseModel):
+    activeMoovId: str
+    userText: str
 
 class UpdateUserData(BaseModel):
     locale: str
@@ -262,6 +266,15 @@ def end_moov (request: Request, endMoovDetails: EndMoovData):
     dbActions = MoovLogic()
     
     returnValue = dbActions.endMoov(activeMoovId=endMoovDetails.activeMoovId, feedbackScore=endMoovDetails.feedbackScore, feedbackText=endMoovDetails.feedbackText, isEndedByTimer=False)
+    
+    return returnValue
+
+@router.post("/addUserEventToMoov")
+def add_user_event_to_moov (request: Request, eventUserData: ActiveMoovUserEventData):
+    userContext = get_user_context(request)
+    dbActions = MoovLogic()
+    if dbActions.verifyUserEventChangePermission(eventUserData.activeMoovId,userContext.userId):
+        returnValue = dbActions.addUserEventToMoovInstance(moovInstanceId= eventUserData.activeMoovId, text= eventUserData.userText)
     
     return returnValue
 

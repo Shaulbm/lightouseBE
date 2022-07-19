@@ -13,7 +13,7 @@ from issuesData import RelatedMotivationData
 from issuesData import ConflictData
 from generalData import UserState
 from generalData import AccountType
-from lbe.src.moovData import MoovInstanceEvent, MoovInstanceEventTypes
+from moovData import MoovInstanceEvent, MoovInstanceEventTypes
 from motivationsData import InsightsUserType, InsightAggregationData
 from moovData import IssueMoovData, ConflictMoovData, BaseMoovData, ExtendedIssueMoovData
 from notificationsProvider import NotificationsProvider
@@ -445,11 +445,13 @@ class MoovLogic(metaclass=Singleton):
         return False
 
     def setUserDiscoveryStatus(self, userId, discoveryStatus):
-        print('setUserDiscoveryStatus getting user details for user Id (0)', userId)
+        logger = logging.getLogger(__name__)
+    
+        logger.info('setUserDiscoveryStatus getting user details for user Id (0)', userId)
         userDetails = self.getUser(userId)
 
         if (userDetails is not None):
-            print('setUserDiscoveryStatus updating with discovery status (0)', discoveryStatus)          
+            logger.info('setUserDiscoveryStatus updating with discovery status (0)', discoveryStatus)          
             userDetails.discoveryStatus = discoveryStatus
             self.insertOrUpdateUser(userDetails)
 
@@ -688,10 +690,7 @@ class MoovLogic(metaclass=Singleton):
         moovInstancePriority = self.calculateIssueMoovPriority(userId = userId, counterpartId = counterpartId, motivationId=moovDetails.motivationId)
         activeMoov = self.dataBaseInstance.activateIssueMoov(moovId=moovId, userId=userId, counterpartId=counterpartId, priority=moovInstancePriority, userContext=userContext)
 
-        event = self.addSystemEventToMoovInstance(moovInstanceId=activeMoov.id, eventType=MoovInstanceEventTypes.LIFETIME_START)
-
-        # this was already added in the DB, saving another call to refresh data
-        activeMoov.events.append(event)
+        activeMoov = self.addSystemEventToMoovInstance(moovInstanceId=activeMoov.id, eventType=MoovInstanceEventTypes.LIFETIME_START)
 
         return activeMoov
 
@@ -973,16 +972,26 @@ class MoovLogic(metaclass=Singleton):
         return self.notificationsProvider.sendDiscoveryReminder(notifyToMail=counterpartDetails.mailAddress, notifyToName=counterpartDetails.firstName, teamManagerName=userContext.firstName)
 
     def addUserFeedbackEventToMoovInstance(self, moovInstanceId, text, score):
-        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=MoovInstanceEventTypes.FEEDBACK, content=text, score=score)
+        moovInstanceEvent = MoovInstanceEvent(timeStamp=datetime.datetime.utcnow(), type=MoovInstanceEventTypes.FEEDBACK, content=text, score=score)
         return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
 
+    def verifyUserEventChangePermission(self, activeMoovId, userId) -> bool:
+        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId)
+
+        if (activeMoovDetails):
+            if (activeMoovDetails.userId == userId):
+                return True
+
+        print ('verifyUserEventChangePermission received request to add event to activeMoovId {0} but from userId {1} which is not the owner ', activeMoovId, userId)
+        return False
+
     def addUserEventToMoovInstance(self, moovInstanceId, text):
-        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=MoovInstanceEventTypes.USER_COMMENT, content=text)
+        moovInstanceEvent = MoovInstanceEvent(timeStamp=datetime.datetime.utcnow(), type=MoovInstanceEventTypes.USER_COMMENT, content=text)
         return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
 
     def addSystemEventToMoovInstance(self, moovInstanceId, eventType):
         text = self.getTextIdForType(eventType=eventType)
-        moovInstanceEvent = MoovInstanceEvent(timestamp=datetime.utcnow(), type=eventType, content=text)
+        moovInstanceEvent = MoovInstanceEvent(timeStamp=datetime.datetime.utcnow(), type=eventType, content=text)
         return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
 
     def addEventToMoovInstance(self, moovInstanceId, moovInstanceEvent):
@@ -994,7 +1003,7 @@ class MoovLogic(metaclass=Singleton):
         moovInstance.events.append(moovInstanceEvent)
         self.insertOrUpdateActiveMoov(moovInstance)
 
-        return moovInstanceEvent
+        return moovInstance
 
     def getTextIdForType(self, eventType):
         switcher = {
