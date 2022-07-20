@@ -1010,7 +1010,7 @@ class MoovDBInstance(metaclass=Singleton):
 
         return foundSubjects
 
-    def getUsersUnder (self, userId):
+    def getUsersUnder (self, userId, userContext : UserContextData):
         requestingUser = self.getUser(id=userId)
 
         foundSubordinatesDataList = []
@@ -1092,7 +1092,7 @@ class MoovDBInstance(metaclass=Singleton):
                     #the manager is also part of the nodes list and should be ignored
                     userPartialDetails = UserPartialData()
                     userPartialDetails.fromFullDetails(self.getUser(currentSubordinate.name))
-                    userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
+                    userPartialDetails.activeMoovsCount = self.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id, userContext=userContext)
                     foundSubordinatesDataList.append (userPartialDetails)
 
         return foundSubordinatesDataList
@@ -1239,7 +1239,7 @@ class MoovDBInstance(metaclass=Singleton):
    
         return foundActiveMoovs
 
-    def getActiveMoovsCountToCounterpart (self, userId, counterpartId):
+    def getActiveMoovsCountToCounterpart (self, userId, counterpartId, userContext : UserContextData):
         db = self.getDatabase()
         activeMoovsCollection = db["activeMoovs"]
 

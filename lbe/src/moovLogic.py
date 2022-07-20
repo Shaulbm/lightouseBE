@@ -2,6 +2,7 @@ from imp import release_lock
 from itertools import count
 from sqlite3 import Timestamp
 import threading
+from tkinter.messagebox import NO
 from typing import Text
 from fastapi import HTTPException
 import string
@@ -461,7 +462,7 @@ class MoovLogic(metaclass=Singleton):
             # either no user details or the user is currently no part of a team
             return ep.generateRandomUserColor()
         
-        teamMates = self.getUsersUnder(userDetails.parentId)
+        teamMates = self.getUsersUnder(userDetails.parentId, userContext = None)
 
         if len(teamMates) == 0:
             # no one in the team yet
@@ -626,22 +627,25 @@ class MoovLogic(metaclass=Singleton):
     def getAllSubjects(self, userContext: UserContextData):
         return self.dataBaseInstance.getAllSubjects(userContext=userContext)
 
-    def getUserCircle(self, userId):
+    def getUserCircle(self, userId, userContext: UserContextData):
         userCircleDetails = UserCircleData()
-        userCircleDetails.teamMembersList = self.getUsersUnder(userId)
-        userCircleDetails.peopleOfInterest = self.getUserPeopleOfInterest(userId)
+        userCircleDetails.teamMembersList = self.getUsersUnder(userId, userContext = userContext)
+        userCircleDetails.peopleOfInterest = self.getUserPeopleOfInterest(userId, userContext = userContext)
 
         return userCircleDetails
 
-    def getUsersUnder (self, userId):
-        usersUnder = self.dataBaseInstance.getUsersUnder(userId=userId)
+    def getUsersUnder (self, userId, userContext : UserContextData):
+        usersUnder = self.dataBaseInstance.getUsersUnder(userId=userId, userContext = userContext)
 
+        if usersUnder == None:
+            usersUnder = []
+        
         for currUser in usersUnder:
-            currUser.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=currUser.id)
+            currUser.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=currUser.id, userContext=userContext)
 
         return usersUnder
 
-    def getUserPeopleOfInterest(self, userId):
+    def getUserPeopleOfInterest(self, userId, userContext: UserContextData):
         peopleOfInterestList = []
 
         requestingUser: UserData = self.getUser(id=userId)
@@ -650,14 +654,14 @@ class MoovLogic(metaclass=Singleton):
         for currPOI in poiIdList:
             userPartialDetails = UserPartialData()
             userPartialDetails.fromFullDetails(self.getUser(id=currPOI))
-            userPartialDetails.activeMoovsCount = self.dataBaseInstance.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id)
-            userPartialDetails.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id)
+            userPartialDetails.activeMoovsCount = self.dataBaseInstance.getActiveMoovsCountToCounterpart(userId=userId, counterpartId=userPartialDetails.id, userContext = userContext)
+            userPartialDetails.recommendedMoovsCount = self.getRecommendedMoovsAboveThresholdCount(userId=userId, counterpartId=userPartialDetails.id, userContext = userContext)
             peopleOfInterestList.append (userPartialDetails)
 
         return peopleOfInterestList
 
-    def getRecommendedMoovsAboveThresholdCount(self, userId, counterpartId):
-        allRecommendedMoovs = self.getALlRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=None)
+    def getRecommendedMoovsAboveThresholdCount(self, userId, counterpartId, userContext: UserContextData):
+        allRecommendedMoovs = self.getAllRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
         recommendedMoovsThreshold = ep.getAttribute(EnvKeys.moovs, EnvKeys.topRecommendedMoovThreshold)
 
@@ -903,7 +907,7 @@ class MoovLogic(metaclass=Singleton):
         return missingRelationshipDataRetVal
 
     def getTopRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext : UserContextData):
-        allRecommendedMoovs = self.getALlRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
+        allRecommendedMoovs = self.getAllRecommendedMoovsForCounterpart(userId=userId, counterpartId=counterpartId, userContext=userContext)
 
         sortedRecommendedMoovs = sorted(allRecommendedMoovs, key=lambda x: x.score, reverse=True)
 
@@ -917,7 +921,7 @@ class MoovLogic(metaclass=Singleton):
 
         return topRecommendedMoovs 
         
-    def getALlRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext: UserContextData):
+    def getAllRecommendedMoovsForCounterpart(self, userId, counterpartId, userContext: UserContextData):
         recommendedMoovs = self.getMoovsForIssueAndCounterpart(userId=userId, counterpartId=counterpartId, issueId=ep.getAttribute(EnvKeys.moovs, EnvKeys.recommendedMoovsIssueId), userContext=userContext)
 
         return recommendedMoovs

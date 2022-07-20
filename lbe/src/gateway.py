@@ -185,7 +185,7 @@ def set_journey_multiple_question_responses(request: Request, questionId, respon
 def get_user_circle(request: Request):
     userContextDetails = get_user_context(request)
     dbActions = MoovLogic()
-    userCircleDetails = dbActions.getUserCircle(userId=userContextDetails.userId)
+    userCircleDetails = dbActions.getUserCircle(userId=userContextDetails.userId, userContext=userContextDetails)
     return userCircleDetails
 
 @router.get("/allSubjects")
