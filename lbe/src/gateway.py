@@ -274,7 +274,7 @@ def add_user_event_to_moov (request: Request, eventUserData: ActiveMoovUserEvent
     userContext = get_user_context(request)
     dbActions = MoovLogic()
     if dbActions.verifyUserEventChangePermission(eventUserData.activeMoovId,userContext.userId):
-        returnValue = dbActions.addUserEventToMoovInstance(moovInstanceId= eventUserData.activeMoovId, text= eventUserData.userText)
+        returnValue = dbActions.addUserEventToMoovInstance(moovInstanceId= eventUserData.activeMoovId, text= eventUserData.userText, userContext = userContext)
     
     return returnValue
 

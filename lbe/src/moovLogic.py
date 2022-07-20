@@ -985,9 +985,12 @@ class MoovLogic(metaclass=Singleton):
         print ('verifyUserEventChangePermission received request to add event to activeMoovId {0} but from userId {1} which is not the owner ', activeMoovId, userId)
         return False
 
-    def addUserEventToMoovInstance(self, moovInstanceId, text):
+    def addUserEventToMoovInstance(self, moovInstanceId, text, userContext = UserContextData):
         moovInstanceEvent = MoovInstanceEvent(timeStamp=datetime.datetime.utcnow(), type=MoovInstanceEventTypes.USER_COMMENT, content=text)
-        return self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
+        self.addEventToMoovInstance(moovInstanceId=moovInstanceId, moovInstanceEvent=moovInstanceEvent)
+        
+        # there are elements of localization that requires to get the data AFTER the event was added to the db.
+        return self.getActiveMoov(moovInstanceId, userContext=userContext)
 
     def addSystemEventToMoovInstance(self, moovInstanceId, eventType):
         text = self.getTextIdForType(eventType=eventType)
