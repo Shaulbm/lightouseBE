@@ -706,13 +706,15 @@ class MoovLogic(metaclass=Singleton):
     def extendActiveMoov(self, activeMoovId, userContext:UserContextData):
         self.addSystemEventToMoovInstance(moovInstanceId=activeMoovId, eventType=MoovInstanceEventTypes.LIFETIME_EXTENTION)
 
-        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId, userContext= userContext)
+        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId, userContext= None)
 
         if (activeMoovDetails is not None):
             activeMoovDetails.plannedEndDate = datetime.datetime.utcnow() + datetime.timedelta(days=ep.getAttribute(EnvKeys.moovs, EnvKeys.extendActiveMoovTimeDays))
             activeMoovDetails.isOverdue = False
             self.insertOrUpdateActiveMoov(activeMoovDetails=activeMoovDetails)
 
+        # not great design - I know - first getActiveMoov will not translate the system events - this is why we can save it again 
+        activeMoovDetails = self.getActiveMoov(activeMoovId=activeMoovId, userContext= userContext)
         return activeMoovDetails
 
     def getActiveMoov (self, activeMoovId, userContext: UserContextData):
