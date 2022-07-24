@@ -802,7 +802,22 @@ class MoovLogic(metaclass=Singleton):
 
     def getPastMoovsToCounterpart (self, userId, counterpartId, userContext: UserContextData):
         counterpartDetails = self.getUser(counterpartId)
-        return self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartDetails=counterpartDetails, userContext=userContext)
+        pastMoovs = self.dataBaseInstance.getPastMoovsToCounterpart(userId=userId, counterpartDetails=counterpartDetails, userContext=userContext)
+
+                #  calculate steps to moov 
+        for pastMoov in pastMoovs:
+            extendedMoovDetails = ExtendedIssueMoovData() 
+            extendedMoovDetails.fromBase(pastMoov.moovData)
+            extendedMoovDetails.description = self.setNameInText(text=extendedMoovDetails.description, name=counterpartDetails.firstName)
+            extendedMoovDetails.howTo = self.setNameInText(text=extendedMoovDetails.howTo, name=counterpartDetails.firstName)
+            extendedMoovDetails.reasoning = self.setNameInText(text=extendedMoovDetails.reasoning, name=counterpartDetails.firstName)
+            extendedMoovDetails.steps = self.getStepsToMoov(extendedMoovDetails)
+            pastMoov.moovData = extendedMoovDetails
+            pastMoov.counterpartFirstName = counterpartDetails.firstName
+            pastMoov.counterpartLastName = counterpartDetails.familyName
+            pastMoov.counterpartColor = counterpartDetails.color
+
+        return pastMoovs
 
     def getPastMoovsToMoovAndCounterpart(self, userId, counterpartId, moovId, userContext: UserContextData):
         counterpartDetails = self.getUser(counterpartId)
